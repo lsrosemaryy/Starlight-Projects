@@ -1,0 +1,25 @@
+# Wishes Dashboard
+
+An interactive dashboard showing 433 granted wishes broken down by type and subtype.
+
+## How to use
+
+1. Download `wishes-dashboard.html`
+2. Open it in any web browser (Chrome, Safari, Edge, Firefox)
+3. Use the filter buttons to drill into each wish type
+
+No installation or internet connection required after the first open.
+
+## Wish types
+
+| Type | Count |
+|------|-------|
+| Travel | 182 |
+| Tangible | 131 |
+| Experience | 84 |
+| Celebrity | 36 |
+| **Total** | **433** |
+
+## Data source
+
+Exported from Cosmos on 21 April 2026. The "Other" subtype has been expanded using the Wish Choice field so every entry shows its actual wish rather than a generic category.
