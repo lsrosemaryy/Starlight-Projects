@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:mso="urn:schemas-microsoft-com:office:office" xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wishes Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f5f4f0;
+    color: #1a1a1a;
+    min-height: 100vh;
+    padding: 2rem;
+  }
+
+  h1 { font-size: 22px; font-weight: 500; margin-bottom: 0.25rem; }
+  .subtitle { font-size: 14px; color: #666; margin-bottom: 1.5rem; }
+
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+    margin-bottom: 1.5rem;
+  }
+
+  .metric-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 1rem;
+    text-align: center;
+    border: 0.5px solid rgba(0,0,0,0.1);
+  }
+
+  .metric-card .label { font-size: 12px; color: #888; margin-bottom: 4px; }
+  .metric-card .value { font-size: 26px; font-weight: 500; }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 1.5rem;
+  }
+
+  .filter-btn {
+    padding: 6px 16px;
+    border-radius: 99px;
+    border: 1.5px solid rgba(0,0,0,0.15);
+    font-size: 13px;
+    cursor: pointer;
+    background: transparent;
+    color: #333;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+
+  .filter-btn:hover { border-color: rgba(0,0,0,0.3); }
+  .filter-btn.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+
+  .chart-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 0.5px solid rgba(0,0,0,0.1);
+  }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 1rem;
+    font-size: 12px;
+    color: #666;
+  }
+
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+  .chart-wrap { position: relative; width: 100%; }
+</style>
+
+<!--[if gte mso 9]><xml>
+<mso:CustomDocumentProperties>
+<mso:State msdt:dt="string"></mso:State>
+<mso:Year msdt:dt="string"></mso:Year>
+<mso:DocumentType msdt:dt="string"></mso:DocumentType>
+<mso:k7f4cb077fb440dd9255415eb397d508 msdt:dt="string"></mso:k7f4cb077fb440dd9255415eb397d508>
+<mso:fbf6994572584904a83934c63549b864 msdt:dt="string"></mso:fbf6994572584904a83934c63549b864>
+<mso:o61ef411f64f4b4586e3ed4a02e83ba8 msdt:dt="string"></mso:o61ef411f64f4b4586e3ed4a02e83ba8>
+<mso:TaxCatchAll msdt:dt="string"></mso:TaxCatchAll>
+</mso:CustomDocumentProperties>
+</xml><![endif]-->
+</head>
+<body>
+
+<h1>Wishes granted</h1>
+<p class="subtitle">433 wishes across 4 types</p>
+
+<div class="metric-grid">
+  <div class="metric-card">
+    <div class="label">Total</div>
+    <div class="value">433</div>
+  </div>
+  <div class="metric-card">
+    <div class="label">Travel</div>
+    <div class="value" style="color:#3266ad;">182</div>
+  </div>
+  <div class="metric-card">
+    <div class="label">Tangible</div>
+    <div class="value" style="color:#1D9E75;">131</div>
+  </div>
+  <div class="metric-card">
+    <div class="label">Experience</div>
+    <div class="value" style="color:#BA7517;">84</div>
+  </div>
+  <div class="metric-card">
+    <div class="label">Celebrity</div>
+    <div class="value" style="color:#993556;">36</div>
+  </div>
+</div>
+
+<div class="filters">
+  <button class="filter-btn active" id="btn-all" onclick="filterType('all')">All types</button>
+  <button class="filter-btn" id="btn-Travel" onclick="filterType('Travel')">Travel</button>
+  <button class="filter-btn" id="btn-Tangible" onclick="filterType('Tangible')">Tangible</button>
+  <button class="filter-btn" id="btn-Experience" onclick="filterType('Experience')">Experience</button>
+  <button class="filter-btn" id="btn-Celebrity" onclick="filterType('Celebrity')">Celebrity</button>
+</div>
+
+<div class="chart-card">
+  <div class="legend" id="legend"></div>
+  <div class="chart-wrap" id="chart-wrap">
+    <canvas id="mainChart" role="img" aria-label="Horizontal bar chart of wish subtypes by count"></canvas>
+  </div>
+</div>
+
+<script>
+const allData = {
+  Travel: {
+    labels: ['Gold Coast','Island','Far North Queensland','Melbourne','Sydney','Tasmania','Sunshine Coast','Canberra','Whitsundays','WA','Brisbane Holiday','Beach house holiday','Brisbane','Byron Bay','Hamilton Island','QLD family holiday','NT','Noosa, QLD'],
+    data:   [93,26,16,9,8,8,6,3,2,2,2,1,1,1,1,1,1,1],
+    color: '#3266ad'
+  },
+  Tangible: {
+    labels: ['Gaming PC','Computer','Apple Products','Pet','Room Makeover','Gaming Consoles','Motorised Vehicle','Entertainment Pack','Camper Trailer','Tech Equipment','Cubby House / Play Equipment','Spa','Specialised Tricycle','Music Recording Equipment','Mountain bike','Camera & Accessories','Fishing Equipment','A perfect smile','Boxing Kit','Gaming Accessories','Personalised artwork','Guitar','Massage Chairs','Speaker','Sport','Tools','Trampoline'],
+    data:   [33,14,14,14,12,8,4,3,3,3,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1],
+    color: '#1D9E75'
+  },
+  Experience: {
+    labels: ['Cruise','Event Attendance','VIP Zoo Experience','Snow','Animal Encounter','Wish Week','Snow Wish Week','Husky Sled Riding','Crocodile Hunter Lodge','Helifishing','Freediving Training','Fly in a plane/jet','Fishing charter trip','Campervan holiday','Lamborghini Experience','Model for a Day','NT','Photographer experience','Personal Makeover','Personal Documentary','Party','Sydney','Rottnest Island','Uluru','WA'],
+    data:   [26,7,7,7,6,6,6,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    color: '#BA7517'
+  },
+  Celebrity: {
+    labels: ['M&G Dependent','Event Attendance','M&G Not Dependent','Sport'],
+    data:   [19,10,5,2],
+    color: '#993556'
+  }
+};
+
+const typeColors = {
+  Travel: '#3266ad',
+  Tangible: '#1D9E75',
+  Experience: '#BA7517',
+  Celebrity: '#993556'
+};
+
+function getAllCombined() {
+  const items = [];
+  Object.entries(allData).forEach(([type, d]) => {
+    d.labels.forEach((label, i) => {
+      items.push({ label: label + ' (' + type + ')', count: d.data[i], color: d.color });
+    });
+  });
+  items.sort((a, b) => b.count - a.count);
+  return {
+    labels: items.map(x => x.label),
+    data: items.map(x => x.count),
+    colors: items.map(x => x.color)
+  };
+}
+
+let currentChart = null;
+
+function buildLegend(type) {
+  const legend = document.getElementById('legend');
+  if (type === 'all') {
+    legend.innerHTML = Object.entries(typeColors).map(([t, c]) =>
+      `<span class="legend-item"><span class="legend-dot" style="background:${c}"></span>${t}</span>`
+    ).join('');
+  } else {
+    legend.innerHTML = `<span class="legend-item"><span class="legend-dot" style="background:${typeColors[type]}"></span>${type}</span>`;
+  }
+}
+
+function filterType(type) {
+  document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+  document.getElementById('btn-' + type).classList.add('active');
+  buildChart(type);
+  buildLegend(type);
+}
+
+function buildChart(type) {
+  if (currentChart) currentChart.destroy();
+
+  let labels, data, colors;
+
+  if (type === 'all') {
+    const combined = getAllCombined();
+    labels = combined.labels;
+    data = combined.data;
+    colors = combined.colors;
+  } else {
+    const d = allData[type];
+    labels = d.labels;
+    data = d.data;
+    colors = data.map(() => d.color);
+  }
+
+  const height = Math.max(300, labels.length * 36 + 60);
+  document.getElementById('chart-wrap').style.height = height + 'px';
+
+  currentChart = new Chart(document.getElementById('mainChart'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        data,
+        backgroundColor: colors,
+        borderRadius: 4,
+        barThickness: 22
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => ' ' + ctx.raw + ' wishes'
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: 'rgba(0,0,0,0.07)' },
+          ticks: { color: '#888', font: { size: 12 } }
+        },
+        y: {
+          grid: { display: false },
+          ticks: { color: '#444', font: { size: 12 }, autoSkip: false }
+        }
+      }
+    }
+  });
+}
+
+buildChart('all');
+buildLegend('all');
+</script>
+</body>
+</html>
