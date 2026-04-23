@@ -1,6 +1,6 @@
 # Wishgranting Dashboard 2025
 
-An interactive dashboard showing 433 granted wishes broken down by type and subtype.
+An interactive dashboard showing 433 granted wishes in 2025 broken down by type and subtype.
 
 ## How to use
 
