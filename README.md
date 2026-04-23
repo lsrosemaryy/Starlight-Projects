@@ -1,4 +1,4 @@
-# Wishes Dashboard
+# Wishgranting Dashboard
 
 An interactive dashboard showing 433 granted wishes broken down by type and subtype.
 
