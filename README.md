@@ -21,7 +21,7 @@ No installation or internet connection required after the first open.
 | **Total** | **433** |
 
 Travel Wish: The Wish is primarily a holiday destination Wish, which lasts typically five nights.   
-Experience Wish: The Wish is to do with an activity. Travel might or might not be involved (e.g. Uluru experience, seeing a concert etc). Typically, 2-3 nights maximum 
+\n Experience Wish: The Wish is to do with an activity. Travel might or might not be involved (e.g. Uluru experience, seeing a concert etc). Typically, 2-3 nights maximum 
 Tangible Wish: A purchased product/s or item/s e.g. phones, bedroom makeover, pet 
 Celebrity Wish: A celebrity element is involved in the Wish e.g. sporting team
 
