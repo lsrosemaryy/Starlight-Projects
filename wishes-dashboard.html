@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:mso="urn:schemas-microsoft-com:office:office" xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -79,19 +79,37 @@
   .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
 
   .chart-wrap { position: relative; width: 100%; }
-</style>
 
-<!--[if gte mso 9]><xml>
-<mso:CustomDocumentProperties>
-<mso:State msdt:dt="string"></mso:State>
-<mso:Year msdt:dt="string"></mso:Year>
-<mso:DocumentType msdt:dt="string"></mso:DocumentType>
-<mso:k7f4cb077fb440dd9255415eb397d508 msdt:dt="string"></mso:k7f4cb077fb440dd9255415eb397d508>
-<mso:fbf6994572584904a83934c63549b864 msdt:dt="string"></mso:fbf6994572584904a83934c63549b864>
-<mso:o61ef411f64f4b4586e3ed4a02e83ba8 msdt:dt="string"></mso:o61ef411f64f4b4586e3ed4a02e83ba8>
-<mso:TaxCatchAll msdt:dt="string"></mso:TaxCatchAll>
-</mso:CustomDocumentProperties>
-</xml><![endif]-->
+  .type-descriptions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+    margin-bottom: 1.5rem;
+  }
+
+  .type-desc-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 1rem;
+    border: 0.5px solid rgba(0,0,0,0.1);
+    border-left: 3px solid var(--type-color);
+  }
+
+  .type-desc-card .type-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--type-color);
+    margin-bottom: 5px;
+  }
+
+  .type-desc-card .type-def {
+    font-size: 12px;
+    color: #555;
+    line-height: 1.5;
+  }
+
+  .descriptions-hidden { display: none; }
+</style>
 </head>
 <body>
 
@@ -127,6 +145,25 @@
   <button class="filter-btn" id="btn-Tangible" onclick="filterType('Tangible')">Tangible</button>
   <button class="filter-btn" id="btn-Experience" onclick="filterType('Experience')">Experience</button>
   <button class="filter-btn" id="btn-Celebrity" onclick="filterType('Celebrity')">Celebrity</button>
+</div>
+
+<div class="type-descriptions" id="type-descriptions">
+  <div class="type-desc-card" style="--type-color:#3266ad">
+    <div class="type-name">Travel</div>
+    <div class="type-def">Primarily a holiday destination wish, typically lasting five nights.</div>
+  </div>
+  <div class="type-desc-card" style="--type-color:#BA7517">
+    <div class="type-name">Experience</div>
+    <div class="type-def">An activity-based wish. Travel may or may not be involved (e.g. Uluru, a concert). Typically 2–3 nights maximum.</div>
+  </div>
+  <div class="type-desc-card" style="--type-color:#1D9E75">
+    <div class="type-name">Tangible</div>
+    <div class="type-def">A purchased product or item, e.g. phones, bedroom makeover, pet.</div>
+  </div>
+  <div class="type-desc-card" style="--type-color:#993556">
+    <div class="type-name">Celebrity</div>
+    <div class="type-def">A celebrity element is involved, e.g. a sporting team meet & greet.</div>
+  </div>
 </div>
 
 <div class="chart-card">
@@ -200,6 +237,8 @@ function filterType(type) {
   document.getElementById('btn-' + type).classList.add('active');
   buildChart(type);
   buildLegend(type);
+  document.getElementById('type-descriptions').className =
+    type === 'all' ? 'type-descriptions' : 'type-descriptions descriptions-hidden';
 }
 
 function buildChart(type) {
