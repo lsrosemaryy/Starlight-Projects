@@ -20,6 +20,12 @@ No installation or internet connection required after the first open.
 | Celebrity | 36 |
 | **Total** | **433** |
 
+Travel Wish: The Wish is primarily a holiday destination Wish, which lasts typically five nights.   
+Experience Wish: The Wish is to do with an activity. Travel might or might not be involved (e.g. Uluru experience, seeing a concert etc). Typically, 2-3 nights maximum 
+Tangible Wish: A purchased product/s or item/s e.g. phones, bedroom makeover, pet 
+Celebrity Wish: A celebrity element is involved in the Wish e.g. sporting team
+
+
 ## Data source
 
 Exported from Cosmos on 21 April 2026. The "Other" subtype has been expanded using the Wish Choice field so every entry shows its actual wish rather than a generic category.
