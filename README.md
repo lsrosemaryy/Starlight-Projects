@@ -1,31 +1,46 @@
-# Wishgranting Dashboard 2025
+# Wishgranting Dashboard
 
-An interactive dashboard showing 433 granted wishes in 2025 broken down by type and subtype.
+An interactive dashboard showing granted wishes and wishes in the pipeline, broken down by type and subtype.
 
 ## How to use
 
 1. Download `wishes-dashboard.html`
 2. Open it in any web browser (Chrome, Safari, Edge, Firefox)
-3. Use the filter buttons to drill into each wish type
+3. Switch between the two tabs at the top of the page
+4. Use the filter buttons to drill into each wish type
 
-No installation or internet connection required after the first open.
+## Tabs
+
+**Wishes granted** — 433 wishes that have already been fulfilled.
+
+**Wishes to be granted** — 141 active wishes currently in the pipeline.
 
 ## Wish types
 
-| Type | Count |
-|------|-------|
-| Travel | 182 |
-| Tangible | 131 |
-| Experience | 84 |
-| Celebrity | 36 |
-| **Total** | **433** |
+| Type | Granted | To be granted |
+|------|---------|---------------|
+| Travel | 182 | 57 |
+| Tangible | 131 | 34 |
+| Experience | 84 | 44 |
+| Celebrity | 36 | 6 |
+| **Total** | **433** | **141** |
 
-* Travel Wish: The Wish is primarily a holiday destination Wish, which lasts typically five nights.   
-* Experience Wish: The Wish is to do with an activity. Travel might or might not be involved (e.g. Uluru experience, seeing a concert etc). Typically, 2-3 nights maximum.
-* Tangible Wish: A purchased product/s or item/s e.g. phones, bedroom makeover, pet.
-* Celebrity Wish: A celebrity element is involved in the Wish e.g. sporting team.
+### Type definitions
 
+**Travel** — Primarily a holiday destination wish, typically lasting five nights.
 
-## Data source
+**Experience** — An activity-based wish. Travel may or may not be involved (e.g. Uluru, a concert). Typically 2–3 nights maximum.
 
-Exported from Cosmos on 21 April 2026. The "Other" subtype has been expanded using the Wish Choice field so every entry shows its actual wish rather than a generic category.
+**Tangible** — A purchased product or item, e.g. phones, bedroom makeover, pet.
+
+**Celebrity** — A celebrity element is involved, e.g. a sporting team meet & greet.
+- *M&G Dependent* — the wish is the meet & greet itself
+- *M&G Not Dependent* — celebrity element present but meeting them isn't the point
+- *Event Attendance* — attending the event only, no meet & greet
+
+## Data sources
+
+- Granted wishes exported from CRM on 21 April 2026
+- Pipeline wishes exported from CRM on 28 April 2026
+
+The "Other" subtype has been expanded using the Wish Choice field so every entry shows its actual wish rather than a generic category.
