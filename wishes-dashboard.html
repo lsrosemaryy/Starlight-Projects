@@ -30,9 +30,40 @@
     padding: 2rem;
   }
 
-  h1 { font-size: 22px; font-weight: 500; margin-bottom: 0.25rem; }
+  h1 { font-size: 22px; font-weight: 500; margin-bottom: 1.25rem; }
+
+  /* ── Tabs ── */
+  .tab-bar {
+    display: flex;
+    gap: 0;
+    margin-bottom: 1.75rem;
+    border-bottom: 2px solid rgba(0,0,0,0.1);
+  }
+
+  .tab-btn {
+    padding: 10px 22px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    color: #888;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.15s;
+  }
+
+  .tab-btn:hover { color: #333; }
+  .tab-btn.active { color: #1a1a1a; border-bottom-color: #1a1a1a; }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── Subtitle ── */
   .subtitle { font-size: 14px; color: #666; margin-bottom: 1.5rem; }
 
+  /* ── Metric grid ── */
   .metric-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -51,6 +82,7 @@
   .metric-card .label { font-size: 12px; color: #888; margin-bottom: 4px; }
   .metric-card .value { font-size: 26px; font-weight: 500; }
 
+  /* ── Filters ── */
   .filters {
     display: flex;
     flex-wrap: wrap;
@@ -73,6 +105,7 @@
   .filter-btn:hover { border-color: rgba(0,0,0,0.3); }
   .filter-btn.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
 
+  /* ── Chart card ── */
   .chart-card {
     background: #fff;
     border-radius: 12px;
@@ -91,9 +124,9 @@
 
   .legend-item { display: flex; align-items: center; gap: 5px; }
   .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
-
   .chart-wrap { position: relative; width: 100%; }
 
+  /* ── Type description cards ── */
   .type-descriptions {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -123,137 +156,99 @@
   }
 
   .descriptions-hidden { display: none; }
-
-  .section-title {
-    font-size: 16px;
-    font-weight: 500;
-    margin-bottom: 0.35rem;
-  }
-
-  .section-subtitle {
-    font-size: 13px;
-    color: #666;
-    margin-bottom: 1rem;
-  }
-
-  .divider {
-    border: none;
-    border-top: 1px solid rgba(0,0,0,0.08);
-    margin: 2rem 0;
-  }
 </style>
 </head>
 <body>
 
-<h1>Wishes Granted</h1>
-<p class="subtitle">433 wishes across 4 types</p>
+<h1>Wishgranting Dashboard</h1>
 
-<div class="metric-grid">
-  <div class="metric-card">
-    <div class="label">Total</div>
-    <div class="value">433</div>
-  </div>
-  <div class="metric-card">
-    <div class="label">Travel</div>
-    <div class="value" style="color:#3266ad;">182</div>
-  </div>
-  <div class="metric-card">
-    <div class="label">Tangible</div>
-    <div class="value" style="color:#1D9E75;">131</div>
-  </div>
-  <div class="metric-card">
-    <div class="label">Experience</div>
-    <div class="value" style="color:#BA7517;">84</div>
-  </div>
-  <div class="metric-card">
-    <div class="label">Celebrity</div>
-    <div class="value" style="color:#993556;">36</div>
-  </div>
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('granted')">Wishes granted</button>
+  <button class="tab-btn" onclick="switchTab('pipeline')">Wishes to be granted</button>
 </div>
 
-<div class="filters">
-  <button class="filter-btn active" id="btn-all" onclick="filterType('all')">All types</button>
-  <button class="filter-btn" id="btn-Travel" onclick="filterType('Travel')">Travel</button>
-  <button class="filter-btn" id="btn-Tangible" onclick="filterType('Tangible')">Tangible</button>
-  <button class="filter-btn" id="btn-Experience" onclick="filterType('Experience')">Experience</button>
-  <button class="filter-btn" id="btn-Celebrity" onclick="filterType('Celebrity')">Celebrity</button>
-</div>
+<!-- ── TAB 1: Granted ── -->
+<div class="tab-panel active" id="tab-granted">
+  <p class="subtitle">433 wishes across 4 types in 2025</p>
 
-<div class="type-descriptions" id="type-descriptions">
-  <div class="type-desc-card" style="--type-color:#3266ad">
-    <div class="type-name">Travel</div>
-    <div class="type-def">Primarily a holiday destination wish, typically lasting five nights.</div>
+  <div class="metric-grid">
+    <div class="metric-card"><div class="label">Total</div><div class="value">433</div></div>
+    <div class="metric-card"><div class="label">Travel</div><div class="value" style="color:#3266ad;">182</div></div>
+    <div class="metric-card"><div class="label">Tangible</div><div class="value" style="color:#1D9E75;">131</div></div>
+    <div class="metric-card"><div class="label">Experience</div><div class="value" style="color:#BA7517;">84</div></div>
+    <div class="metric-card"><div class="label">Celebrity</div><div class="value" style="color:#993556;">36</div></div>
   </div>
-  <div class="type-desc-card" style="--type-color:#BA7517">
-    <div class="type-name">Experience</div>
-    <div class="type-def">An activity-based wish. Travel may or may not be involved (e.g. Uluru, a concert). Typically 2–3 nights maximum.</div>
+
+  <div class="filters">
+    <button class="filter-btn active" id="btn-all" onclick="filterType('all')">All types</button>
+    <button class="filter-btn" id="btn-Travel" onclick="filterType('Travel')">Travel</button>
+    <button class="filter-btn" id="btn-Tangible" onclick="filterType('Tangible')">Tangible</button>
+    <button class="filter-btn" id="btn-Experience" onclick="filterType('Experience')">Experience</button>
+    <button class="filter-btn" id="btn-Celebrity" onclick="filterType('Celebrity')">Celebrity</button>
   </div>
-  <div class="type-desc-card" style="--type-color:#1D9E75">
-    <div class="type-name">Tangible</div>
-    <div class="type-def">A purchased product or item, e.g. phones, bedroom makeover, pet.</div>
+
+  <div class="type-descriptions" id="type-descriptions">
+    <div class="type-desc-card" style="--type-color:#3266ad">
+      <div class="type-name">Travel</div>
+      <div class="type-def">Primarily a holiday destination wish, typically lasting five nights.</div>
+    </div>
+    <div class="type-desc-card" style="--type-color:#BA7517">
+      <div class="type-name">Experience</div>
+      <div class="type-def">An activity-based wish. Travel may or may not be involved (e.g. Uluru, a concert). Typically 2–3 nights maximum.</div>
+    </div>
+    <div class="type-desc-card" style="--type-color:#1D9E75">
+      <div class="type-name">Tangible</div>
+      <div class="type-def">A purchased product or item, e.g. phones, bedroom makeover, pet.</div>
+    </div>
+    <div class="type-desc-card" style="--type-color:#993556">
+      <div class="type-name">Celebrity</div>
+      <div class="type-def">A celebrity element is involved, e.g. a sporting team meet &amp; greet.</div>
+      <div style="margin-top:8px;font-size:11px;color:#777;line-height:1.6;border-top:1px solid rgba(0,0,0,0.07);padding-top:8px;">
+        <div><strong style="color:#555;">M&amp;G Dependent</strong> — the wish is the meet &amp; greet itself (e.g. meeting Katy Perry)</div>
+        <div style="margin-top:3px;"><strong style="color:#555;">M&amp;G Not Dependent</strong> — celebrity element present but meeting them isn't the point (e.g. Les Misérables Arena Spectacular)</div>
+        <div style="margin-top:3px;"><strong style="color:#555;">Event Attendance</strong> — attending the event only, no meet &amp; greet (e.g. Central Cee concert)</div>
+      </div>
+    </div>
   </div>
-  <div class="type-desc-card" style="--type-color:#993556">
-    <div class="type-name">Celebrity</div>
-    <div class="type-def">A celebrity element is involved, e.g. a sporting team meet & greet.</div>
-    <div style="margin-top: 8px; font-size: 11px; color: #777; line-height: 1.6; border-top: 1px solid rgba(0,0,0,0.07); padding-top: 8px;">
-      <div><strong style="color:#555;">M&G Dependent</strong> — the wish is the meet & greet itself (e.g. meeting Katy Perry)</div>
-      <div style="margin-top: 3px;"><strong style="color:#555;">M&G Not Dependent</strong> — celebrity element present but meeting them isn't the point (e.g. Les Misérables Arena Spectacular)</div>
-      <div style="margin-top: 3px;"><strong style="color:#555;">Event Attendance</strong> — attending the event only, no meet & greet (e.g. Central Cee concert)</div>
+
+  <div class="chart-card">
+    <div class="legend" id="legend"></div>
+    <div class="chart-wrap" id="chart-wrap">
+      <canvas id="mainChart"></canvas>
     </div>
   </div>
 </div>
 
-<div class="chart-card">
-  <div class="legend" id="legend"></div>
-  <div class="chart-wrap" id="chart-wrap">
-    <canvas id="mainChart" role="img" aria-label="Horizontal bar chart of wish subtypes by count"></canvas>
-  </div>
-</div>
+<!-- ── TAB 2: Pipeline ── -->
+<div class="tab-panel" id="tab-pipeline">
+  <p class="subtitle">141 active wishes</p>
 
-<hr class="divider">
+  <div class="metric-grid">
+    <div class="metric-card"><div class="label">Total</div><div class="value">141</div></div>
+    <div class="metric-card"><div class="label">Travel</div><div class="value" style="color:#3266ad;">57</div></div>
+    <div class="metric-card"><div class="label">Experience</div><div class="value" style="color:#BA7517;">44</div></div>
+    <div class="metric-card"><div class="label">Tangible</div><div class="value" style="color:#1D9E75;">34</div></div>
+    <div class="metric-card"><div class="label">Celebrity</div><div class="value" style="color:#993556;">6</div></div>
+  </div>
 
-<p class="section-title">Wishes to be granted</p>
-<p class="section-subtitle">141 active wishes in the pipeline</p>
+  <div class="filters">
+    <button class="filter-btn active" id="fbtn-all" onclick="filterForecast('all')">All types</button>
+    <button class="filter-btn" id="fbtn-Travel" onclick="filterForecast('Travel')">Travel</button>
+    <button class="filter-btn" id="fbtn-Tangible" onclick="filterForecast('Tangible')">Tangible</button>
+    <button class="filter-btn" id="fbtn-Experience" onclick="filterForecast('Experience')">Experience</button>
+    <button class="filter-btn" id="fbtn-Celebrity" onclick="filterForecast('Celebrity')">Celebrity</button>
+  </div>
 
-<div class="metric-grid">
-  <div class="metric-card">
-    <div class="label">Total</div>
-    <div class="value">141</div>
-  </div>
-  <div class="metric-card">
-    <div class="label">Travel</div>
-    <div class="value" style="color:#3266ad;">57</div>
-  </div>
-  <div class="metric-card">
-    <div class="label">Experience</div>
-    <div class="value" style="color:#BA7517;">44</div>
-  </div>
-  <div class="metric-card">
-    <div class="label">Tangible</div>
-    <div class="value" style="color:#1D9E75;">34</div>
-  </div>
-  <div class="metric-card">
-    <div class="label">Celebrity</div>
-    <div class="value" style="color:#993556;">6</div>
-  </div>
-</div>
-
-<div class="filters">
-  <button class="filter-btn active" id="fbtn-all" onclick="filterForecast('all')">All types</button>
-  <button class="filter-btn" id="fbtn-Travel" onclick="filterForecast('Travel')">Travel</button>
-  <button class="filter-btn" id="fbtn-Tangible" onclick="filterForecast('Tangible')">Tangible</button>
-  <button class="filter-btn" id="fbtn-Experience" onclick="filterForecast('Experience')">Experience</button>
-  <button class="filter-btn" id="fbtn-Celebrity" onclick="filterForecast('Celebrity')">Celebrity</button>
-</div>
-
-<div class="chart-card">
-  <div class="legend" id="flegend"></div>
-  <div class="chart-wrap" id="fchart-wrap">
-    <canvas id="forecastChart" role="img" aria-label="Horizontal bar chart of upcoming wishes by subtype"></canvas>
+  <div class="chart-card">
+    <div class="legend" id="flegend"></div>
+    <div class="chart-wrap" id="fchart-wrap">
+      <canvas id="forecastChart"></canvas>
+    </div>
   </div>
 </div>
 
 <script>
+
 const allData = {
   Travel: {
     labels: ['Gold Coast','Island','Far North Queensland','Melbourne','Sydney','Tasmania','Sunshine Coast','Canberra','Whitsundays','WA','Brisbane Holiday','Beach house holiday','Brisbane','Byron Bay','Hamilton Island','QLD family holiday','NT','Noosa, QLD'],
@@ -490,6 +485,20 @@ function buildForecastChart(type) {
 
 buildForecastChart('all');
 buildForecastLegend('all');
+
+
+// ── Tab switching ──
+const tabBtns = document.querySelectorAll('.tab-btn');
+function switchTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  tabBtns.forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.currentTarget.classList.add('active');
+
+  // Resize charts after tab becomes visible
+  if (name === 'granted' && currentChart) currentChart.resize();
+  if (name === 'pipeline' && forecastChart) forecastChart.resize();
+}
 </script>
 </body>
 </html>
