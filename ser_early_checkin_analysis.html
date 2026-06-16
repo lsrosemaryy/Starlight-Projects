@@ -1,0 +1,200 @@
+
+<style>
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 2rem; }
+  .metric { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 1rem; }
+  .metric-label { font-size: 12px; color: var(--color-text-secondary); margin: 0 0 4px; }
+  .metric-value { font-size: 22px; font-weight: 500; margin: 0; color: var(--color-text-primary); }
+  .metric-sub { font-size: 12px; color: var(--color-text-secondary); margin: 4px 0 0; }
+  .section-label { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 12px; }
+  .card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: 1rem; }
+  .hosp-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .hosp-name { font-size: 13px; color: var(--color-text-primary); min-width: 220px; }
+  .bar-wrap { flex: 1; background: var(--color-background-secondary); border-radius: 4px; height: 16px; overflow: hidden; }
+  .bar { height: 100%; border-radius: 4px; }
+  .bar-count { font-size: 12px; color: var(--color-text-secondary); min-width: 28px; text-align: right; }
+  .badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: var(--border-radius-md); font-weight: 500; margin-left: 6px; }
+  .badge-amber { background: #FAEEDA; color: #633806; }
+  .badge-blue { background: #E6F1FB; color: #0C447C; }
+  .badge-teal { background: #E1F5EE; color: #085041; }
+  .badge-red { background: #FCEBEB; color: #791F1F; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .finding { border-left: 3px solid; padding: 8px 12px; border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; margin-bottom: 10px; }
+  .finding p { font-size: 13px; margin: 0; color: var(--color-text-primary); }
+  .finding .finding-label { font-size: 11px; font-weight: 500; margin: 0 0 4px; }
+  .f-amber { border-color: #EF9F27; background: #FAEEDA22; }
+  .f-amber .finding-label { color: #854F0B; }
+  .f-red { border-color: #E24B4A; background: #FCEBEB22; }
+  .f-red .finding-label { color: #A32D2D; }
+  .f-teal { border-color: #1D9E75; background: #E1F5EE22; }
+  .f-teal .finding-label { color: #085041; }
+  .f-blue { border-color: #378ADD; background: #E6F1FB22; }
+  .f-blue .finding-label { color: #0C447C; }
+  .f-gray { border-color: #888780; background: #F1EFE822; }
+  .f-gray .finding-label { color: #444441; }
+  @media (prefers-color-scheme: dark) {
+    .badge-amber { background: #412402; color: #FAC775; }
+    .badge-blue { background: #042C53; color: #B5D4F4; }
+    .badge-teal { background: #04342C; color: #9FE1CB; }
+    .badge-red { background: #501313; color: #F7C1C1; }
+    .f-amber { background: #41240222; }
+    .f-red { background: #50131322; }
+    .f-teal { background: #04342C22; }
+    .f-blue { background: #042C5322; }
+    .f-gray { background: #2C2C2A22; }
+    .f-amber .finding-label { color: #FAC775; }
+    .f-red .finding-label { color: #F7C1C1; }
+    .f-teal .finding-label { color: #9FE1CB; }
+    .f-blue .finding-label { color: #B5D4F4; }
+    .f-gray .finding-label { color: #D3D1C7; }
+  }
+</style>
+
+<h2 class="sr-only">SER early check-in investigation dashboard</h2>
+
+<div style="padding: 1rem 0 0;">
+  <div class="grid-4">
+    <div class="metric">
+      <p class="metric-label">Total early check-ins</p>
+      <p class="metric-value">149</p>
+      <p class="metric-sub">All records in dataset</p>
+    </div>
+    <div class="metric">
+      <p class="metric-label">Hospitals affected</p>
+      <p class="metric-value">8</p>
+      <p class="metric-sub">All locations in dataset</p>
+    </div>
+    <div class="metric">
+      <p class="metric-label">Biggest offender</p>
+      <p class="metric-value">Perth</p>
+      <p class="metric-sub">115 of 149 early check-ins</p>
+    </div>
+    <div class="metric">
+      <p class="metric-label">Perth avg. early by</p>
+      <p class="metric-value">28 min</p>
+      <p class="metric-sub">Max 59 min early</p>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-bottom: 2rem;">
+    <div>
+      <p class="section-label">Early check-ins by hospital</p>
+      <div class="card" style="padding: 1rem 1.25rem;">
+        <div class="hosp-row">
+          <span class="hosp-name">Perth Children's <span class="badge badge-red">⚠ 77%</span></span>
+          <div class="bar-wrap"><div class="bar" style="width:100%; background:#E24B4A;"></div></div>
+          <span class="bar-count">115</span>
+        </div>
+        <div class="hosp-row">
+          <span class="hosp-name">Royal Children's</span>
+          <div class="bar-wrap"><div class="bar" style="width:8%; background:#378ADD;"></div></div>
+          <span class="bar-count">9</span>
+        </div>
+        <div class="hosp-row">
+          <span class="hosp-name">Sydney Children's</span>
+          <div class="bar-wrap"><div class="bar" style="width:8%; background:#378ADD;"></div></div>
+          <span class="bar-count">9</span>
+        </div>
+        <div class="hosp-row">
+          <span class="hosp-name">Queensland Children's</span>
+          <div class="bar-wrap"><div class="bar" style="width:5%; background:#1D9E75;"></div></div>
+          <span class="bar-count">6</span>
+        </div>
+        <div class="hosp-row">
+          <span class="hosp-name">Monash Children's</span>
+          <div class="bar-wrap"><div class="bar" style="width:3%; background:#1D9E75;"></div></div>
+          <span class="bar-count">4</span>
+        </div>
+        <div class="hosp-row">
+          <span class="hosp-name">Centenary Hospital</span>
+          <div class="bar-wrap"><div class="bar" style="width:3%; background:#1D9E75;"></div></div>
+          <span class="bar-count">3</span>
+        </div>
+        <div class="hosp-row">
+          <span class="hosp-name">Westmead Children's</span>
+          <div class="bar-wrap"><div class="bar" style="width:2%; background:#888780;"></div></div>
+          <span class="bar-count">2</span>
+        </div>
+        <div class="hosp-row">
+          <span class="hosp-name">Alice Springs <span class="badge badge-blue">flex hours</span></span>
+          <div class="bar-wrap"><div class="bar" style="width:1%; background:#888780;"></div></div>
+          <span class="bar-count">1</span>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <p class="section-label">Perth: how early? (minutes before 9:30 AM opening)</p>
+      <div class="card">
+        <div style="position: relative; width: 100%; height: 180px;">
+          <canvas id="perth-chart" role="img" aria-label="Bar chart showing Perth early check-in distribution by minutes early. Most are 30-59 minutes early.">Perth early check-ins: under 10min: 22, 10-20min: 18, 20-30min: 23, 30-60min: 52.</canvas>
+        </div>
+        <p style="font-size: 12px; color: var(--color-text-secondary); margin: 8px 0 0; text-align: center;">All 115 Perth check-ins are concentrated in April 2025 only — likely a systematic data/clock issue.</p>
+      </div>
+    </div>
+  </div>
+
+  <p class="section-label">Root cause analysis by hospital</p>
+  <div class="grid-2">
+    <div>
+      <div class="finding f-red">
+        <p class="finding-label">Perth Children's — 115 records — needs investigation</p>
+        <p>All Perth records in the dataset are from April 2025 only, and every single one is an early check-in (100% of data). Families arrive from 8:31 AM onwards for a 9:30 AM opening. The sheer consistency and concentration in one month strongly suggests the opening time stored in the system (9:30 AM) may be wrong for this period, or the SER was operating on an unapproved earlier schedule. No group visits flagged — these are individual families queuing up.</p>
+      </div>
+      <div class="finding f-amber">
+        <p class="finding-label">Royal Children's — 9 records — mixed causes</p>
+        <p>One Saturday check-in arrived 49 minutes early (12:41 PM for 1:30 PM opening). Weekday check-ins are much closer — most within 20 minutes of the 9:30 AM open. The Saturday outlier warrants a direct follow-up: was the Captain able to open earlier that day?</p>
+      </div>
+      <div class="finding f-amber">
+        <p class="finding-label">Sydney Children's — 9 records — minor, likely rounding</p>
+        <p>One visit is 10 minutes early (Khurshid Zahan, 21/03). The remaining 8 are within 0–3 minutes of the 10:00 AM opening. These are almost certainly families who arrived right as the door opened — the system timestamp records the exact second, so 1-minute "early" check-ins are not a real concern.</p>
+      </div>
+    </div>
+    <div>
+      <div class="finding f-teal">
+        <p class="finding-label">Queensland Children's — 6 records — negligible</p>
+        <p>All 6 are within 4 minutes of the 9:30 AM opening. These are effectively on-time arrivals — families scanned in as the room was being opened. No action needed.</p>
+      </div>
+      <div class="finding f-teal">
+        <p class="finding-label">Monash Children's — 4 records — negligible</p>
+        <p>All 4 records are within 1–2 minutes of the 1:30 PM Saturday opening. Effectively on-time; likely scanned at the door as it opened.</p>
+      </div>
+      <div class="finding f-gray">
+        <p class="finding-label">Centenary Hospital — 3 records — test entries + 1 real</p>
+        <p>Two entries are under the name "Test Test" (23/04/2025, checked in ~8 minutes early). These appear to be system test records and should be deleted or excluded from reporting. The third record (Chrissy Walters, 30/09) is under 1 minute early — negligible.</p>
+      </div>
+      <div class="finding f-teal">
+        <p class="finding-label">Westmead Children's — 2 records — negligible</p>
+        <p>Both check-ins are within 2 minutes of opening time (one Saturday, one Thursday). No concern.</p>
+      </div>
+      <div class="finding f-blue">
+        <p class="finding-label">Alice Springs — 1 record — flexible hours apply</p>
+        <p>Mel Swansbra checked in at 10:50 AM on a Friday — 2 hours and 10 minutes before the system-recorded 1:00 PM opening. Per your note, Alice Springs can open earlier depending on Captain availability. This check-in was likely legitimate if a Captain was rostered early that day. Confirm with local team.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+new Chart(document.getElementById('perth-chart'), {
+  type: 'bar',
+  data: {
+    labels: ['< 10 min', '10–20 min', '20–30 min', '30–60 min'],
+    datasets: [{
+      label: 'Check-ins',
+      data: [22, 18, 23, 52],
+      backgroundColor: ['#85B7EB','#85B7EB','#85B7EB','#E24B4A'],
+      borderWidth: 0
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { ticks: { font: { size: 11 }, autoSkip: false } },
+      y: { ticks: { font: { size: 11 }, stepSize: 10 }, grid: { color: 'rgba(128,128,128,0.15)' } }
+    }
+  }
+});
+</script>
