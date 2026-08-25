@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Australian Paediatric Healthcare Landscape | Content Strategy Explorer</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#fffbe1',
+                            100: '#fef3c7',
+                            500: '#d97706',
+                            600: '#b45309',
+                        },
+                        slatebg: '#f8fafc',
+                        cardbg: '#ffffff',
+                        accent: {
+                            indigo: '#4f46e5',
+                            teal: '#0d9488',
+                            rose: '#e11d48',
+                            amber: '#f59e0b',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 380px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 360px;
+            }
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-[#faf8f5] text-slate-800 font-sans antialiased selection:bg-amber-200 selection:text-amber-900">
+
+<!-- Chosen Palette: Warm Neutral Harmony (Warm Cream #FAF8F5, Soft White Cards #FFFFFF, Slate #1E293B, Indigo Accent #4F46E5, Starlight Amber #D97706, Emerald #059669) -->
+
+<!-- Application Structure Plan: 
+  The application is structured into 5 exploratory sections focused on investigating the landscape based on AIHW & ABS report findings:
+  1. Header & Exploratory Questions: Directly addresses the 5 core landscape queries with interactive filters that pop up detailed responses and highlight relevant metrics.
+  2. Macro Landscape & Emergency Triage: Visualizes national hospital spend, 1.7M ED presentations, and 5-tier triage dwell times using interactive Chart.js bar charts.
+  3. Facility Dynamics (Tertiary vs Mixed Regional vs Private): Comparative matrix and patient admission metrics showing where volume and perioperative opportunities reside.
+  4. The Outpatient & NDIS Bottleneck: Analyzes 7-25+ month waitlists using a specialty-specific waiting time chart and provides neuro-affirming content parameters.
+  5. Primary Care & Virtual Frontier: Examines GP fragmentation through digital aggregator data (DOOH, HotDoc, Healthdirect) and visualizes the Healthdirect AI care shift.
+  6. Clinical & Field Evidence Base: Summarizes empirical study outcomes from QCH retinoblastoma trials and remote Indigenous Earbus health clinics.
+-->
+
+<!-- Visualization & Content Choices:
+  - Report Info: 1.7M ED presentations & 5-tier Triage times -> Goal: Show physical dwell times -> Viz: Horizontal Bar Chart (Chart.js) + Interactive Triage Details -> Interaction: Click triage bar to view specific waiting room experience.
+  - Report Info: Tasmanian Outpatient Wait Times (75th percentile) -> Goal: Compare wait durations across specialties -> Viz: Grouped Bar Chart (Chart.js) -> Interaction: Hover/toggle specialties to reveal waitlist friction points.
+  - Report Info: Healthdirect AI Virtual Triage Shift -> Goal: Demonstrate virtual care adoption -> Viz: Donut Chart (Chart.js) -> Interaction: Hover to see % reductions in ED intent vs virtual care uptake.
+  - Report Info: GP Network Aggregation -> Goal: Answer fragmentation query -> Viz: Interactive Aggregator Cards (DOOH, HotDoc, HealthPathways) -> Interaction: Explore reach metrics.
+-->
+
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-amber-100 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <span class="text-2xl">⭐</span>
+                    <div>
+                        <h1 class="text-lg font-bold text-slate-900 leading-tight">Paediatric Healthcare Ecosystem Explorer</h1>
+                        <p class="text-xs text-amber-700 font-medium">National Landscape & Data Analysis</p>
+                    </div>
+                </div>
+                <nav class="hidden md:flex space-x-1 text-sm font-medium text-slate-600">
+                    <a href="#macro" class="px-3 py-2 rounded-lg hover:bg-amber-50 hover:text-amber-800 transition">Macro & ED</a>
+                    <a href="#hospitals" class="px-3 py-2 rounded-lg hover:bg-amber-50 hover:text-amber-800 transition">Acute vs Private</a>
+                    <a href="#outpatients" class="px-3 py-2 rounded-lg hover:bg-amber-50 hover:text-amber-800 transition">Outpatient & NDIS</a>
+                    <a href="#primary" class="px-3 py-2 rounded-lg hover:bg-amber-50 hover:text-amber-800 transition">GP & Virtual Care</a>
+                    <a href="#evidence" class="px-3 py-2 rounded-lg hover:bg-amber-50 hover:text-amber-800 transition">Clinical Evidence</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+
+        <!-- Hero & Strategic Context -->
+        <section class="bg-gradient-to-br from-amber-500/10 via-white to-indigo-500/5 rounded-3xl p-6 sm:p-8 border border-amber-200/60 shadow-sm">
+            <div class="max-w-4xl">
+                <div class="inline-flex items-center space-x-2 px-3 py-1 bg-amber-100 text-amber-900 rounded-full text-xs font-semibold uppercase tracking-wider mb-4">
+                    <span>Exploratory Phase</span>
+                    <span>•</span>
+                    <span>AIHW & ABS Data Integration</span>
+                </div>
+                <h2 class="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
+                    Mapping Australia's Paediatric Care Touchpoints
+                </h2>
+                <p class="text-slate-600 text-base sm:text-lg leading-relaxed mb-6">
+                    While major tertiary children's hospitals serve as high-acuity hubs, children predominantly access healthcare across <strong>mixed regional EDs, chronic outpatient waitlists, private day-surgery units, and virtual care portals</strong>. This interactive report provides empirical data from AIHW, ABS, and state health sources to build a comprehensive picture of national paediatric care.
+                </p>
+
+                <!-- Core Exploratory Questions Filter -->
+                <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-sm space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Exploratory Query Selector (Click to focus):</span>
+                        <button id="reset-filter-btn" class="text-xs text-amber-700 hover:text-amber-900 font-semibold hidden" onclick="resetFilter()">Reset View ↺</button>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2" id="query-buttons">
+                        <button onclick="filterByQuery('q1')" class="q-btn text-left p-2.5 rounded-xl border border-slate-200 hover:border-amber-400 hover:bg-amber-50/50 transition text-xs text-slate-700 font-medium">
+                            ❓ <strong>1. Key Players & Access:</strong> Where do 1.7M kids go?
+                        </button>
+                        <button onclick="filterByQuery('q2')" class="q-btn text-left p-2.5 rounded-xl border border-slate-200 hover:border-amber-400 hover:bg-amber-50/50 transition text-xs text-slate-700 font-medium">
+                            🏥 <strong>2. Tertiary vs Regional/Private:</strong> Activity distribution
+                        </button>
+                        <button onclick="filterByQuery('q3')" class="q-btn text-left p-2.5 rounded-xl border border-slate-200 hover:border-amber-400 hover:bg-amber-50/50 transition text-xs text-slate-700 font-medium">
+                            🇦🇺 <strong>3. National Landscape:</strong> Spend & age breakdown
+                        </button>
+                        <button onclick="filterByQuery('q4')" class="q-btn text-left p-2.5 rounded-xl border border-slate-200 hover:border-amber-400 hover:bg-amber-50/50 transition text-xs text-slate-700 font-medium">
+                            ⏳ <strong>4. Non-Hospital Settings:</strong> Outpatient & Telehealth
+                        </button>
+                        <button onclick="filterByQuery('q5')" class="q-btn text-left p-2.5 rounded-xl border border-slate-200 hover:border-amber-400 hover:bg-amber-50/50 transition text-xs text-slate-700 font-medium">
+                            🩺 <strong>5. GP Network Viability:</strong> Solved via aggregators
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dynamic Query Answer Banner -->
+        <div id="query-answer-banner" class="hidden bg-amber-50 border-l-4 border-amber-500 p-5 rounded-r-2xl transition-all">
+            <h3 id="query-title" class="font-bold text-amber-900 text-lg mb-1"></h3>
+            <p id="query-body" class="text-slate-700 text-sm leading-relaxed"></p>
+        </div>
+
+        <!-- SECTION 1: Macro Ecosystem & Emergency Triage Dwell Times -->
+        <section id="macro" class="space-y-6">
+            <div class="border-b border-slate-200 pb-4">
+                <span class="text-xs font-bold text-amber-600 uppercase tracking-wider">Macro Landscape & Physical Dwell Times</span>
+                <h3 class="text-2xl font-bold text-slate-900 mt-1">1.7 Million Annual ED Visits & Dwell Time Analysis</h3>
+                <p class="text-slate-600 text-sm mt-1 max-w-3xl">
+                    Children aged 14 and under account for 19.5% of all emergency department visits in Australia. Because 68% are assigned semi-urgent or non-urgent triage categories, prolonged waiting room dwell times represent a critical friction point across acute care facilities.
+                </p>
+            </div>
+
+            <!-- Top Metric Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-medium text-slate-500">Total Health Spend</span>
+                            <div class="text-2xl font-extrabold text-slate-900 mt-1">$113.8B</div>
+                        </div>
+                        <span class="p-2 bg-blue-50 text-blue-600 rounded-xl text-lg">💰</span>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-2">Hospitals spend (42% of national total). State: $53.1B, Cwlth: $41.2B.</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-medium text-slate-500">Paediatric ED Volume</span>
+                            <div class="text-2xl font-extrabold text-amber-600 mt-1">1.7 Million</div>
+                        </div>
+                        <span class="p-2 bg-amber-50 text-amber-600 rounded-xl text-lg">🏥</span>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-2">19.5% of total public ED presentations (ages 0–14 years).</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-medium text-slate-500">Early Childhood ED Share</span>
+                            <div class="text-2xl font-extrabold text-indigo-600 mt-1">10.0%</div>
+                        </div>
+                        <span class="p-2 bg-indigo-50 text-indigo-600 rounded-xl text-lg">👶</span>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-2">Children 4yo and under account for 1 in 10 ED visits nationwide.</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-medium text-slate-500">Toddler Injury Rate</span>
+                            <div class="text-2xl font-extrabold text-rose-600 mt-1">12,200</div>
+                        </div>
+                        <span class="p-2 bg-rose-50 text-rose-600 rounded-xl text-lg">⚡</span>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-2">Per 100k population (highest early mobility accident cohort).</p>
+                </div>
+            </div>
+
+            <!-- Chart & Detail Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                <!-- Triage Chart Container -->
+                <div class="lg:col-span-7 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h4 class="font-bold text-slate-900 text-sm sm:text-base">Paediatric ED Triage Breakdown & Target Wait Times</h4>
+                            <p class="text-xs text-slate-500">AIHW Emergency Department Data (Click category bar to inspect experience)</p>
+                        </div>
+                        <span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md font-medium">2020–21 Cohort</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="triageChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Triage Detail Card -->
+                <div class="lg:col-span-5 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+                    <div class="flex items-center space-x-2 border-b border-slate-100 pb-3">
+                        <span class="text-xl">🔍</span>
+                        <div>
+                            <h4 class="font-bold text-slate-900 text-sm">Triage Dwell Category Detail</h4>
+                            <p class="text-xs text-slate-500">Select a triage level on the left chart to inspect</p>
+                        </div>
+                    </div>
+                    <div id="triage-detail-box" class="bg-amber-50/60 p-4 rounded-xl border border-amber-200/60 text-xs text-slate-700 space-y-2">
+                        <div class="font-bold text-amber-900 text-sm" id="detail-title">Semi-Urgent (Category 4) - 57% of Children</div>
+                        <p id="detail-desc">
+                            <strong>Target Wait:</strong> Within 60 minutes. 74% seen on time.<br>
+                            <strong>Clinical Context:</strong> Minor fractures, lacerations, mild asthma, gastroenteritis.
+                        </p>
+                        <p id="detail-content-fit" class="text-amber-800 font-medium pt-1">
+                            🎯 <strong>Dwell Context:</strong> High waiting room dwell time compounded by post-triage diagnostic delays (x-ray/blood work). Extended periods where children and parents experience elevated anxiety.
+                        </p>
+                    </div>
+
+                    <!-- Diagnostic Age Patterns -->
+                    <div class="pt-2 border-t border-slate-100">
+                        <h5 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Diagnostic Trends by Age Group:</h5>
+                        <ul class="space-y-1.5 text-xs text-slate-600">
+                            <li class="flex items-center space-x-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                                <span><strong>Infants & Toddlers:</strong> Head injuries & exploratory trauma.</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+                                <span><strong>Ages 5–12:</strong> Upper limb fractures (radius/ulna) & falls.</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-teal-500"></span>
+                                <span><strong>Adolescents (13–18):</strong> Musculoskeletal sprains & toxic effects.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: Acute Care Environments - Hubs vs Mixed Regional vs Private -->
+        <section id="hospitals" class="space-y-6">
+            <div class="border-b border-slate-200 pb-4">
+                <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider">Facility Architecture & Volume Distribution</span>
+                <h3 class="text-2xl font-bold text-slate-900 mt-1">Major Hubs vs. Mixed Regional & Private Sectors</h3>
+                <p class="text-slate-600 text-sm mt-1 max-w-3xl">
+                    While quaternary children's hospitals manage complex inpatient long-stays, the vast "long tail" of paediatric patients are seen at local mixed hospitals and private day-surgery units.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Tertiary Hubs Card -->
+                <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-4 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 right-0 h-1.5 bg-indigo-500"></div>
+                    <div class="flex items-center justify-between">
+                        <h4 class="font-bold text-slate-900 text-lg">Major Tertiary Hubs</h4>
+                        <span class="text-xs bg-indigo-50 text-indigo-700 font-bold px-2.5 py-1 rounded-full">Quaternary Hubs</span>
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Sydney Children's Hospitals Network (SCHN), Royal Children's Hospital (RCH) Melbourne, Queensland Children's Hospital (QCH), Perth Children's Hospital.
+                    </p>
+                    <div class="bg-slate-50 p-3 rounded-xl space-y-2 text-xs">
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">SCHN Annual Reach:</span>
+                            <span class="font-bold text-slate-800">167,000+ kids</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">SCHN Outpatients:</span>
+                            <span class="font-bold text-slate-800">1.1 Million consults</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">RCH Daily ED Presentations:</span>
+                            <span class="font-bold text-slate-800">~250 patients/day</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">ED Admission Rate:</span>
+                            <span class="font-bold text-indigo-600">23% – 26%</span>
+                        </div>
+                    </div>
+                    <div class="text-xs text-slate-600 border-t border-slate-100 pt-3">
+                        💡 <strong>Key Characteristic:</strong> High-acuity, complex inpatient admissions with established physical Starlight Express Rooms and Planet Starlight broadcast systems.
+                    </div>
+                </div>
+
+                <!-- Mixed Regional & Metro Public Card -->
+                <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-4 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 right-0 h-1.5 bg-amber-500"></div>
+                    <div class="flex items-center justify-between">
+                        <h4 class="font-bold text-slate-900 text-lg">Mixed Public Hospitals</h4>
+                        <span class="text-xs bg-amber-50 text-amber-700 font-bold px-2.5 py-1 rounded-full">Regional & Outer Metro</span>
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        704 public hospitals nationally. Treating both adults and children in shared emergency and outpatient environments.
+                    </p>
+                    <div class="bg-slate-50 p-3 rounded-xl space-y-2 text-xs">
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">Paediatric ED Volume:</span>
+                            <span class="font-bold text-slate-800">Majority of 1.7M visits</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">ED Admission Rate:</span>
+                            <span class="font-bold text-amber-600">13% – 17% (Most discharged)</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">Dedicated Play Staff:</span>
+                            <span class="font-bold text-rose-600">Rare / Non-existent</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">Environment:</span>
+                            <span class="font-bold text-slate-800">Adult-centric waiting areas</span>
+                        </div>
+                    </div>
+                    <div class="text-xs text-slate-600 border-t border-slate-100 pt-3">
+                        🎯 <strong>Key Characteristic:</strong> High volume of short-stay, low-acuity visits. Generally lacks dedicated paediatric spaces or philanthropic infrastructure.
+                    </div>
+                </div>
+
+                <!-- Private Hospital Sector Card -->
+                <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-4 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 right-0 h-1.5 bg-teal-500"></div>
+                    <div class="flex items-center justify-between">
+                        <h4 class="font-bold text-slate-900 text-lg">Private Hospital Sector</h4>
+                        <span class="text-xs bg-teal-50 text-teal-700 font-bold px-2.5 py-1 rounded-full">Elective Surgical</span>
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        633 private facilities (e.g. Ramsay Health Care with 72 sites, St George Private, Pindara 13-bed paediatric ward).
+                    </p>
+                    <div class="bg-slate-50 p-3 rounded-xl space-y-2 text-xs">
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">Primary Focus:</span>
+                            <span class="font-bold text-slate-800">Elective Surgery (ENT, Ortho)</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">Funding Model:</span>
+                            <span class="font-bold text-slate-800">Private Health Ins / Self-pay</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">Key Clinical Friction:</span>
+                            <span class="font-bold text-rose-600">Perioperative Fasting & Induction</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">Commercial Focus:</span>
+                            <span class="font-bold text-teal-600">Patient & parental experience</span>
+                        </div>
+                    </div>
+                    <div class="text-xs text-slate-600 border-t border-slate-100 pt-3">
+                        🏥 <strong>Key Characteristic:</strong> Targeted around pre-operative fasting, anaesthesia mask induction, and postoperative recovery in day surgery bays.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: The Burden of Waiting - Outpatients & Allied Health (NDIS) -->
+        <section id="outpatients" class="space-y-6">
+            <div class="border-b border-slate-200 pb-4">
+                <span class="text-xs font-bold text-rose-600 uppercase tracking-wider">Outpatient Bottlenecks & Sensory Design</span>
+                <h3 class="text-2xl font-bold text-slate-900 mt-1">Multi-Month Waitlists & Neuro-Affirming Content Needs</h3>
+                <p class="text-slate-600 text-sm mt-1 max-w-3xl">
+                    Outpatient specialty referrals carry waiting periods extending up to 2,000+ days. Additionally, NDIS allied health growth requires calming, low-stimulation environments tailored for neurodivergent populations.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                <!-- Tasmanian Outpatient Wait Times Chart -->
+                <div class="lg:col-span-7 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-3">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h4 class="font-bold text-slate-900 text-sm sm:text-base">Indicative Paediatric Outpatient Wait Times (Days)</h4>
+                            <p class="text-xs text-slate-500">75th Percentile Days Waiting by Urgency (Tasmanian Dept of Health 2026 Data)</p>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="outpatientChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Dwell Time & Neuro-affirming Requirements -->
+                <div class="lg:col-span-5 space-y-4">
+                    <!-- Day-of-Service Dwell Time Card -->
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-3">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xl">⏱️</span>
+                            <h4 class="font-bold text-slate-900 text-sm">Day-of-Service Physical Dwell Time</h4>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Beyond macro waitlists, physical dwell time on consultation day routinely extends from <strong>45 minutes to over 3.5 hours</strong> for a 15-minute appointment, causing missed schooling and parental exhaustion.
+                        </p>
+                        <div class="bg-amber-50 p-3 rounded-xl border border-amber-200/60 text-xs text-amber-900">
+                            <strong>Landscape Insight:</strong> Outpatient waiting areas represent long, continuous exposure windows where children require regulation and positive engagement.
+                        </div>
+                    </div>
+
+                    <!-- Neuro-Affirming Design Card -->
+                    <div class="bg-gradient-to-br from-indigo-950 to-slate-900 text-white p-5 rounded-2xl shadow-sm space-y-3">
+                        <div class="flex justify-between items-center">
+                            <h4 class="font-bold text-sm text-amber-300">NDIS Era & Sensory Design Requirements</h4>
+                            <span class="text-xs bg-indigo-800 text-indigo-200 px-2 py-0.5 rounded-md font-mono">Sensory-Friendly</span>
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            With NDIS driving massive demand in speech pathology and OT, clinics prioritize "neuro-affirming" waiting rooms. Fast-paced, hyper-stimulating traditional cartoons induce sensory overload in neurodivergent children.
+                        </p>
+                        <div class="grid grid-cols-2 gap-2 text-xs pt-1">
+                            <div class="bg-white/10 p-2 rounded-lg">
+                                <span class="text-amber-300 font-semibold block">❌ High-Stimulation:</span>
+                                Rapid screen cuts, loud brassy audio, geometric visual clutter.
+                            </div>
+                            <div class="bg-white/10 p-2 rounded-lg">
+                                <span class="text-emerald-400 font-semibold block">✔ Low-Sensory:</span>
+                                Predictable narratives, calm ambient visuals, familiar gentle tone.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: Primary Care Aggregation & The Virtual Care Frontier -->
+        <section id="primary" class="space-y-6">
+            <div class="border-b border-slate-200 pb-4">
+                <span class="text-xs font-bold text-teal-600 uppercase tracking-wider">Distribution Infrastructure & Virtual Innovation</span>
+                <h3 class="text-2xl font-bold text-slate-900 mt-1">GP Network Aggregation & Telehealth Virtual Waiting Rooms</h3>
+                <p class="text-slate-600 text-sm mt-1 max-w-3xl">
+                    While individual GP clinics are structurally fragmented, existing digital out-of-home media networks and patient booking apps aggregate millions of patients centrally.
+                </p>
+            </div>
+
+            <!-- GP Aggregators Row -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-teal-600 uppercase">DOOH Aggregator</span>
+                        <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded">Media Network</span>
+                    </div>
+                    <h4 class="font-bold text-slate-900 text-base">Tonic Media Network</h4>
+                    <p class="text-xs text-slate-600">
+                        Aggregates thousands of GP waiting rooms nationally. Reaches over <strong>16 Million Australians monthly</strong> via programmatic screens integrated with Hivestack and MOVE.
+                    </p>
+                    <div class="text-xs text-teal-700 font-semibold pt-2">⚡ 15/30s muted caption video format infrastructure.</div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-indigo-600 uppercase">Patient Engagement</span>
+                        <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded">Software Platform</span>
+                    </div>
+                    <h4 class="font-bold text-slate-900 text-base">HotDoc App & Kiosks</h4>
+                    <p class="text-xs text-slate-600">
+                        Australia's largest booking ecosystem. Used by <strong>21,000+ practitioners and 7 Million active patients</strong> across mobile apps and waiting room check-in kiosks.
+                    </p>
+                    <div class="text-xs text-indigo-700 font-semibold pt-2">📱 Integrated check-in & booking screen presence.</div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-amber-600 uppercase">Clinician Portal</span>
+                        <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded">Decision Support</span>
+                    </div>
+                    <h4 class="font-bold text-slate-900 text-base">HealthPathways</h4>
+                    <p class="text-xs text-slate-600">
+                        Online clinical portal used by GPs for standardized local referral and management guidelines. Funded directly by Primary Health Networks (PHNs).
+                    </p>
+                    <div class="text-xs text-amber-700 font-semibold pt-2">🩺 Direct conduit to educate clinicians on clinical tools.</div>
+                </div>
+            </div>
+
+            <!-- Virtual Care Frontier: Healthdirect AI & virtualKIDS -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                <div class="lg:col-span-7 space-y-4">
+                    <div class="inline-flex items-center space-x-2 px-2.5 py-1 bg-teal-50 text-teal-800 rounded-full text-xs font-bold">
+                        <span>🚀 Virtual Waiting Room Paradigm</span>
+                    </div>
+                    <h4 class="text-xl font-bold text-slate-900">Virtual Urgent Care (virtualKIDS) & Healthdirect AI Triage</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Services like SCHN's 24/7 <strong>virtualKIDS</strong> (managed 16,000+ children remotely) and Healthdirect's AI triage engine have permanently shifted care into the home. Healthdirect's AI tool processed 1.5M encounters, dropping ED intent by 12.1% and doubling virtual care uptake.
+                    </p>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200/60 text-xs space-y-2">
+                        <span class="font-bold text-slate-800 block">The Telehealth Interface:</span>
+                        <p class="text-slate-600">
+                            When families join a Healthdirect Video Call for a GP or paediatrician consult, they wait in a digital holding room. This creates a virtual equivalent of physical waiting room dwell time directly on family devices.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-5">
+                    <div class="bg-amber-50/50 p-4 rounded-xl border border-amber-200/60">
+                        <h5 class="text-xs font-bold text-slate-800 text-center mb-2">Healthdirect AI Triage Impact (1.5M encounters)</h5>
+                        <div class="chart-container !h-[260px]">
+                            <canvas id="virtualCareChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: Captain Starlight Empirical Evidence Base -->
+        <section id="evidence" class="space-y-6">
+            <div class="border-b border-slate-200 pb-4">
+                <span class="text-xs font-bold text-amber-600 uppercase tracking-wider">Empirical Research Findings</span>
+                <h3 class="text-2xl font-bold text-slate-900 mt-1">Captain Starlight Clinical & Field Evidence Base</h3>
+                <p class="text-slate-600 text-sm mt-1 max-w-3xl">
+                    Empirical studies at Queensland Children's Hospital and remote Earbus clinics document the clinical efficacy of Captain Starlight interventions in reducing procedural trauma and improving health screening participation.
+                </p>
+            </div>
+
+            <!-- Evidence Highlights Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-amber-500/10 border border-amber-200 p-6 rounded-2xl space-y-3">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-xl">👁️</span>
+                        <h4 class="font-bold text-amber-950 text-base">Captains on Call (Retinoblastoma Study - QCH)</h4>
+                    </div>
+                    <p class="text-xs text-amber-900 leading-relaxed">
+                        Demonstrated significant reduction in anxiety, stress, and pain during traumatic perioperative phases (fasting, dilating drops, mask induction). Reframed recurring procedural trauma into play-based trust over repeated clinical visits.
+                    </p>
+                    <div class="bg-white/80 p-3 rounded-xl text-xs text-slate-700">
+                        <strong>Key Insight:</strong> Non-medicalized play intervention directly supports clinical workflow compliance during acute procedural care.
+                    </div>
+                </div>
+
+                <div class="bg-teal-500/10 border border-teal-200 p-6 rounded-2xl space-y-3">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-xl">👂</span>
+                        <h4 class="font-bold text-teal-950 text-base">Remote First Nations Health (Earbus WA & Lowitja NT)</h4>
+                    </div>
+                    <p class="text-xs text-teal-900 leading-relaxed">
+                        In Goldfields Earbus clinics, Otitis Media referrals dropped from <strong>54% to 22.4%</strong>. Captain Starlight presence improved attendance, extended dwell time willingness, and boosted developmental screening participation (e.g. Cherbourg 3rd Birthday Parties).
+                    </p>
+                    <div class="bg-white/80 p-3 rounded-xl text-xs text-slate-700">
+                        <strong>Key Insight:</strong> Culturally welcoming, engaging environments increase community clinic attendance and screening completion rates.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 border-t border-slate-800 py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center text-xs space-y-4 sm:space-y-0">
+            <div>
+                <p class="text-slate-300 font-bold">National Paediatric Healthcare Landscape Explorer</p>
+                <p class="text-slate-500 mt-0.5">Synthesized from AIHW, ABS, Tasmanian Health, SCHN & Lowitja Institute research.</p>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span>⭐ Paediatric Data Integration</span>
+                <span>•</span>
+                <span>Single-Page Architecture</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic & Chart.js Implementation -->
+    <script>
+        // Global Data Objects
+        const triageData = {
+            1: { title: "Resuscitation (Cat 1) - <1% of Kids", desc: "Target Wait: Immediate. ~100% seen on time.<br>Clinical Context: Critical trauma, cardiac arrest, major respiratory failure.", contentFit: "⚡ Clinical Context: Immediate emergency resuscitation required." },
+            2: { title: "Emergency (Cat 2) - 7.4% of Kids", desc: "Target Wait: Within 10 minutes. 72% seen on time.<br>Clinical Context: Severe asthma, major long-bone fracture, severe dehydration.", contentFit: "🎯 Clinical Context: Short waiting window, but acute procedural distraction during treatment phase is beneficial." },
+            3: { title: "Urgent (Cat 3) - 25% of Kids", desc: "Target Wait: Within 30 minutes. 65% seen on time.<br>Clinical Context: Moderate head injury, severe abdominal pain, high fever in infants.", contentFit: "🎯 Clinical Context: Moderate wait times compound anxiety. Bedside distraction supports procedure compliance." },
+            4: { title: "Semi-Urgent (Cat 4) - 57% of Kids", desc: "Target Wait: Within 60 minutes. 74% seen on time.<br>Clinical Context: Minor fractures, lacerations requiring sutures, mild asthma, gastroenteritis.", contentFit: "⭐ Clinical Context: Represents the majority of presentations with long waiting room dwell times compounded by radiology/pathology delays." },
+            5: { title: "Non-Urgent (Cat 5) - 11% of Kids", desc: "Target Wait: Within 120 minutes. 85% seen on time.<br>Clinical Context: Minor skin rashes, chronic mild symptoms, prescription renewals.", contentFit: "⭐ Clinical Context: Longest physical dwell times in public waiting rooms." }
+        };
+
+        const queryAnswers = {
+            q1: {
+                title: "Question 1: Where are children accessing healthcare & who are the key players?",
+                body: "Children access care across a multi-tiered ecosystem: 1.7 million ED visits occur nationally (mostly in public hospitals), alongside 1.1 million outpatient consultations in networks like Sydney Children's Hospitals Network (SCHN), Royal Children's Hospital Melbourne, Monash, and QCH. Beyond major hubs, care is accessed in 704 mixed public hospitals, 633 private hospitals (e.g. Ramsay Health Care, Pindara), community NDIS allied health clinics, thousands of General Practices, and virtual care platforms like virtualKIDS."
+            },
+            q2: {
+                title: "Question 2: How much paediatric activity happens in major hubs vs regional, mixed & private hospitals?",
+                body: "Major children's hospitals handle quaternary/tertiary complex admissions with admission rates of 23-26% from ED. However, the vast majority of everyday paediatric presentations (13-17% admission rate) occur in mixed regional and metropolitan hospitals. Private hospitals (e.g. Ramsay's 72 facilities) focus heavily on elective surgical interventions (ENT, orthopaedics), where perioperative fasting and induction anxiety represent primary friction points."
+            },
+            q3: {
+                title: "Question 3: What does the broader paediatric healthcare landscape look like nationally?",
+                body: "National health expenditure reached $113.8B ($53.1B State, $41.2B Commonwealth). Children under 15 represent 19.5% of all emergency presentations. Toddlers (ages 1-4) exhibit the highest injury rates at 12,200 per 100,000 population due to early mobility accidents. Boys account for 58% of injury ED visits and 61% of hospitalisations. Key diagnoses shift from head injuries in infants, to arm fractures in primary school, to sprains in teens."
+            },
+            q4: {
+                title: "Question 4: Are there relevant non-hospital settings (Outpatient, Allied Health, Virtual)?",
+                body: "Yes! Non-hospital settings represent enormous captive audiences. Public outpatient clinics have waitlists extending from 7 to over 25 months (and day-of-service wait times of 45m-3.5h). Allied health (speech/OT under NDIS) faces 2-year waitlists, benefiting from neuro-affirming, low-sensory environments. Furthermore, Virtual Urgent Care (virtualKIDS) and Healthdirect AI triage have shifted care into the home, creating digital waiting rooms."
+            },
+            q5: {
+                title: "Question 5: Is the GP network something worth considering or too fragmented?",
+                body: "The GP network is highly viable when viewed through digital aggregators rather than individual clinics. Digital Out-of-Home networks like Tonic Media Network reach over 16 million Australians monthly in waiting rooms. Patient engagement platforms like HotDoc reach 7 million patients across 21,000 practitioners. Clinical pathways like HealthPathways educate GPs directly. Aggregators consolidate market access."
+            }
+        };
+
+        // Initialize Charts on DOM Load
+        document.addEventListener('DOMContentLoaded', function() {
+            initTriageChart();
+            initOutpatientChart();
+            initVirtualCareChart();
+        });
+
+        // 1. Triage Chart (Chart.js)
+        let triageChartInstance = null;
+        function initTriageChart() {
+            const ctx = document.getElementById('triageChart').getContext('2d');
+            triageChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Cat 1: Resuscitation', 'Cat 2: Emergency', 'Cat 3: Urgent', 'Cat 4: Semi-Urgent', 'Cat 5: Non-Urgent'],
+                    datasets: [
+                        {
+                            label: '% of Paediatric ED Visits',
+                            data: [0.8, 7.4, 25.0, 57.0, 11.0],
+                            backgroundColor: ['#ef4444', '#f97316', '#f59e0b', '#3b82f6', '#10b981'],
+                            borderRadius: 6
+                        },
+                        {
+                            label: '% Seen Within Target Time',
+                            data: [100, 72, 65, 74, 85],
+                            backgroundColor: '#cbd5e1',
+                            borderRadius: 6,
+                            hidden: true
+                        }
+                    ]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.raw + '%';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { max: 70, grid: { color: '#f1f5f9' }, title: { display: true, text: '% Share of ED Volume', font: { size: 11 } } },
+                        y: { grid: { display: false }, ticks: { font: { size: 11 } } }
+                    },
+                    onClick: (e, elements) => {
+                        if (elements.length > 0) {
+                            const index = elements[0].index + 1;
+                            updateTriageDetail(index);
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateTriageDetail(categoryKey) {
+            const data = triageData[categoryKey];
+            if (data) {
+                document.getElementById('detail-title').innerText = data.title;
+                document.getElementById('detail-desc').innerHTML = data.desc;
+                document.getElementById('detail-content-fit').innerHTML = data.contentFit;
+            }
+        }
+
+        // 2. Outpatient Wait Times Chart (Chart.js)
+        function initOutpatientChart() {
+            const ctx = document.getElementById('outpatientChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Paed Medicine', 'Ear, Nose, Throat', 'Paed Allergy', 'Dev-Behavioural', 'Allied Health'],
+                    datasets: [
+                        {
+                            label: 'Urgent Wait (Days)',
+                            data: [28, 74, 75, 0, 27],
+                            backgroundColor: '#0d9488',
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Semi-Urgent Wait (Days)',
+                            data: [117, 665, 604, 242, 47],
+                            backgroundColor: '#f59e0b',
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Non-Urgent Wait (Days)',
+                            data: [422, 595, 2111, 796, 146],
+                            backgroundColor: '#e11d48',
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top', labels: { boxWidth: 10, font: { size: 10 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.raw + ' days';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { title: { display: true, text: 'Wait Time (75th Percentile Days)', font: { size: 10 } }, grid: { color: '#f1f5f9' } },
+                        x: { grid: { display: false }, ticks: { font: { size: 10 } } }
+                    }
+                }
+            });
+        }
+
+        // 3. Virtual Care Chart (Chart.js)
+        function initVirtualCareChart() {
+            const ctx = document.getElementById('virtualCareChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Shifted to Virtual Care', 'In-Person ED Intent Dropped', 'Maintained Primary Care'],
+                    datasets: [{
+                        data: [52.9, 12.1, 35.0],
+                        backgroundColor: ['#4f46e5', '#d97706', '#94a3b8'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label + ': ' + context.raw + '%';
+                                }
+                            }
+                        }
+                    },
+                    cutout: '65%'
+                }
+            });
+        }
+
+        // 4. Query Filter & Banner Navigation Logic
+        function filterByQuery(queryKey) {
+            const answer = queryAnswers[queryKey];
+            if (!answer) return;
+
+            const banner = document.getElementById('query-answer-banner');
+            const title = document.getElementById('query-title');
+            const body = document.getElementById('query-body');
+            const resetBtn = document.getElementById('reset-filter-btn');
+
+            title.innerText = answer.title;
+            body.innerText = answer.body;
+            banner.classList.remove('hidden');
+            resetBtn.classList.remove('hidden');
+
+            banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function resetFilter() {
+            const banner = document.getElementById('query-answer-banner');
+            const resetBtn = document.getElementById('reset-filter-btn');
+            banner.classList.add('hidden');
+            resetBtn.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
