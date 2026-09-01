@@ -16,12 +16,18 @@
             padding: 25px; 
             border-radius: 8px; 
             border-top: 10px solid #ffdf00; /* Yellow */
-            box-shadow: 0 4px 12px rgba(82, 40, 142, 0.2); /* Purple shadow */
+            box-shadow: 0 4px 12px rgba(82, 40, 142, 0.2); 
             margin: auto;
+        }
+        .header-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
         }
         h2 { 
             color: #52288e; /* Purple */
-            margin-top: 0; 
+            margin: 0; 
         }
         h3 { 
             color: #b933a4; /* Grape */
@@ -31,9 +37,15 @@
         }
         label { 
             font-weight: bold; 
-            display: block; 
+            display: flex; 
+            align-items: center;
             margin-top: 15px; 
             color: #52288e; /* Purple */
+        }
+        .icon-small {
+            width: 24px;
+            height: auto;
+            margin-right: 8px;
         }
         select, input { 
             width: 100%; 
@@ -54,9 +66,10 @@
             font-size: 0.85em; 
             color: #b933a4; /* Grape */
             margin-top: 4px; 
+            margin-left: 32px; /* Aligns with text past the icon */
         }
         .results { 
-            margin-top: 25px; 
+            margin-top: 20px; 
             padding: 20px; 
             background: #ace4db; /* Light mint */
             border-left: 8px solid #2fbca4; /* Mint */
@@ -94,9 +107,15 @@
 <body>
 
 <div class="container">
-    <h2>DG&S Capacity & Roster Simulator</h2>
+    <div class="header-container">
+        <img src="__Starlight Express Room_wText.png" alt="Starlight Express Room Logo" style="width: 80px; height: auto;">
+        <h2>DG&S Capacity & Roster Simulator</h2>
+    </div>
     
-    <label for="hospital">Select Hospital / Program Size:</label>
+    <label for="hospital">
+        <img src="__Hospital.png" alt="Hospital" class="icon-small">
+        Select Hospital / Program Size:
+    </label>
     <select id="hospital" onchange="calculate()">
         <optgroup label="Large Programs">
             <option value="CHW">CHW - 44.0 Roster Hours/Week</option>
@@ -117,11 +136,17 @@
         </optgroup>
     </select>
 
-    <label for="volunteers">Target Volunteers Per Shift:</label>
+    <label for="volunteers">
+        <img src="HappyStar_Awake.png" alt="Happy Star" class="icon-small">
+        Target Volunteers Per Shift:
+    </label>
     <input type="number" id="volunteers" value="2" min="1" oninput="calculate()">
     <div class="subtext">Multiplier applied to base room hours.</div>
 
-    <label for="placement">Placement Student Hours (Weekly Contribution):</label>
+    <label for="placement">
+        <img src="HappyStar_Asleep.png" alt="Sleeping Star" class="icon-small">
+        Placement Student Hours (Weekly Contribution):
+    </label>
     <input type="number" id="placement" value="0" min="0" oninput="calculate()">
     <div class="subtext">Example: 2 students doing 6 hours a week = 12. These hours do not require standard volunteer recruitment.</div>
 
@@ -135,7 +160,11 @@
         <div class="result-item">Net Weekly DG&S (Minus 30% Absences): <span class="highlight" id="netWeekly">$0</span></div>
         
         <div class="result-item net-monthly">
-            Net Monthly DG&S Projection: <span class="highlight" id="netMonthly">$0</span>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <img src="SCF_RGB_Star_Grape.png" alt="Grape Star" style="width: 28px;">
+                Net Monthly DG&S Projection:
+            </div>
+            <span class="highlight" id="netMonthly">$0</span>
         </div>
     </div>
 </div>
