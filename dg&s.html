@@ -7,25 +7,26 @@
         body { 
             font-family: Arial, sans-serif; 
             padding: 20px; 
-            background-color: #d6cbe4; /* Light purple */
-            color: #52288e; /* Purple */
+            background-color: #d6cbe4; 
+            color: #52288e; 
         }
         .container { 
             max-width: 650px; 
             background: white; 
             padding: 25px; 
             border-radius: 8px; 
-            border-top: 10px solid #ffdf00; /* Yellow */
-            box-shadow: 0 4px 12px rgba(82, 40, 142, 0.2); /* Purple shadow */
+            border-top: 10px solid #ffdf00; 
+            box-shadow: 0 4px 12px rgba(82, 40, 142, 0.2); 
             margin: auto;
         }
         h2 { 
-            color: #52288e; /* Purple */
-            margin-top: 0; 
+            color: #52288e; 
+            margin: 0 0 20px 0; 
+            text-align: center;
         }
         h3 { 
-            color: #b933a4; /* Grape */
-            border-bottom: 2px solid #ecd0ea; /* Light grape */
+            color: #b933a4; 
+            border-bottom: 2px solid #ecd0ea; 
             padding-bottom: 5px; 
             margin-top: 25px; 
         }
@@ -33,33 +34,40 @@
             font-weight: bold; 
             display: block; 
             margin-top: 15px; 
-            color: #52288e; /* Purple */
+            color: #52288e; 
         }
         select, input { 
             width: 100%; 
             padding: 10px; 
             margin-top: 5px; 
-            border: 2px solid #ace4db; /* Light mint */
+            border: 2px solid #ace4db; 
             border-radius: 4px; 
             box-sizing: border-box; 
             font-size: 1em; 
-            color: #52288e; /* Purple */
+            color: #52288e; 
             background-color: #ffffff;
         }
         select:focus, input:focus {
             outline: none;
-            border-color: #2fbca4; /* Mint */
+            border-color: #2fbca4; 
         }
         .subtext { 
             font-size: 0.85em; 
-            color: #b933a4; /* Grape */
+            color: #b933a4; 
             margin-top: 4px; 
         }
+        .two-col {
+            display: flex;
+            gap: 15px;
+        }
+        .two-col > div {
+            flex: 1;
+        }
         .results { 
-            margin-top: 25px; 
+            margin-top: 20px; 
             padding: 20px; 
-            background: #ace4db; /* Light mint */
-            border-left: 8px solid #2fbca4; /* Mint */
+            background: #ace4db; 
+            border-left: 8px solid #2fbca4; 
             border-radius: 4px; 
         }
         .result-item { 
@@ -70,24 +78,23 @@
             align-items: center;
         }
         .divider {
-            border-bottom: 2px solid #2fbca4; /* Mint */
+            border-bottom: 2px solid #2fbca4; 
             padding-bottom: 10px;
         }
         .highlight { 
             font-weight: bold; 
-            color: #e4466c; /* Raspberry */
+            color: #e4466c; 
         }
         .net-monthly {
             font-size: 1.25em; 
-            color: #52288e; /* Purple */
+            color: #52288e; 
             margin-top: 15px; 
-            background-color: #ffdf00; /* Yellow */
+            background-color: #ffdf00; 
             padding: 12px; 
             border-radius: 4px; 
             font-weight: bold;
-        }
-        .net-monthly .highlight {
-            color: #52288e; /* Purple */
+            display: flex;
+            justify-content: space-between;
         }
     </style>
 </head>
@@ -96,37 +103,57 @@
 <div class="container">
     <h2>DG&S Capacity & Roster Simulator</h2>
     
-    <label for="hospital">Select Hospital / Program Size:</label>
-    <select id="hospital" onchange="calculate()">
-        <optgroup label="Large Programs">
-            <option value="CHW">CHW - 44.0 Roster Hours/Week</option>
-            <option value="PCH">PCH - 45.0 Roster Hours/Week</option>
-            <option value="RCH">RCH - 43.5 Roster Hours/Week</option>
-            <option value="QCH">QCH - 42.5 Roster Hours/Week</option>
-        </optgroup>
-        <optgroup label="Medium Programs">
-            <option value="MCH">MCH - 46.5 Roster Hours/Week</option>
-            <option value="WCH">W&CH - 45.0 Roster Hours/Week</option>
-            <option value="SCH">SCH - 40.0 Roster Hours/Week</option>
-            <option value="JHCH">JHCH - 40.0 Roster Hours/Week</option>
-        </optgroup>
-        <optgroup label="Small Programs">
-            <option value="ASH">ASH - 15.0 Roster Hours/Week</option>
-            <option value="RDH">RDH - 15.0 Roster Hours/Week</option>
-            <option value="ACT">ACT (CHWC) - 9.75 Roster Hours/Week</option>
-        </optgroup>
+    <label for="program">Program / Role Type:</label>
+    <select id="program" onchange="updateRate()">
+        <option value="45">Starlight Express Room (SER) - $45/hr</option>
+        <option value="50">Livewire In Hospital - $50/hr</option>
+        <option value="50">Livewire Online - $50/hr</option>
+        <option value="45">Compulsory Training (SER) - $45/hr</option>
+        <option value="50">Compulsory Training (Livewire) - $50/hr</option>
+        <option value="38">Office Programs - $38/hr</option>
     </select>
 
-    <label for="volunteers">Target Volunteers Per Shift:</label>
+    <div class="two-col">
+        <div>
+            <label for="hospital">Hospital Preset (SER):</label>
+            <select id="hospital" onchange="applyHospitalHours()">
+                <option value="0">-- Custom / Other Program --</option>
+                <optgroup label="Large Programs">
+                    <option value="44.0">CHW</option>
+                    <option value="45.0">PCH</option>
+                    <option value="43.5">RCH</option>
+                    <option value="42.5">QCH</option>
+                </optgroup>
+                <optgroup label="Medium Programs">
+                    <option value="46.5">MCH</option>
+                    <option value="45.0">W&CH</option>
+                    <option value="40.0">SCH</option>
+                    <option value="40.0">JHCH</option>
+                </optgroup>
+                <optgroup label="Small Programs">
+                    <option value="15.0">ASH</option>
+                    <option value="15.0">RDH</option>
+                    <option value="9.75">ACT (CHWC)</option>
+                </optgroup>
+            </select>
+        </div>
+        <div>
+            <label for="baseHours">Base Weekly Hours:</label>
+            <input type="number" id="baseHours" value="44.0" step="0.5" min="0" oninput="calculate()">
+        </div>
+    </div>
+
+    <label for="volunteers">Target Volunteers Per Shift (Multiplier):</label>
     <input type="number" id="volunteers" value="2" min="1" oninput="calculate()">
-    <div class="subtext">Multiplier applied to base room hours.</div>
+    <div class="subtext">Multiplies the base weekly hours to simulate multiple volunteers rostered at once.</div>
 
     <label for="placement">Placement Student Hours (Weekly Contribution):</label>
     <input type="number" id="placement" value="0" min="0" oninput="calculate()">
-    <div class="subtext">Example: 2 students doing 6 hours a week = 12. These hours do not require standard volunteer recruitment.</div>
+    <div class="subtext">Hours covered by students that do not require standard volunteer recruitment.</div>
 
     <h3>Projections</h3>
     <div class="results">
+        <div class="result-item">Current Hourly Rate: <span class="highlight" id="displayRate">$45.00</span></div>
         <div class="result-item">Total Required Hours (Weekly): <span class="highlight" id="totalHours">0</span></div>
         <div class="result-item">Hours Covered by Placements: <span class="highlight" id="placementHours">0</span></div>
         <div class="result-item divider">Gap for Standard Vols (Weekly): <span class="highlight" id="gapHours">0</span></div>
@@ -134,30 +161,38 @@
         <div class="result-item" style="margin-top: 15px;">Gross DG&S Value (Weekly Gap): <span class="highlight" id="grossWeekly">$0</span></div>
         <div class="result-item">Net Weekly DG&S (Minus 30% Absences): <span class="highlight" id="netWeekly">$0</span></div>
         
-        <div class="result-item net-monthly">
-            Net Monthly DG&S Projection: <span class="highlight" id="netMonthly">$0</span>
+        <div class="net-monthly">
+            <span>Net Monthly DG&S Projection:</span>
+            <span id="netMonthly">$0</span>
         </div>
     </div>
 </div>
 
 <script>
-    const hospitalData = {
-        "CHW": 44.0, "PCH": 45.0, "RCH": 43.5, "QCH": 42.5,
-        "MCH": 46.5, "WCH": 45.0, "SCH": 40.0, "JHCH": 40.0,
-        "ASH": 15.0, "RDH": 15.0, "ACT": 9.75
-    };
+    function updateRate() {
+        calculate();
+    }
+
+    function applyHospitalHours() {
+        const hospitalSelect = document.getElementById("hospital");
+        const baseHoursInput = document.getElementById("baseHours");
+        
+        if(hospitalSelect.value !== "0") {
+            baseHoursInput.value = hospitalSelect.value;
+        }
+        calculate();
+    }
 
     function calculate() {
-        const hospital = document.getElementById("hospital").value;
+        const rate = parseFloat(document.getElementById("program").value) || 0;
+        const baseHours = parseFloat(document.getElementById("baseHours").value) || 0;
         const volunteers = parseFloat(document.getElementById("volunteers").value) || 0;
         const placement = parseFloat(document.getElementById("placement").value) || 0;
         
-        const weeklyBaseHours = hospitalData[hospital];
-        const rate = 45; 
         const absenceRate = 0.30; 
         const weeksInMonth = 4.33;
 
-        const totalHours = weeklyBaseHours * volunteers;
+        const totalHours = baseHours * volunteers;
         const gapHours = Math.max(0, totalHours - placement);
 
         const grossWeekly = gapHours * rate;
@@ -166,6 +201,7 @@
 
         const currencyFormatter = new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD' });
         
+        document.getElementById("displayRate").innerText = currencyFormatter.format(rate) + "/hr";
         document.getElementById("totalHours").innerText = totalHours.toFixed(1) + " hrs";
         document.getElementById("placementHours").innerText = placement.toFixed(1) + " hrs";
         document.getElementById("gapHours").innerText = gapHours.toFixed(1) + " hrs";
@@ -175,7 +211,8 @@
         document.getElementById("netMonthly").innerText = currencyFormatter.format(netMonthly);
     }
 
-    calculate();
+    // Initialize with default values
+    applyHospitalHours();
 </script>
 
 </body>
