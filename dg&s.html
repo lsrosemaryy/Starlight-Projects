@@ -7,15 +7,15 @@
         body { 
             font-family: Arial, sans-serif; 
             padding: 20px; 
-            background-color: #d6cbe4; /* Light purple */
-            color: #52288e; /* Purple */
+            background-color: #d6cbe4; 
+            color: #52288e; 
         }
         .container { 
             max-width: 650px; 
             background: white; 
             padding: 25px; 
             border-radius: 8px; 
-            border-top: 10px solid #ffdf00; /* Yellow */
+            border-top: 10px solid #ffdf00; 
             box-shadow: 0 4px 12px rgba(82, 40, 142, 0.2); 
             margin: auto;
         }
@@ -26,12 +26,12 @@
             margin-bottom: 20px;
         }
         h2 { 
-            color: #52288e; /* Purple */
+            color: #52288e; 
             margin: 0; 
         }
         h3 { 
-            color: #b933a4; /* Grape */
-            border-bottom: 2px solid #ecd0ea; /* Light grape */
+            color: #b933a4; 
+            border-bottom: 2px solid #ecd0ea; 
             padding-bottom: 5px; 
             margin-top: 25px; 
         }
@@ -40,7 +40,7 @@
             display: flex; 
             align-items: center;
             margin-top: 15px; 
-            color: #52288e; /* Purple */
+            color: #52288e; 
         }
         .icon-small {
             width: 24px;
@@ -51,28 +51,28 @@
             width: 100%; 
             padding: 10px; 
             margin-top: 5px; 
-            border: 2px solid #ace4db; /* Light mint */
+            border: 2px solid #ace4db; 
             border-radius: 4px; 
             box-sizing: border-box; 
             font-size: 1em; 
-            color: #52288e; /* Purple */
+            color: #52288e; 
             background-color: #ffffff;
         }
         select:focus, input:focus {
             outline: none;
-            border-color: #2fbca4; /* Mint */
+            border-color: #2fbca4; 
         }
         .subtext { 
             font-size: 0.85em; 
-            color: #b933a4; /* Grape */
+            color: #b933a4; 
             margin-top: 4px; 
-            margin-left: 32px; /* Aligns with text past the icon */
+            margin-left: 32px; 
         }
         .results { 
             margin-top: 20px; 
             padding: 20px; 
-            background: #ace4db; /* Light mint */
-            border-left: 8px solid #2fbca4; /* Mint */
+            background: #ace4db; 
+            border-left: 8px solid #2fbca4; 
             border-radius: 4px; 
         }
         .result-item { 
@@ -83,24 +83,24 @@
             align-items: center;
         }
         .divider {
-            border-bottom: 2px solid #2fbca4; /* Mint */
+            border-bottom: 2px solid #2fbca4; 
             padding-bottom: 10px;
         }
         .highlight { 
             font-weight: bold; 
-            color: #e4466c; /* Raspberry */
+            color: #e4466c; 
         }
         .net-monthly {
             font-size: 1.25em; 
-            color: #52288e; /* Purple */
+            color: #52288e; 
             margin-top: 15px; 
-            background-color: #ffdf00; /* Yellow */
+            background-color: #ffdf00; 
             padding: 12px; 
             border-radius: 4px; 
             font-weight: bold;
         }
         .net-monthly .highlight {
-            color: #52288e; /* Purple */
+            color: #52288e; 
         }
     </style>
 </head>
@@ -108,12 +108,12 @@
 
 <div class="container">
     <div class="header-container">
-        <img src="file:///C:/Users/RosemaryLu/OneDrive - STARLIGHT CHILDREN'S FOUNDATION/Projects/DG&S model/design items/__Starlight Express Room_wText.png" alt="Starlight Express Room Logo" style="width: 80px; height: auto;">
+        <img src="__Starlight Express Room_wText.png" alt="Starlight Express Room Logo" style="width: 80px; height: auto;">
         <h2>DG&S Capacity & Roster Simulator</h2>
     </div>
     
     <label for="hospital">
-        <img src="file:///C:/Users/RosemaryLu/OneDrive - STARLIGHT CHILDREN'S FOUNDATION/Projects/DG&S model/design items/__Hospital.png" alt="Hospital" class="icon-small">
+        <img src="__Hospital.png" alt="Hospital" class="icon-small">
         Select Hospital / Program Size:
     </label>
     <select id="hospital" onchange="calculate()">
@@ -137,14 +137,14 @@
     </select>
 
     <label for="volunteers">
-        <img src="file:///C:/Users/RosemaryLu/OneDrive - STARLIGHT CHILDREN'S FOUNDATION/Projects/DG&S model/design items/HappyStar_Awake.png" alt="Happy Star" class="icon-small">
+        <img src="HappyStar_Awake.png" alt="Happy Star" class="icon-small">
         Target Volunteers Per Shift:
     </label>
     <input type="number" id="volunteers" value="2" min="1" oninput="calculate()">
     <div class="subtext">Multiplier applied to base room hours.</div>
 
     <label for="placement">
-        <img src="file:///C:/Users/RosemaryLu/OneDrive - STARLIGHT CHILDREN'S FOUNDATION/Projects/DG&S model/design items/HappyStar_Asleep.png" alt="Sleeping Star" class="icon-small">
+        <img src="HappyStar_Asleep.png" alt="Sleeping Star" class="icon-small">
         Placement Student Hours (Weekly Contribution):
     </label>
     <input type="number" id="placement" value="0" min="0" oninput="calculate()">
