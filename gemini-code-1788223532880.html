@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DG&S Capacity Simulator</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f9; }
+        .container { max-width: 600px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        h2 { color: #4A235A; }
+        label { font-weight: bold; display: block; margin-top: 15px; }
+        select, input { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        .results { margin-top: 25px; padding: 15px; background: #E8F8F5; border-left: 5px solid #1ABC9C; }
+        .result-item { margin-bottom: 10px; font-size: 1.1em; }
+        .highlight { font-weight: bold; color: #2C3E50; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Volunteer Capacity & DG&S Simulator</h2>
+    
+    <label for="hospital">Select Hospital / Program:</label>
+    <select id="hospital" onchange="calculate()">
+        <option value="CHW">CHW (Large) - 44 Roster Hours/Week</option>
+        <option value="MCH">MCH (Medium) - 46.5 Roster Hours/Week</option>
+        <option value="ASH">ASH (Small) - 15 Roster Hours/Week</option>
+    </select>
+
+    <label for="volunteers">Target Volunteers Per Shift:</label>
+    <input type="number" id="volunteers" value="1" min="1" oninput="calculate()">
+
+    <div class="results">
+        <div class="result-item">Projected Gross Weekly DG&S: <span class="highlight" id="grossWeekly">$0</span></div>
+        <div class="result-item">Net Weekly DG&S (Minus 30% Absences): <span class="highlight" id="netWeekly">$0</span></div>
+        <div class="result-item">Net Monthly DG&S Projection: <span class="highlight" id="netMonthly">$0</span></div>
+    </div>
+</div>
+
+<script>
+    const hospitalData = {
+        "CHW": { weeklyHours: 44, rate: 45 },
+        "MCH": { weeklyHours: 46.5, rate: 45 },
+        "ASH": { weeklyHours: 15, rate: 45 }
+    };
+
+    function calculate() {
+        const hospital = document.getElementById("hospital").value;
+        const volunteers = parseFloat(document.getElementById("volunteers").value) || 0;
+        
+        const data = hospitalData[hospital];
+        const absenceRate = 0.30; 
+        const weeksInMonth = 4.33;
+
+        // Calculations
+        const grossWeekly = data.weeklyHours * volunteers * data.rate;
+        const netWeekly = grossWeekly * (1 - absenceRate);
+        const netMonthly = netWeekly * weeksInMonth;
+
+        // Formatting
+        const formatter = new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD' });
+
+        document.getElementById("grossWeekly").innerText = formatter.format(grossWeekly);
+        document.getElementById("netWeekly").innerText = formatter.format(netWeekly);
+        document.getElementById("netMonthly").innerText = formatter.format(netMonthly);
+    }
+
+    // Run on load
+    calculate();
+</script>
+
+</body>
+</html>
