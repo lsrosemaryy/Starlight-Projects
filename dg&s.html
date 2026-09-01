@@ -53,11 +53,6 @@
             margin-top: 15px; 
             color: #52288e; 
         }
-        .icon-small {
-            width: 28px;
-            height: 28px;
-            margin-right: 10px;
-        }
         select, input { 
             width: 100%; 
             padding: 10px; 
@@ -155,13 +150,7 @@
 
     <div class="two-col">
         <div>
-            <label for="hospital">
-                <svg class="icon-small" viewBox="0 0 24 24" fill="#ace4db" stroke="#52288e" stroke-width="1.5" style="margin-right: 5px;">
-                    <path d="M4 22h16V4a2 2 0 00-2-2H6a2 2 0 00-2 2v18z"/>
-                    <path d="M10 22v-6h4v6M8 6h2M14 6h2M8 11h2M14 11h2M8 16h2M14 16h2" stroke-linecap="round"/>
-                </svg>
-                Hospital Preset:
-            </label>
+            <label for="hospital">Hospital Preset:</label>
             <select id="hospital" onchange="applyHospitalHours()">
                 <option value="0">-- Custom / Other Program --</option>
                 <optgroup label="Large Programs">
@@ -189,24 +178,13 @@
         </div>
     </div>
 
-    <label for="volunteers">
-        <svg class="icon-small" viewBox="0 0 24 24" fill="#ffdf00" stroke="#ffdf00" stroke-width="1">
-            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-        </svg>
-        Target Volunteers Per Shift (Multiplier):
-    </label>
+    <label for="volunteers">Target Volunteers Per Shift (Multiplier):</label>
     <input type="number" id="volunteers" value="2" min="1" oninput="calculate()">
-    <div class="subtext" style="margin-left: 38px;">Multiplies the base weekly hours to simulate multiple volunteers rostered at once.</div>
+    <div class="subtext">Multiplies the base weekly hours to simulate multiple volunteers rostered at once.</div>
 
-    <label for="placement">
-        <svg class="icon-small" viewBox="0 0 24 24" fill="#ffef8c" stroke="#52288e" stroke-width="1.5">
-            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-            <path d="M8 12s1-1 2-1 2 1 2 1M14 12s1-1 2-1 2 1 2 1" stroke-linecap="round"/>
-        </svg>
-        Placement Student Hours (Weekly Contribution):
-    </label>
+    <label for="placement">Placement Student Hours (Weekly Contribution):</label>
     <input type="number" id="placement" value="0" min="0" oninput="calculate()">
-    <div class="subtext" style="margin-left: 38px;">Hours covered by students that do not require standard volunteer recruitment.</div>
+    <div class="subtext">Hours covered by students that do not require standard volunteer recruitment.</div>
 
     <h3>Projections</h3>
     <div class="results">
