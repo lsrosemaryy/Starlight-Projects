@@ -3,16 +3,92 @@
 <head>
     <title>DG&S Capacity Simulator</title>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f9; }
-        .container { max-width: 650px; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        h2 { color: #4A235A; margin-top: 0; }
-        h3 { color: #2C3E50; border-bottom: 2px solid #ecf0f1; padding-bottom: 5px; margin-top: 25px; }
-        label { font-weight: bold; display: block; margin-top: 15px; color: #333; }
-        select, input { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 1em; }
-        .results { margin-top: 25px; padding: 20px; background: #E8F8F5; border-left: 5px solid #1ABC9C; border-radius: 4px; }
-        .result-item { margin-bottom: 12px; font-size: 1.1em; display: flex; justify-content: space-between; }
-        .highlight { font-weight: bold; color: #2C3E50; }
-        .subtext { font-size: 0.85em; color: #7f8c8d; margin-top: 2px; }
+        /* Starlight Brand Colors */
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            background-color: #d6cbe4; /* Light purple */
+            color: #52288e; /* Purple */
+        }
+        .container { 
+            max-width: 650px; 
+            background: white; 
+            padding: 25px; 
+            border-radius: 8px; 
+            border-top: 10px solid #ffdf00; /* Yellow */
+            box-shadow: 0 4px 12px rgba(82, 40, 142, 0.2); /* Purple shadow */
+            margin: auto;
+        }
+        h2 { 
+            color: #52288e; /* Purple */
+            margin-top: 0; 
+        }
+        h3 { 
+            color: #b933a4; /* Grape */
+            border-bottom: 2px solid #ecd0ea; /* Light grape */
+            padding-bottom: 5px; 
+            margin-top: 25px; 
+        }
+        label { 
+            font-weight: bold; 
+            display: block; 
+            margin-top: 15px; 
+            color: #52288e; /* Purple */
+        }
+        select, input { 
+            width: 100%; 
+            padding: 10px; 
+            margin-top: 5px; 
+            border: 2px solid #ace4db; /* Light mint */
+            border-radius: 4px; 
+            box-sizing: border-box; 
+            font-size: 1em; 
+            color: #52288e; /* Purple */
+            background-color: #ffffff;
+        }
+        select:focus, input:focus {
+            outline: none;
+            border-color: #2fbca4; /* Mint */
+        }
+        .subtext { 
+            font-size: 0.85em; 
+            color: #b933a4; /* Grape */
+            margin-top: 4px; 
+        }
+        .results { 
+            margin-top: 25px; 
+            padding: 20px; 
+            background: #ace4db; /* Light mint */
+            border-left: 8px solid #2fbca4; /* Mint */
+            border-radius: 4px; 
+        }
+        .result-item { 
+            margin-bottom: 12px; 
+            font-size: 1.1em; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+        }
+        .divider {
+            border-bottom: 2px solid #2fbca4; /* Mint */
+            padding-bottom: 10px;
+        }
+        .highlight { 
+            font-weight: bold; 
+            color: #e4466c; /* Raspberry */
+        }
+        .net-monthly {
+            font-size: 1.25em; 
+            color: #52288e; /* Purple */
+            margin-top: 15px; 
+            background-color: #ffdf00; /* Yellow */
+            padding: 12px; 
+            border-radius: 4px; 
+            font-weight: bold;
+        }
+        .net-monthly .highlight {
+            color: #52288e; /* Purple */
+        }
     </style>
 </head>
 <body>
@@ -53,11 +129,14 @@
     <div class="results">
         <div class="result-item">Total Required Hours (Weekly): <span class="highlight" id="totalHours">0</span></div>
         <div class="result-item">Hours Covered by Placements: <span class="highlight" id="placementHours">0</span></div>
-        <div class="result-item" style="border-bottom: 1px solid #bdc3c7; padding-bottom: 10px;">Gap for Standard Vols (Weekly): <span class="highlight" id="gapHours">0</span></div>
+        <div class="result-item divider">Gap for Standard Vols (Weekly): <span class="highlight" id="gapHours">0</span></div>
         
         <div class="result-item" style="margin-top: 15px;">Gross DG&S Value (Weekly Gap): <span class="highlight" id="grossWeekly">$0</span></div>
         <div class="result-item">Net Weekly DG&S (Minus 30% Absences): <span class="highlight" id="netWeekly">$0</span></div>
-        <div class="result-item" style="font-size: 1.25em; color: #27ae60; margin-top: 10px;">Net Monthly DG&S Projection: <span class="highlight" id="netMonthly">$0</span></div>
+        
+        <div class="result-item net-monthly">
+            Net Monthly DG&S Projection: <span class="highlight" id="netMonthly">$0</span>
+        </div>
     </div>
 </div>
 
@@ -74,20 +153,17 @@
         const placement = parseFloat(document.getElementById("placement").value) || 0;
         
         const weeklyBaseHours = hospitalData[hospital];
-        const rate = 45; // $45/hour SER rate
-        const absenceRate = 0.30; // 30% historical shift absence
+        const rate = 45; 
+        const absenceRate = 0.30; 
         const weeksInMonth = 4.33;
 
-        // Hour Calculations
         const totalHours = weeklyBaseHours * volunteers;
         const gapHours = Math.max(0, totalHours - placement);
 
-        // Financial Calculations (Based strictly on the gap standard volunteers need to fill)
         const grossWeekly = gapHours * rate;
         const netWeekly = grossWeekly * (1 - absenceRate);
         const netMonthly = netWeekly * weeksInMonth;
 
-        // Formatting Output
         const currencyFormatter = new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD' });
         
         document.getElementById("totalHours").innerText = totalHours.toFixed(1) + " hrs";
