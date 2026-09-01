@@ -19,10 +19,26 @@
             box-shadow: 0 4px 12px rgba(82, 40, 142, 0.2); 
             margin: auto;
         }
+        .header-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .logo-badge {
+            background-color: #52288e;
+            color: #ffdf00;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+            font-size: 0.9em;
+            line-height: 1.2;
+            border: 2px solid #2fbca4;
+        }
         h2 { 
             color: #52288e; 
-            margin: 0 0 20px 0; 
-            text-align: center;
+            margin: 0; 
         }
         h3 { 
             color: #b933a4; 
@@ -32,9 +48,15 @@
         }
         label { 
             font-weight: bold; 
-            display: block; 
+            display: flex; 
+            align-items: center;
             margin-top: 15px; 
             color: #52288e; 
+        }
+        .icon-small {
+            width: 28px;
+            height: 28px;
+            margin-right: 10px;
         }
         select, input { 
             width: 100%; 
@@ -101,21 +123,37 @@
 <body>
 
 <div class="container">
-    <h2>DG&S Capacity & Roster Simulator</h2>
+    <div class="header-container">
+        <div class="logo-badge">STARLIGHT<br>EXPRESS ROOM</div>
+        <h2>DG&S Capacity & Roster Simulator</h2>
+    </div>
     
     <label for="program">Program / Role Type:</label>
     <select id="program" onchange="updateRate()">
-        <option value="45">Starlight Express Room (SER) - $45/hr</option>
-        <option value="50">Livewire In Hospital - $50/hr</option>
-        <option value="50">Livewire Online - $50/hr</option>
-        <option value="45">Compulsory Training (SER) - $45/hr</option>
-        <option value="50">Compulsory Training (Livewire) - $50/hr</option>
-        <option value="38">Office Programs - $38/hr</option>
+        <option value="45">SER - $45.00/hr</option>
+        <option value="50">Livewire In Hospital - $50.00/hr</option>
+        <option value="50">Livewire Online - $50.00/hr</option>
+        <option value="45">Compulsory Training - SER - $45.00/hr</option>
+        <option value="50">Compulsory Training - LWIH - $50.00/hr</option>
+        <option value="50">Compulsory Training - LWO - $50.00/hr</option>
+        <option value="38">Total Office - Programs - $38.00/hr</option>
+        <option value="35.50">Wishgranting - $35.50/hr</option>
+        <option value="150">R&E- Expert - $150.00/hr</option>
+        <option value="70">R&E- Professionally Skilled - $70.00/hr</option>
+        <option value="38">Corporate Vols - TBWP - $38.00/hr</option>
+        <option value="38">Corporate Vols- Spark Acc - $38.00/hr</option>
+        <option value="38">Corporate Vols - Misc - $38.00/hr</option>
     </select>
 
     <div class="two-col">
         <div>
-            <label for="hospital">Hospital Preset (SER):</label>
+            <label for="hospital">
+                <svg class="icon-small" viewBox="0 0 24 24" fill="#ace4db" stroke="#52288e" stroke-width="1.5" style="margin-right: 5px;">
+                    <path d="M4 22h16V4a2 2 0 00-2-2H6a2 2 0 00-2 2v18z"/>
+                    <path d="M10 22v-6h4v6M8 6h2M14 6h2M8 11h2M14 11h2M8 16h2M14 16h2" stroke-linecap="round"/>
+                </svg>
+                Hospital Preset:
+            </label>
             <select id="hospital" onchange="applyHospitalHours()">
                 <option value="0">-- Custom / Other Program --</option>
                 <optgroup label="Large Programs">
@@ -143,13 +181,24 @@
         </div>
     </div>
 
-    <label for="volunteers">Target Volunteers Per Shift (Multiplier):</label>
+    <label for="volunteers">
+        <svg class="icon-small" viewBox="0 0 24 24" fill="#ffdf00" stroke="#ffdf00" stroke-width="1">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+        </svg>
+        Target Volunteers Per Shift (Multiplier):
+    </label>
     <input type="number" id="volunteers" value="2" min="1" oninput="calculate()">
-    <div class="subtext">Multiplies the base weekly hours to simulate multiple volunteers rostered at once.</div>
+    <div class="subtext" style="margin-left: 38px;">Multiplies the base weekly hours to simulate multiple volunteers rostered at once.</div>
 
-    <label for="placement">Placement Student Hours (Weekly Contribution):</label>
+    <label for="placement">
+        <svg class="icon-small" viewBox="0 0 24 24" fill="#ffef8c" stroke="#52288e" stroke-width="1.5">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            <path d="M8 12s1-1 2-1 2 1 2 1M14 12s1-1 2-1 2 1 2 1" stroke-linecap="round"/>
+        </svg>
+        Placement Student Hours (Weekly Contribution):
+    </label>
     <input type="number" id="placement" value="0" min="0" oninput="calculate()">
-    <div class="subtext">Hours covered by students that do not require standard volunteer recruitment.</div>
+    <div class="subtext" style="margin-left: 38px;">Hours covered by students that do not require standard volunteer recruitment.</div>
 
     <h3>Projections</h3>
     <div class="results">
@@ -162,7 +211,12 @@
         <div class="result-item">Net Weekly DG&S (Minus 30% Absences): <span class="highlight" id="netWeekly">$0</span></div>
         
         <div class="net-monthly">
-            <span>Net Monthly DG&S Projection:</span>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <svg style="width: 28px; height: 28px;" viewBox="0 0 24 24" fill="#b933a4">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+                Net Monthly DG&S Projection:
+            </div>
             <span id="netMonthly">$0</span>
         </div>
     </div>
