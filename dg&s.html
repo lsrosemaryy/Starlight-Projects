@@ -130,19 +130,27 @@
     
     <label for="program">Program / Role Type:</label>
     <select id="program" onchange="updateRate()">
-        <option value="45">SER - $45.00/hr</option>
-        <option value="50">Livewire In Hospital - $50.00/hr</option>
-        <option value="50">Livewire Online - $50.00/hr</option>
-        <option value="45">Compulsory Training - SER - $45.00/hr</option>
-        <option value="50">Compulsory Training - LWIH - $50.00/hr</option>
-        <option value="50">Compulsory Training - LWO - $50.00/hr</option>
-        <option value="38">Total Office - Programs - $38.00/hr</option>
-        <option value="35.50">Wishgranting - $35.50/hr</option>
-        <option value="150">R&E- Expert - $150.00/hr</option>
-        <option value="70">R&E- Professionally Skilled - $70.00/hr</option>
-        <option value="38">Corporate Vols - TBWP - $38.00/hr</option>
-        <option value="38">Corporate Vols- Spark Acc - $38.00/hr</option>
-        <option value="38">Corporate Vols - Misc - $38.00/hr</option>
+        <optgroup label="Hospital Programs">
+            <option value="45">SER - $45.00/hr</option>
+            <option value="50">Livewire In Hospital - $50.00/hr</option>
+            <option value="50">Livewire Online - $50.00/hr</option>
+        </optgroup>
+        <optgroup label="Training">
+            <option value="45">Compulsory Training - SER - $45.00/hr</option>
+            <option value="50">Compulsory Training - LWIH - $50.00/hr</option>
+            <option value="50">Compulsory Training - LWO - $50.00/hr</option>
+        </optgroup>
+        <optgroup label="Office & Specialized">
+            <option value="38">Total Office - Programs - $38.00/hr</option>
+            <option value="35.50">Wishgranting - $35.50/hr</option>
+            <option value="150">R&E- Expert - $150.00/hr</option>
+            <option value="70">R&E- Professionally Skilled - $70.00/hr</option>
+        </optgroup>
+        <optgroup label="Corporate Volunteers">
+            <option value="38">Corporate Vols - TBWP - $38.00/hr</option>
+            <option value="38">Corporate Vols- Spark Acc - $38.00/hr</option>
+            <option value="38">Corporate Vols - Misc - $38.00/hr</option>
+        </optgroup>
     </select>
 
     <div class="two-col">
