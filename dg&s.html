@@ -4,66 +4,101 @@
     <title>DG&S Capacity Simulator</title>
     <style>
         body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f9; }
-        .container { max-width: 600px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        h2 { color: #4A235A; }
-        label { font-weight: bold; display: block; margin-top: 15px; }
-        select, input { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        .results { margin-top: 25px; padding: 15px; background: #E8F8F5; border-left: 5px solid #1ABC9C; }
-        .result-item { margin-bottom: 10px; font-size: 1.1em; }
+        .container { max-width: 650px; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        h2 { color: #4A235A; margin-top: 0; }
+        h3 { color: #2C3E50; border-bottom: 2px solid #ecf0f1; padding-bottom: 5px; margin-top: 25px; }
+        label { font-weight: bold; display: block; margin-top: 15px; color: #333; }
+        select, input { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 1em; }
+        .results { margin-top: 25px; padding: 20px; background: #E8F8F5; border-left: 5px solid #1ABC9C; border-radius: 4px; }
+        .result-item { margin-bottom: 12px; font-size: 1.1em; display: flex; justify-content: space-between; }
         .highlight { font-weight: bold; color: #2C3E50; }
+        .subtext { font-size: 0.85em; color: #7f8c8d; margin-top: 2px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Volunteer Capacity & DG&S Simulator</h2>
+    <h2>DG&S Capacity & Roster Simulator</h2>
     
-    <label for="hospital">Select Hospital / Program:</label>
+    <label for="hospital">Select Hospital / Program Size:</label>
     <select id="hospital" onchange="calculate()">
-        <option value="CHW">CHW (Large) - 44 Roster Hours/Week</option>
-        <option value="MCH">MCH (Medium) - 46.5 Roster Hours/Week</option>
-        <option value="ASH">ASH (Small) - 15 Roster Hours/Week</option>
+        <optgroup label="Large Programs">
+            <option value="CHW">CHW - 44.0 Roster Hours/Week</option>
+            <option value="PCH">PCH - 45.0 Roster Hours/Week</option>
+            <option value="RCH">RCH - 43.5 Roster Hours/Week</option>
+            <option value="QCH">QCH - 42.5 Roster Hours/Week</option>
+        </optgroup>
+        <optgroup label="Medium Programs">
+            <option value="MCH">MCH - 46.5 Roster Hours/Week</option>
+            <option value="WCH">W&CH - 45.0 Roster Hours/Week</option>
+            <option value="SCH">SCH - 40.0 Roster Hours/Week</option>
+            <option value="JHCH">JHCH - 40.0 Roster Hours/Week</option>
+        </optgroup>
+        <optgroup label="Small Programs">
+            <option value="ASH">ASH - 15.0 Roster Hours/Week</option>
+            <option value="RDH">RDH - 15.0 Roster Hours/Week</option>
+            <option value="ACT">ACT (CHWC) - 9.75 Roster Hours/Week</option>
+        </optgroup>
     </select>
 
     <label for="volunteers">Target Volunteers Per Shift:</label>
-    <input type="number" id="volunteers" value="1" min="1" oninput="calculate()">
+    <input type="number" id="volunteers" value="2" min="1" oninput="calculate()">
+    <div class="subtext">Multiplier applied to base room hours.</div>
 
+    <label for="placement">Placement Student Hours (Weekly Contribution):</label>
+    <input type="number" id="placement" value="0" min="0" oninput="calculate()">
+    <div class="subtext">Example: 2 students doing 6 hours a week = 12. These hours do not require standard volunteer recruitment.</div>
+
+    <h3>Projections</h3>
     <div class="results">
-        <div class="result-item">Projected Gross Weekly DG&S: <span class="highlight" id="grossWeekly">$0</span></div>
+        <div class="result-item">Total Required Hours (Weekly): <span class="highlight" id="totalHours">0</span></div>
+        <div class="result-item">Hours Covered by Placements: <span class="highlight" id="placementHours">0</span></div>
+        <div class="result-item" style="border-bottom: 1px solid #bdc3c7; padding-bottom: 10px;">Gap for Standard Vols (Weekly): <span class="highlight" id="gapHours">0</span></div>
+        
+        <div class="result-item" style="margin-top: 15px;">Gross DG&S Value (Weekly Gap): <span class="highlight" id="grossWeekly">$0</span></div>
         <div class="result-item">Net Weekly DG&S (Minus 30% Absences): <span class="highlight" id="netWeekly">$0</span></div>
-        <div class="result-item">Net Monthly DG&S Projection: <span class="highlight" id="netMonthly">$0</span></div>
+        <div class="result-item" style="font-size: 1.25em; color: #27ae60; margin-top: 10px;">Net Monthly DG&S Projection: <span class="highlight" id="netMonthly">$0</span></div>
     </div>
 </div>
 
 <script>
     const hospitalData = {
-        "CHW": { weeklyHours: 44, rate: 45 },
-        "MCH": { weeklyHours: 46.5, rate: 45 },
-        "ASH": { weeklyHours: 15, rate: 45 }
+        "CHW": 44.0, "PCH": 45.0, "RCH": 43.5, "QCH": 42.5,
+        "MCH": 46.5, "WCH": 45.0, "SCH": 40.0, "JHCH": 40.0,
+        "ASH": 15.0, "RDH": 15.0, "ACT": 9.75
     };
 
     function calculate() {
         const hospital = document.getElementById("hospital").value;
         const volunteers = parseFloat(document.getElementById("volunteers").value) || 0;
+        const placement = parseFloat(document.getElementById("placement").value) || 0;
         
-        const data = hospitalData[hospital];
-        const absenceRate = 0.30; 
+        const weeklyBaseHours = hospitalData[hospital];
+        const rate = 45; // $45/hour SER rate
+        const absenceRate = 0.30; // 30% historical shift absence
         const weeksInMonth = 4.33;
 
-        // Calculations
-        const grossWeekly = data.weeklyHours * volunteers * data.rate;
+        // Hour Calculations
+        const totalHours = weeklyBaseHours * volunteers;
+        const gapHours = Math.max(0, totalHours - placement);
+
+        // Financial Calculations (Based strictly on the gap standard volunteers need to fill)
+        const grossWeekly = gapHours * rate;
         const netWeekly = grossWeekly * (1 - absenceRate);
         const netMonthly = netWeekly * weeksInMonth;
 
-        // Formatting
-        const formatter = new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD' });
-
-        document.getElementById("grossWeekly").innerText = formatter.format(grossWeekly);
-        document.getElementById("netWeekly").innerText = formatter.format(netWeekly);
-        document.getElementById("netMonthly").innerText = formatter.format(netMonthly);
+        // Formatting Output
+        const currencyFormatter = new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD' });
+        
+        document.getElementById("totalHours").innerText = totalHours.toFixed(1) + " hrs";
+        document.getElementById("placementHours").innerText = placement.toFixed(1) + " hrs";
+        document.getElementById("gapHours").innerText = gapHours.toFixed(1) + " hrs";
+        
+        document.getElementById("grossWeekly").innerText = currencyFormatter.format(grossWeekly);
+        document.getElementById("netWeekly").innerText = currencyFormatter.format(netWeekly);
+        document.getElementById("netMonthly").innerText = currencyFormatter.format(netMonthly);
     }
 
-    // Run on load
     calculate();
 </script>
 
