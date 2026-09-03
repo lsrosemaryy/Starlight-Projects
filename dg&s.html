@@ -462,20 +462,31 @@
     <!-- TAB 3: WORKLOAD JUSTIFICATION -->
     <div id="workloadTab" class="tab-content">
         <div class="instruction-box">
-            <strong>⭐ Data-Driven Rostering:</strong> Use this tool when managers request arbitrary volunteer counts. It pulls historical foot traffic to calculate how many visitors each volunteer will actually interact with, preventing both burnout and boredom.
+            <strong>⭐ Data-Driven Rostering:</strong> Select any hospital and shift below to analyze manager requests against historical traffic ratios (Large programs default to ideal = 3, Medium = 2, Small = 1).
         </div>
         
         <div class="two-col">
             <div>
-                <label for="workloadHosp">Select Hospital:</label>
+                <label for="workloadHosp">Select Hospital & Program:</label>
                 <select id="workloadHosp" onchange="calculateWorkload()">
-                    <option value="RCH">RCH - Royal Children's (Large)</option>
-                    <option value="CHW">CHW - Westmead (Large)</option>
-                    <option value="QCH">QCH - Queensland (Large)</option>
-                    <option value="SCH">SCH - Sydney (Medium)</option>
-                    <option value="MCH">MCH - Monash (Medium)</option>
-                    <option value="JHCH">JHCH - John Hunter (Medium)</option>
-                    <option value="PCH">PCH - Perth (Large)</option>
+                    <optgroup label="Large Programs (Ideal = 3)">
+                        <option value="RCH">RCH - Royal Children's</option>
+                        <option value="CHW">CHW - Westmead</option>
+                        <option value="QCH">QCH - Queensland</option>
+                        <option value="PCH">PCH - Perth</option>
+                    </optgroup>
+                    <optgroup label="Medium Programs (Ideal = 2)">
+                        <option value="SCH">SCH - Sydney Children's</option>
+                        <option value="MCH">MCH - Monash Children's</option>
+                        <option value="JHCH">JHCH - John Hunter Children's</option>
+                        <option value="WCH">W&CH - Women's & Children's</option>
+                    </optgroup>
+                    <optgroup label="Small Programs (Ideal = 1)">
+                        <option value="ASH">ASH - Alice Springs</option>
+                        <option value="RDH">RDH - Royal Darwin</option>
+                        <option value="ACT">ACT (CHWC) - Centenary</option>
+                        <option value="LWO">LWO - Livewire Online</option>
+                    </optgroup>
                 </select>
             </div>
             <div>
@@ -498,7 +509,7 @@
 
         <h3><span>★</span> Workload Analysis</h3>
         <div class="results">
-            <div class="result-item">Ideal Program Constraint: <span class="highlight" id="displayIdeal">0 vols</span></div>
+            <div class="result-item">Ideal Program Constraint (Tier-Based): <span class="highlight" id="displayIdeal">0 vols</span></div>
             <div class="result-item">Requested Volunteers: <span class="highlight" id="displayRequested">0 vols</span></div>
             
             <div id="statusMessage" class="status-badge" style="margin-top: 20px;">Calculating...</div>
@@ -508,20 +519,35 @@
 
 <script>
     const trafficStats = {
-        "RCH_Morning": { traffic: 1318.3, ideal: 2.4, tier: "large" },
-        "RCH_Afternoon": { traffic: 913.7, ideal: 2.5, tier: "large" },
-        "CHW_Morning": { traffic: 947.2, ideal: 2.6, tier: "large" },
-        "CHW_Afternoon": { traffic: 894.9, ideal: 2.7, tier: "large" },
-        "QCH_Morning": { traffic: 733.1, ideal: 2.0, tier: "large" },
-        "QCH_Afternoon": { traffic: 638.9, ideal: 2.0, tier: "large" },
-        "SCH_Morning": { traffic: 877.8, ideal: 3.0, tier: "medium" },
-        "SCH_Afternoon": { traffic: 752.9, ideal: 3.0, tier: "medium" },
-        "MCH_Morning": { traffic: 558.1, ideal: 1.2, tier: "medium" },
-        "MCH_Afternoon": { traffic: 594.2, ideal: 2.5, tier: "medium" },
-        "JHCH_Morning": { traffic: 312.6, ideal: 2.0, tier: "medium" },
-        "JHCH_Afternoon": { traffic: 185.4, ideal: 2.0, tier: "medium" },
-        "PCH_Morning": { traffic: 191.2, ideal: 2.0, tier: "large" },
-        "PCH_Afternoon": { traffic: 271.0, ideal: 2.0, tier: "large" }
+        // Large (=3)
+        "RCH_Morning": { traffic: 1318.3, ideal: 3.0 },
+        "RCH_Afternoon": { traffic: 913.7, ideal: 3.0 },
+        "CHW_Morning": { traffic: 947.2, ideal: 3.0 },
+        "CHW_Afternoon": { traffic: 894.9, ideal: 3.0 },
+        "QCH_Morning": { traffic: 733.1, ideal: 3.0 },
+        "QCH_Afternoon": { traffic: 638.9, ideal: 3.0 },
+        "PCH_Morning": { traffic: 191.2, ideal: 3.0 },
+        "PCH_Afternoon": { traffic: 271.0, ideal: 3.0 },
+        
+        // Medium (=2)
+        "SCH_Morning": { traffic: 877.8, ideal: 2.0 },
+        "SCH_Afternoon": { traffic: 752.9, ideal: 2.0 },
+        "MCH_Morning": { traffic: 558.1, ideal: 2.0 },
+        "MCH_Afternoon": { traffic: 594.2, ideal: 2.0 },
+        "JHCH_Morning": { traffic: 312.6, ideal: 2.0 },
+        "JHCH_Afternoon": { traffic: 185.4, ideal: 2.0 },
+        "WCH_Morning": { traffic: 450.0, ideal: 2.0 },
+        "WCH_Afternoon": { traffic: 400.0, ideal: 2.0 },
+
+        // Small (=1)
+        "ASH_Morning": { traffic: 21.3, ideal: 1.0 },
+        "ASH_Afternoon": { traffic: 14.3, ideal: 1.0 },
+        "RDH_Morning": { traffic: 50.0, ideal: 1.0 },
+        "RDH_Afternoon": { traffic: 40.0, ideal: 1.0 },
+        "ACT_Morning": { traffic: 50.9, ideal: 1.0 },
+        "ACT_Afternoon": { traffic: 21.6, ideal: 1.0 },
+        "LWO_Morning": { traffic: 30.0, ideal: 1.0 },
+        "LWO_Afternoon": { traffic: 25.0, ideal: 1.0 }
     };
 
     function openTab(evt, tabName) {
