@@ -24,6 +24,9 @@
             box-sizing: border-box;
             position: relative;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         /* Decorative Background Star Watermark / Accents */
@@ -109,6 +112,7 @@
             display: none;
             position: relative;
             z-index: 1;
+            flex-grow: 1;
         }
         .tab-content.active {
             display: block;
@@ -302,218 +306,245 @@
         .status-good { background-color: #ace4db; color: #52288e; border: 2px solid #2fbca4; }
         .status-warn-low { background-color: #ffcdc2; color: #c0392b; border: 2px solid #e4466c; }
         .status-warn-high { background-color: #ecd0ea; color: #b933a4; border: 2px solid #b933a4; }
+
+        /* Footer styling */
+        .footer-support {
+            margin-top: 40px;
+            border-top: 2px solid #ecd0ea;
+            padding-top: 15px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #52288e;
+            position: relative;
+            z-index: 1;
+        }
+        .footer-support a {
+            color: #b933a4;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .footer-support a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header-container">
-        <h2><span class="star-icon">★</span> DG&S Capacity & Roster Simulator</h2>
-        <div style="font-size: 28px;" title="Starlight Children's Foundation">🌟</div>
-    </div>
-
-    <div class="tabs">
-        <button class="tab-button active" onclick="openTab(event, 'rosterTab')"><span>★</span> 1. Roster Settings</button>
-        <button class="tab-button" onclick="openTab(event, 'budgetTab')"><span>★</span> 2. Budget Forecast</button>
-        <button class="tab-button" onclick="openTab(event, 'workloadTab')"><span>★</span> 3. Volunteer Counts</button>
-    </div>
-    
-    <!-- TAB 1: ROSTER SETTINGS -->
-    <div id="rosterTab" class="tab-content active">
-        <label for="program">Program / Role Type:</label>
-        <select id="program" onchange="calculate()">
-            <optgroup label="Hospital Programs">
-                <option value="45">SER - $45.00/hr</option>
-                <option value="50">Livewire In Hospital - $50.00/hr</option>
-                <option value="50">Livewire Online - $50.00/hr</option>
-            </optgroup>
-            <optgroup label="Training">
-                <option value="45">Compulsory Training - SER - $45.00/hr</option>
-                <option value="50">Compulsory Training - LWIH - $50.00/hr</option>
-                <option value="50">Compulsory Training - LWO - $50.00/hr</option>
-            </optgroup>
-            <optgroup label="Office & Specialized">
-                <option value="38">Total Office - Programs - $38.00/hr</option>
-                <option value="35.50">Wishgranting - $35.50/hr</option>
-                <option value="150">R&E- Expert - $150.00/hr</option>
-                <option value="70">R&E- Professionally Skilled - $70.00/hr</option>
-            </optgroup>
-            <optgroup label="Corporate Volunteers">
-                <option value="38">Corporate Vols - TBWP - $38.00/hr</option>
-                <option value="38">Corporate Vols- Spark Acc - $38.00/hr</option>
-                <option value="38">Corporate Vols - Misc - $38.00/hr</option>
-            </optgroup>
-        </select>
-
-        <label>Select Locations (Tier-Aware National Aggregation):</label>
-        <div class="cb-container">
-            <div class="cb-header">
-                <label><input type="checkbox" id="selectAll" onchange="toggleAll(this)"> <strong>⭐ Select All (National View)</strong></label>
-            </div>
-            <div class="cb-grid">
-                <div>
-                    <strong>Large Programs</strong>
-                    <label><input type="checkbox" class="hosp-cb" value="44.0" data-tier="large" onchange="updateBaseHours()"> CHW</label>
-                    <label><input type="checkbox" class="hosp-cb" value="45.0" data-tier="large" onchange="updateBaseHours()"> PCH</label>
-                    <label><input type="checkbox" class="hosp-cb" value="43.5" data-tier="large" onchange="updateBaseHours()"> RCH</label>
-                    <label><input type="checkbox" class="hosp-cb" value="42.5" data-tier="large" onchange="updateBaseHours()"> QCH</label>
-                </div>
-                <div>
-                    <strong>Medium Programs</strong>
-                    <label><input type="checkbox" class="hosp-cb" value="46.5" data-tier="medium" onchange="updateBaseHours()"> MCH</label>
-                    <label><input type="checkbox" class="hosp-cb" value="45.0" data-tier="medium" onchange="updateBaseHours()"> W&CH</label>
-                    <label><input type="checkbox" class="hosp-cb" value="40.0" data-tier="medium" onchange="updateBaseHours()"> SCH</label>
-                    <label><input type="checkbox" class="hosp-cb" value="40.0" data-tier="medium" onchange="updateBaseHours()"> JHCH</label>
-                </div>
-                <div>
-                    <strong>Small Programs</strong>
-                    <label><input type="checkbox" class="hosp-cb" value="15.0" data-tier="small" onchange="updateBaseHours()"> ASH</label>
-                    <label><input type="checkbox" class="hosp-cb" value="15.0" data-tier="small" onchange="updateBaseHours()"> RDH</label>
-                    <label><input type="checkbox" class="hosp-cb" value="9.75" data-tier="small" onchange="updateBaseHours()"> ACT (CHWC)</label>
-                </div>
-            </div>
+    <div>
+        <div class="header-container">
+            <h2><span class="star-icon">★</span> DG&S Capacity & Roster Simulator</h2>
+            <div style="font-size: 28px;" title="Starlight Children's Foundation">🌟</div>
         </div>
 
-        <div class="two-col" style="margin-top: 15px;">
-            <div>
-                <label for="baseHours">Total Base Room Hours:</label>
-                <input type="number" id="baseHours" value="0" step="0.5" min="0" oninput="calculate()">
-            </div>
-            <div>
-                <label for="volunteers">Tier-Weighted Target Vols:</label>
-                <input type="number" id="volunteers" value="3" min="1" oninput="calculate()">
-            </div>
-        </div>
-        <div class="subtext">★ Multiplier dynamically adapts based on selected program size tiers (Large=3, Medium=2, Small=1).</div>
-
-        <label for="placement">Placement Student Hours (Weekly Contribution):</label>
-        <input type="number" id="placement" value="0" min="0" oninput="calculate()">
-
-        <h3><span>★</span> Roster Output</h3>
-        <div class="results">
-            <div class="result-item">Current Hourly Rate: <span class="highlight" id="displayRate">$45.00</span></div>
-            <div class="result-item">Total Required Hours (Weekly): <span class="highlight" id="totalHours">0</span></div>
-            <div class="result-item">Hours Covered by Placements: <span class="highlight" id="placementHours">0</span></div>
-            <div class="result-item divider">Gap for Standard Vols (Weekly): <span class="highlight" id="gapHours">0</span></div>
-            
-            <div class="result-item" style="margin-top: 15px;">Gross DG&S Value (Weekly Gap): <span class="highlight" id="grossWeekly">$0</span></div>
-            <div class="result-item">Net Weekly DG&S (Minus 30% Absences): <span class="highlight" id="netWeekly">$0</span></div>
-            
-            <div class="net-monthly">
-                <span>Net Monthly DG&S (Standard Vols):</span>
-                <span id="netMonthly">$0</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- TAB 2: BUDGET FORECAST -->
-    <div id="budgetTab" class="tab-content">
-        <div class="instruction-box">
-            <strong>🌟 How it works:</strong> This forecast automatically pulls the <strong>Net Weekly DG&S</strong> value generated by your settings in Tab 1 and projects it forward. <br><br>
-            Just enter your annual financial target, what you've achieved Year-to-Date (YTD), and how many weeks are left in the year. The simulator will instantly calculate whether your current volunteer roster will produce a surplus or a shortfall by year-end!
-        </div>
-
-        <div class="roster-summary">
-            <span style="color: #b933a4;">Weekly value feeding this forecast (from Tab 1):</span>
-            <span class="highlight" id="summaryNetWeekly">$0 / week</span>
+        <div class="tabs">
+            <button class="tab-button active" onclick="openTab(event, 'rosterTab')"><span>★</span> 1. Roster Settings</button>
+            <button class="tab-button" onclick="openTab(event, 'budgetTab')"><span>★</span> 2. Budget Forecast</button>
+            <button class="tab-button" onclick="openTab(event, 'workloadTab')"><span>★</span> 3. Volunteer Counts</button>
         </div>
         
-        <div class="two-col">
-            <div>
-                <label for="annualTarget">Annual Target ($):</label>
-                <input type="number" id="annualTarget" value="1000000" step="1000" oninput="calculate()">
-            </div>
-            <div>
-                <label for="ytdAchieved">YTD Achieved ($):</label>
-                <input type="number" id="ytdAchieved" value="500000" step="1000" oninput="calculate()">
-            </div>
-        </div>
-        <label for="weeksLeft">Remaining Weeks in Year:</label>
-        <input type="number" id="weeksLeft" value="26" min="1" max="52" oninput="calculate()">
+        <!-- TAB 1: ROSTER SETTINGS -->
+        <div id="rosterTab" class="tab-content active">
+            <label for="program">Program / Role Type:</label>
+            <select id="program" onchange="calculate()">
+                <optgroup label="Hospital Programs">
+                    <option value="45">SER - $45.00/hr</option>
+                    <option value="50">Livewire In Hospital - $50.00/hr</option>
+                    <option value="50">Livewire Online - $50.00/hr</option>
+                </optgroup>
+                <optgroup label="Training">
+                    <option value="45">Compulsory Training - SER - $45.00/hr</option>
+                    <option value="50">Compulsory Training - LWIH - $50.00/hr</option>
+                    <option value="50">Compulsory Training - LWO - $50.00/hr</option>
+                </optgroup>
+                <optgroup label="Office & Specialized">
+                    <option value="38">Total Office - Programs - $38.00/hr</option>
+                    <option value="35.50">Wishgranting - $35.50/hr</option>
+                    <option value="150">R&E- Expert - $150.00/hr</option>
+                    <option value="70">R&E- Professionally Skilled - $70.00/hr</option>
+                </optgroup>
+                <optgroup label="Corporate Volunteers">
+                    <option value="38">Corporate Vols - TBWP - $38.00/hr</option>
+                    <option value="38">Corporate Vols- Spark Acc - $38.00/hr</option>
+                    <option value="38">Corporate Vols - Misc - $38.00/hr</option>
+                </optgroup>
+            </select>
 
-        <h3><span>★</span> Budget Projections</h3>
-        <div class="results">
-            <div class="net-yearly" style="margin-top: 0;">
-                <div class="forecast-row">
-                    <span>YTD Achieved:</span>
-                    <span id="displayYtd">$0</span>
+            <label>Select Locations (Tier-Aware National Aggregation):</label>
+            <div class="cb-container">
+                <div class="cb-header">
+                    <label><input type="checkbox" id="selectAll" onchange="toggleAll(this)"> <strong>⭐ Select All (National View)</strong></label>
                 </div>
-                <div class="forecast-row">
-                    <span>+ Projected Remaining (Based on Roster Tab):</span>
-                    <span id="displayRemaining">$0</span>
-                </div>
-                <div class="forecast-final">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <svg style="width: 28px; height: 28px;" viewBox="0 0 24 24" fill="#b933a4">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                        Forecast End of Year:
+                <div class="cb-grid">
+                    <div>
+                        <strong>Large Programs</strong>
+                        <label><input type="checkbox" class="hosp-cb" value="44.0" data-tier="large" onchange="updateBaseHours()"> CHW</label>
+                        <label><input type="checkbox" class="hosp-cb" value="45.0" data-tier="large" onchange="updateBaseHours()"> PCH</label>
+                        <label><input type="checkbox" class="hosp-cb" value="43.5" data-tier="large" onchange="updateBaseHours()"> RCH</label>
+                        <label><input type="checkbox" class="hosp-cb" value="42.5" data-tier="large" onchange="updateBaseHours()"> QCH</label>
                     </div>
-                    <span id="forecastTotal">$0</span>
+                    <div>
+                        <strong>Medium Programs</strong>
+                        <label><input type="checkbox" class="hosp-cb" value="46.5" data-tier="medium" onchange="updateBaseHours()"> MCH</label>
+                        <label><input type="checkbox" class="hosp-cb" value="45.0" data-tier="medium" onchange="updateBaseHours()"> W&CH</label>
+                        <label><input type="checkbox" class="hosp-cb" value="40.0" data-tier="medium" onchange="updateBaseHours()"> SCH</label>
+                        <label><input type="checkbox" class="hosp-cb" value="40.0" data-tier="medium" onchange="updateBaseHours()"> JHCH</label>
+                    </div>
+                    <div>
+                        <strong>Small Programs</strong>
+                        <label><input type="checkbox" class="hosp-cb" value="15.0" data-tier="small" onchange="updateBaseHours()"> ASH</label>
+                        <label><input type="checkbox" class="hosp-cb" value="15.0" data-tier="small" onchange="updateBaseHours()"> RDH</label>
+                        <label><input type="checkbox" class="hosp-cb" value="9.75" data-tier="small" onchange="updateBaseHours()"> ACT (CHWC)</label>
+                    </div>
                 </div>
-                <div class="forecast-row" style="margin-top: 5px;">
-                    <span>Vs. Annual Target:</span>
-                    <span id="forecastVariance" style="padding: 3px 10px; border-radius: 4px;">$0</span>
+            </div>
+
+            <div class="two-col" style="margin-top: 15px;">
+                <div>
+                    <label for="baseHours">Total Base Room Hours:</label>
+                    <input type="number" id="baseHours" value="0" step="0.5" min="0" oninput="calculate()">
                 </div>
+                <div>
+                    <label for="volunteers">Tier-Weighted Target Vols:</label>
+                    <input type="number" id="volunteers" value="3" min="1" oninput="calculate()">
+                </div>
+            </div>
+            <div class="subtext">★ Multiplier dynamically adapts based on selected program size tiers (Large=3, Medium=2, Small=1).</div>
+
+            <label for="placement">Placement Student Hours (Weekly Contribution):</label>
+            <input type="number" id="placement" value="0" min="0" oninput="calculate()">
+
+            <h3><span>★</span> Roster Output</h3>
+            <div class="results">
+                <div class="result-item">Current Hourly Rate: <span class="highlight" id="displayRate">$45.00</span></div>
+                <div class="result-item">Total Required Hours (Weekly): <span class="highlight" id="totalHours">0</span></div>
+                <div class="result-item">Hours Covered by Placements: <span class="highlight" id="placementHours">0</span></div>
+                <div class="result-item divider">Gap for Standard Vols (Weekly): <span class="highlight" id="gapHours">0</span></div>
+                
+                <div class="result-item" style="margin-top: 15px;">Gross DG&S Value (Weekly Gap): <span class="highlight" id="grossWeekly">$0</span></div>
+                <div class="result-item">Net Weekly DG&S (Minus 30% Absences): <span class="highlight" id="netWeekly">$0</span></div>
+                
+                <div class="net-monthly">
+                    <span>Net Monthly DG&S (Standard Vols):</span>
+                    <span id="netMonthly">$0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: BUDGET FORECAST -->
+        <div id="budgetTab" class="tab-content">
+            <div class="instruction-box">
+                <strong>🌟 How it works:</strong> This forecast automatically pulls the <strong>Net Weekly DG&S</strong> value generated by your settings in Tab 1 and projects it forward. <br><br>
+                Just enter your annual financial target, what you've achieved Year-to-Date (YTD), and how many weeks are left in the year. The simulator will instantly calculate whether your current volunteer roster will produce a surplus or a shortfall by year-end!
+            </div>
+
+            <div class="roster-summary">
+                <span style="color: #b933a4;">Weekly value feeding this forecast (from Tab 1):</span>
+                <span class="highlight" id="summaryNetWeekly">$0 / week</span>
+            </div>
+            
+            <div class="two-col">
+                <div>
+                    <label for="annualTarget">Annual Target ($):</label>
+                    <input type="number" id="annualTarget" value="1000000" step="1000" oninput="calculate()">
+                </div>
+                <div>
+                    <label for="ytdAchieved">YTD Achieved ($):</label>
+                    <input type="number" id="ytdAchieved" value="500000" step="1000" oninput="calculate()">
+                </div>
+            </div>
+            <label for="weeksLeft">Remaining Weeks in Year:</label>
+            <input type="number" id="weeksLeft" value="26" min="1" max="52" oninput="calculate()">
+
+            <h3><span>★</span> Budget Projections</h3>
+            <div class="results">
+                <div class="net-yearly" style="margin-top: 0;">
+                    <div class="forecast-row">
+                        <span>YTD Achieved:</span>
+                        <span id="displayYtd">$0</span>
+                    </div>
+                    <div class="forecast-row">
+                        <span>+ Projected Remaining (Based on Roster Tab):</span>
+                        <span id="displayRemaining">$0</span>
+                    </div>
+                    <div class="forecast-final">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <svg style="width: 28px; height: 28px;" viewBox="0 0 24 24" fill="#b933a4">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            Forecast End of Year:
+                        </div>
+                        <span id="forecastTotal">$0</span>
+                    </div>
+                    <div class="forecast-row" style="margin-top: 5px;">
+                        <span>Vs. Annual Target:</span>
+                        <span id="forecastVariance" style="padding: 3px 10px; border-radius: 4px;">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- TAB 3: WORKLOAD JUSTIFICATION -->
+        <div id="workloadTab" class="tab-content">
+            <div class="instruction-box">
+                <strong>⭐ Data-Driven Rostering:</strong> Select any hospital and shift below to analyze manager requests against historical traffic ratios (Large programs default to ideal = 3, Medium = 2, Small = 1).
+            </div>
+            
+            <div class="two-col">
+                <div>
+                    <label for="workloadHosp">Select Hospital & Program:</label>
+                    <select id="workloadHosp" onchange="calculateWorkload()">
+                        <optgroup label="Large Programs (Ideal = 3)">
+                            <option value="RCH">RCH - Royal Children's</option>
+                            <option value="CHW">CHW - Westmead</option>
+                            <option value="QCH">QCH - Queensland</option>
+                            <option value="PCH">PCH - Perth</option>
+                        </optgroup>
+                        <optgroup label="Medium Programs (Ideal = 2)">
+                            <option value="SCH">SCH - Sydney Children's</option>
+                            <option value="MCH">MCH - Monash Children's</option>
+                            <option value="JHCH">JHCH - John Hunter Children's</option>
+                            <option value="WCH">W&CH - Women's & Children's</option>
+                        </optgroup>
+                        <optgroup label="Small Programs (Ideal = 1)">
+                            <option value="ASH">ASH - Alice Springs</option>
+                            <option value="RDH">RDH - Royal Darwin</option>
+                            <option value="ACT">ACT (CHWC) - Centenary</option>
+                            <option value="LWO">LWO - Livewire Online</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div>
+                    <label for="workloadShift">Select Shift:</label>
+                    <select id="workloadShift" onchange="calculateWorkload()">
+                        <option value="Morning">Morning Shift</option>
+                        <option value="Afternoon">Afternoon Shift</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="roster-summary" style="margin-top: 15px; margin-bottom: 5px;">
+                <span style="color: #52288e;">Historical Avg Traffic for this shift:</span>
+                <span class="highlight" id="displayTraffic">0 visitors/mo</span>
+            </div>
+            
+            <label for="managerRequest" style="margin-top: 20px;">Manager's Requested Volunteers (Input):</label>
+            <input type="number" id="managerRequest" value="3" min="1" oninput="calculateWorkload()">
+            <div class="subtext">Enter the number of volunteers the manager wants to roster here.</div>
+
+            <h3><span>★</span> Workload Analysis</h3>
+            <div class="results">
+                <div class="result-item">Ideal Program Constraint (Tier-Based): <span class="highlight" id="displayIdeal">0 vols</span></div>
+                <div class="result-item">Requested Volunteers: <span class="highlight" id="displayRequested">0 vols</span></div>
+                
+                <div id="statusMessage" class="status-badge" style="margin-top: 20px;">Calculating...</div>
             </div>
         </div>
     </div>
-    
-    <!-- TAB 3: WORKLOAD JUSTIFICATION -->
-    <div id="workloadTab" class="tab-content">
-        <div class="instruction-box">
-            <strong>⭐ Data-Driven Rostering:</strong> Select any hospital and shift below to analyze manager requests against historical traffic ratios (Large programs default to ideal = 3, Medium = 2, Small = 1).
-        </div>
-        
-        <div class="two-col">
-            <div>
-                <label for="workloadHosp">Select Hospital & Program:</label>
-                <select id="workloadHosp" onchange="calculateWorkload()">
-                    <optgroup label="Large Programs (Ideal = 3)">
-                        <option value="RCH">RCH - Royal Children's</option>
-                        <option value="CHW">CHW - Westmead</option>
-                        <option value="QCH">QCH - Queensland</option>
-                        <option value="PCH">PCH - Perth</option>
-                    </optgroup>
-                    <optgroup label="Medium Programs (Ideal = 2)">
-                        <option value="SCH">SCH - Sydney Children's</option>
-                        <option value="MCH">MCH - Monash Children's</option>
-                        <option value="JHCH">JHCH - John Hunter Children's</option>
-                        <option value="WCH">W&CH - Women's & Children's</option>
-                    </optgroup>
-                    <optgroup label="Small Programs (Ideal = 1)">
-                        <option value="ASH">ASH - Alice Springs</option>
-                        <option value="RDH">RDH - Royal Darwin</option>
-                        <option value="ACT">ACT (CHWC) - Centenary</option>
-                        <option value="LWO">LWO - Livewire Online</option>
-                    </optgroup>
-                </select>
-            </div>
-            <div>
-                <label for="workloadShift">Select Shift:</label>
-                <select id="workloadShift" onchange="calculateWorkload()">
-                    <option value="Morning">Morning Shift</option>
-                    <option value="Afternoon">Afternoon Shift</option>
-                </select>
-            </div>
-        </div>
 
-        <div class="roster-summary" style="margin-top: 15px; margin-bottom: 5px;">
-            <span style="color: #52288e;">Historical Avg Traffic for this shift:</span>
-            <span class="highlight" id="displayTraffic">0 visitors/mo</span>
-        </div>
-        
-        <label for="managerRequest" style="margin-top: 20px;">Manager's Requested Volunteers (Input):</label>
-        <input type="number" id="managerRequest" value="3" min="1" oninput="calculateWorkload()">
-        <div class="subtext">Enter the number of volunteers the manager wants to roster here.</div>
-
-        <h3><span>★</span> Workload Analysis</h3>
-        <div class="results">
-            <div class="result-item">Ideal Program Constraint (Tier-Based): <span class="highlight" id="displayIdeal">0 vols</span></div>
-            <div class="result-item">Requested Volunteers: <span class="highlight" id="displayRequested">0 vols</span></div>
-            
-            <div id="statusMessage" class="status-badge" style="margin-top: 20px;">Calculating...</div>
-        </div>
+    <!-- Footer Support Section -->
+    <div class="footer-support">
+        Please contact Rosemary via Teams or email (<a href="mailto:rosemary.lu@starlight.com">rosemary.lu@starlight.com</a>) if any issues.
     </div>
 </div>
 
