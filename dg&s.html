@@ -447,22 +447,9 @@
         <h3>Workload Analysis</h3>
         <div class="results">
             <div class="result-item">Ideal Program Constraint: <span class="highlight" id="displayIdeal">0 vols</span></div>
-            <div class="result-item divider">Requested Volunteers: <span class="highlight" id="displayRequested">0 vols</span></div>
+            <div class="result-item">Requested Volunteers: <span class="highlight" id="displayRequested">0 vols</span></div>
             
-            <div class="net-yearly" style="margin-top: 15px;">
-                <div style="font-size: 0.85em; font-weight: normal; margin-bottom: 5px;">Resulting Ratio:</div>
-                <div class="forecast-final" style="border: none; padding: 0;">
-                    <div style="display: flex; align-items: center; gap: 10px; color: #52288e;">
-                        <svg style="width: 28px; height: 28px;" viewBox="0 0 24 24" fill="#e4466c">
-                            <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
-                        </svg>
-                        Visitors per Volunteer:
-                    </div>
-                    <span id="displayRatio">0</span>
-                </div>
-            </div>
-            
-            <div id="statusMessage" class="status-badge">Calculating...</div>
+            <div id="statusMessage" class="status-badge" style="margin-top: 20px;">Calculating...</div>
         </div>
     </div>
 </div>
@@ -595,7 +582,6 @@
             document.getElementById("displayRequested").innerText = reqVols + " vols";
             
             const ratio = (data.traffic / reqVols).toFixed(1);
-            document.getElementById("displayRatio").innerText = ratio;
             
             const statusEl = document.getElementById("statusMessage");
             // Define thresholds based on the Python output (average benchmark ~300)
