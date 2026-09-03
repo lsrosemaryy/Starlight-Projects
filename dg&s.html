@@ -11,7 +11,7 @@
             color: #52288e; 
         }
         .container { 
-            max-width: 700px; 
+            max-width: 750px; 
             background: white; 
             padding: 25px; 
             border-radius: 8px; 
@@ -57,8 +57,8 @@
             background-color: #ecd0ea;
             color: #52288e;
             border: none;
-            padding: 12px 20px;
-            font-size: 1.05em;
+            padding: 12px 15px;
+            font-size: 1em;
             font-weight: bold;
             cursor: pointer;
             border-radius: 8px 8px 0 0;
@@ -239,6 +239,19 @@
             font-size: 0.95em;
             line-height: 1.4;
         }
+        
+        /* Dynamic Status Badges for Tab 3 */
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.9em;
+            text-align: center;
+            margin-top: 10px;
+        }
+        .status-good { background-color: #ace4db; color: #52288e; border: 2px solid #2fbca4; }
+        .status-warn-low { background-color: #ffcdc2; color: #c0392b; border: 2px solid #e4466c; }
+        .status-warn-high { background-color: #ecd0ea; color: #b933a4; border: 2px solid #b933a4; }
     </style>
 </head>
 <body>
@@ -251,6 +264,7 @@
     <div class="tabs">
         <button class="tab-button active" onclick="openTab(event, 'rosterTab')">1. Roster Settings</button>
         <button class="tab-button" onclick="openTab(event, 'budgetTab')">2. Budget Forecast</button>
+        <button class="tab-button" onclick="openTab(event, 'workloadTab')">3. Workload Justification</button>
     </div>
     
     <!-- TAB 1: ROSTER SETTINGS -->
@@ -392,9 +406,86 @@
             </div>
         </div>
     </div>
+    
+    <!-- TAB 3: WORKLOAD JUSTIFICATION -->
+    <div id="workloadTab" class="tab-content">
+        <div class="instruction-box">
+            <strong>📊 Data-Driven Rostering:</strong> Use this tool when managers request arbitrary volunteer counts. It pulls historical foot traffic to calculate how many visitors each volunteer will actually interact with, preventing both burnout and boredom.
+        </div>
+        
+        <div class="two-col">
+            <div>
+                <label for="workloadHosp">Select Hospital:</label>
+                <select id="workloadHosp" onchange="calculateWorkload()">
+                    <option value="RCH">RCH - Royal Children's</option>
+                    <option value="CHW">CHW - Westmead</option>
+                    <option value="QCH">QCH - Queensland</option>
+                    <option value="SCH">SCH - Sydney</option>
+                    <option value="MCH">MCH - Monash</option>
+                    <option value="JHCH">JHCH - John Hunter</option>
+                    <option value="PCH">PCH - Perth</option>
+                </select>
+            </div>
+            <div>
+                <label for="workloadShift">Select Shift:</label>
+                <select id="workloadShift" onchange="calculateWorkload()">
+                    <option value="Morning">Morning Shift</option>
+                    <option value="Afternoon">Afternoon Shift</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="roster-summary" style="margin-top: 15px; margin-bottom: 5px;">
+            <span style="color: #52288e;">Historical Avg Traffic for this shift:</span>
+            <span class="highlight" id="displayTraffic">0 visitors/mo</span>
+        </div>
+        
+        <label for="managerRequest" style="margin-top: 20px;">Manager's Requested Volunteers (Input):</label>
+        <input type="number" id="managerRequest" value="3" min="1" oninput="calculateWorkload()">
+        <div class="subtext">Enter the number of volunteers the manager wants to roster here.</div>
+
+        <h3>Workload Analysis</h3>
+        <div class="results">
+            <div class="result-item">Ideal Program Constraint: <span class="highlight" id="displayIdeal">0 vols</span></div>
+            <div class="result-item divider">Requested Volunteers: <span class="highlight" id="displayRequested">0 vols</span></div>
+            
+            <div class="net-yearly" style="margin-top: 15px;">
+                <div style="font-size: 0.85em; font-weight: normal; margin-bottom: 5px;">Resulting Ratio:</div>
+                <div class="forecast-final" style="border: none; padding: 0;">
+                    <div style="display: flex; align-items: center; gap: 10px; color: #52288e;">
+                        <svg style="width: 28px; height: 28px;" viewBox="0 0 24 24" fill="#e4466c">
+                            <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                        </svg>
+                        Visitors per Volunteer:
+                    </div>
+                    <span id="displayRatio">0</span>
+                </div>
+            </div>
+            
+            <div id="statusMessage" class="status-badge">Calculating...</div>
+        </div>
+    </div>
 </div>
 
 <script>
+    // Traffic Data Object (Hardcoded from Python output)
+    const trafficStats = {
+        "RCH_Morning": { traffic: 1318.3, ideal: 2.4 },
+        "RCH_Afternoon": { traffic: 913.7, ideal: 2.5 },
+        "CHW_Morning": { traffic: 947.2, ideal: 2.6 },
+        "CHW_Afternoon": { traffic: 894.9, ideal: 2.7 },
+        "QCH_Morning": { traffic: 733.1, ideal: 2.0 },
+        "QCH_Afternoon": { traffic: 638.9, ideal: 2.0 },
+        "SCH_Morning": { traffic: 877.8, ideal: 3.0 },
+        "SCH_Afternoon": { traffic: 752.9, ideal: 3.0 },
+        "MCH_Morning": { traffic: 558.1, ideal: 1.2 },
+        "MCH_Afternoon": { traffic: 594.2, ideal: 2.5 },
+        "JHCH_Morning": { traffic: 312.6, ideal: 2.0 },
+        "JHCH_Afternoon": { traffic: 185.4, ideal: 2.0 },
+        "PCH_Morning": { traffic: 191.2, ideal: 2.0 },
+        "PCH_Afternoon": { traffic: 271.0, ideal: 2.0 }
+    };
+
     function openTab(evt, tabName) {
         const tabContents = document.getElementsByClassName("tab-content");
         for (let i = 0; i < tabContents.length; i++) {
@@ -408,6 +499,11 @@
         
         document.getElementById(tabName).classList.add("active");
         evt.currentTarget.classList.add("active");
+        
+        // Trigger calculate on open to ensure values display correctly
+        if(tabName === 'workloadTab') {
+            calculateWorkload();
+        }
     }
 
     function toggleAll(source) {
@@ -459,7 +555,7 @@
 
         const currencyFormatter = new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD', maximumFractionDigits: 0 });
         
-        // Update Tab 1 Outputs
+        // Update Tab 1
         document.getElementById("displayRate").innerText = currencyFormatter.format(rate) + "/hr";
         document.getElementById("totalHours").innerText = totalHours.toFixed(1) + " hrs";
         document.getElementById("placementHours").innerText = placement.toFixed(1) + " hrs";
@@ -468,7 +564,7 @@
         document.getElementById("netWeekly").innerText = currencyFormatter.format(netWeekly);
         document.getElementById("netMonthly").innerText = currencyFormatter.format(netMonthly);
         
-        // Update Tab 2 Outputs
+        // Update Tab 2
         document.getElementById("summaryNetWeekly").innerText = currencyFormatter.format(netWeekly) + " / week";
         document.getElementById("displayYtd").innerText = currencyFormatter.format(ytdAchieved);
         document.getElementById("displayRemaining").innerText = currencyFormatter.format(projectedRemaining);
@@ -481,6 +577,38 @@
         } else {
             varianceEl.innerText = currencyFormatter.format(variance) + " (Shortfall)";
             varianceEl.className = "deficit";
+        }
+    }
+
+    function calculateWorkload() {
+        const hosp = document.getElementById("workloadHosp").value;
+        const shift = document.getElementById("workloadShift").value;
+        const key = hosp + "_" + shift;
+        
+        const reqVols = parseFloat(document.getElementById("managerRequest").value) || 1;
+        
+        const data = trafficStats[key];
+        
+        if(data) {
+            document.getElementById("displayTraffic").innerText = data.traffic.toFixed(1) + " visitors/mo";
+            document.getElementById("displayIdeal").innerText = data.ideal.toFixed(1) + " vols";
+            document.getElementById("displayRequested").innerText = reqVols + " vols";
+            
+            const ratio = (data.traffic / reqVols).toFixed(1);
+            document.getElementById("displayRatio").innerText = ratio;
+            
+            const statusEl = document.getElementById("statusMessage");
+            // Define thresholds based on the Python output (average benchmark ~300)
+            if (ratio < 130) {
+                statusEl.innerText = "⚠️ High Risk: Volunteers will likely be bored. Reduce roster.";
+                statusEl.className = "status-badge status-warn-low";
+            } else if (ratio > 480) {
+                statusEl.innerText = "⚠️ High Risk: Volunteers may face burnout. Increase roster.";
+                statusEl.className = "status-badge status-warn-high";
+            } else {
+                statusEl.innerText = "✅ Optimal: Healthy workload distribution.";
+                statusEl.className = "status-badge status-good";
+            }
         }
     }
 
