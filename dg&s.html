@@ -239,8 +239,6 @@
             font-size: 0.95em;
             line-height: 1.4;
         }
-        
-        /* Dynamic Status Badges for Tab 3 */
         .status-badge {
             padding: 6px 12px;
             border-radius: 4px;
@@ -264,7 +262,7 @@
     <div class="tabs">
         <button class="tab-button active" onclick="openTab(event, 'rosterTab')">1. Roster Settings</button>
         <button class="tab-button" onclick="openTab(event, 'budgetTab')">2. Budget Forecast</button>
-        <button class="tab-button" onclick="openTab(event, 'workloadTab')">3. Volunteer Counts</button>
+        <button class="tab-button" onclick="openTab(event, 'workloadTab')">3. Workload Justification</button>
     </div>
     
     <!-- TAB 1: ROSTER SETTINGS -->
@@ -294,31 +292,31 @@
             </optgroup>
         </select>
 
-        <label>Select Locations (National & Custom Views):</label>
+        <label>Select Locations (Tier-Aware National Aggregation):</label>
         <div class="cb-container">
             <div class="cb-header">
                 <label><input type="checkbox" id="selectAll" onchange="toggleAll(this)"> <strong>Select All (National View)</strong></label>
             </div>
             <div class="cb-grid">
                 <div>
-                    <strong>Large Programs</strong>
-                    <label><input type="checkbox" class="hosp-cb" value="44.0" onchange="updateBaseHours()"> CHW</label>
-                    <label><input type="checkbox" class="hosp-cb" value="45.0" onchange="updateBaseHours()"> PCH</label>
-                    <label><input type="checkbox" class="hosp-cb" value="43.5" onchange="updateBaseHours()"> RCH</label>
-                    <label><input type="checkbox" class="hosp-cb" value="42.5" onchange="updateBaseHours()"> QCH</label>
+                    <strong>Large Programs (Tier 3)</strong>
+                    <label><input type="checkbox" class="hosp-cb" value="44.0" data-tier="large" onchange="updateBaseHours()"> CHW</label>
+                    <label><input type="checkbox" class="hosp-cb" value="45.0" data-tier="large" onchange="updateBaseHours()"> PCH</label>
+                    <label><input type="checkbox" class="hosp-cb" value="43.5" data-tier="large" onchange="updateBaseHours()"> RCH</label>
+                    <label><input type="checkbox" class="hosp-cb" value="42.5" data-tier="large" onchange="updateBaseHours()"> QCH</label>
                 </div>
                 <div>
-                    <strong>Medium Programs</strong>
-                    <label><input type="checkbox" class="hosp-cb" value="46.5" onchange="updateBaseHours()"> MCH</label>
-                    <label><input type="checkbox" class="hosp-cb" value="45.0" onchange="updateBaseHours()"> W&CH</label>
-                    <label><input type="checkbox" class="hosp-cb" value="40.0" onchange="updateBaseHours()"> SCH</label>
-                    <label><input type="checkbox" class="hosp-cb" value="40.0" onchange="updateBaseHours()"> JHCH</label>
+                    <strong>Medium Programs (Tier 2)</strong>
+                    <label><input type="checkbox" class="hosp-cb" value="46.5" data-tier="medium" onchange="updateBaseHours()"> MCH</label>
+                    <label><input type="checkbox" class="hosp-cb" value="45.0" data-tier="medium" onchange="updateBaseHours()"> W&CH</label>
+                    <label><input type="checkbox" class="hosp-cb" value="40.0" data-tier="medium" onchange="updateBaseHours()"> SCH</label>
+                    <label><input type="checkbox" class="hosp-cb" value="40.0" data-tier="medium" onchange="updateBaseHours()"> JHCH</label>
                 </div>
                 <div>
-                    <strong>Small Programs</strong>
-                    <label><input type="checkbox" class="hosp-cb" value="15.0" onchange="updateBaseHours()"> ASH</label>
-                    <label><input type="checkbox" class="hosp-cb" value="15.0" onchange="updateBaseHours()"> RDH</label>
-                    <label><input type="checkbox" class="hosp-cb" value="9.75" onchange="updateBaseHours()"> ACT (CHWC)</label>
+                    <strong>Small Programs (Tier 1)</strong>
+                    <label><input type="checkbox" class="hosp-cb" value="15.0" data-tier="small" onchange="updateBaseHours()"> ASH</label>
+                    <label><input type="checkbox" class="hosp-cb" value="15.0" data-tier="small" onchange="updateBaseHours()"> RDH</label>
+                    <label><input type="checkbox" class="hosp-cb" value="9.75" data-tier="small" onchange="updateBaseHours()"> ACT (CHWC)</label>
                 </div>
             </div>
         </div>
@@ -329,10 +327,11 @@
                 <input type="number" id="baseHours" value="0" step="0.5" min="0" oninput="calculate()">
             </div>
             <div>
-                <label for="volunteers">Target Vols Per Shift:</label>
-                <input type="number" id="volunteers" value="2" min="1" oninput="calculate()">
+                <label for="volunteers">Tier-Weighted Target Vols:</label>
+                <input type="number" id="volunteers" value="3" min="1" oninput="calculate()">
             </div>
         </div>
+        <div class="subtext">Multiplier dynamically adapts based on selected program size tiers (Large=3, Medium=2, Small=1).</div>
 
         <label for="placement">Placement Student Hours (Weekly Contribution):</label>
         <input type="number" id="placement" value="0" min="0" oninput="calculate()">
@@ -417,13 +416,13 @@
             <div>
                 <label for="workloadHosp">Select Hospital:</label>
                 <select id="workloadHosp" onchange="calculateWorkload()">
-                    <option value="RCH">RCH - Royal Children's</option>
-                    <option value="CHW">CHW - Westmead</option>
-                    <option value="QCH">QCH - Queensland</option>
-                    <option value="SCH">SCH - Sydney</option>
-                    <option value="MCH">MCH - Monash</option>
-                    <option value="JHCH">JHCH - John Hunter</option>
-                    <option value="PCH">PCH - Perth</option>
+                    <option value="RCH">RCH - Royal Children's (Large)</option>
+                    <option value="CHW">CHW - Westmead (Large)</option>
+                    <option value="QCH">QCH - Queensland (Large)</option>
+                    <option value="SCH">SCH - Sydney (Medium)</option>
+                    <option value="MCH">MCH - Monash (Medium)</option>
+                    <option value="JHCH">JHCH - John Hunter (Medium)</option>
+                    <option value="PCH">PCH - Perth (Large)</option>
                 </select>
             </div>
             <div>
@@ -455,22 +454,21 @@
 </div>
 
 <script>
-    // Traffic Data Object (Hardcoded from Python output)
     const trafficStats = {
-        "RCH_Morning": { traffic: 1318.3, ideal: 2.4 },
-        "RCH_Afternoon": { traffic: 913.7, ideal: 2.5 },
-        "CHW_Morning": { traffic: 947.2, ideal: 2.6 },
-        "CHW_Afternoon": { traffic: 894.9, ideal: 2.7 },
-        "QCH_Morning": { traffic: 733.1, ideal: 2.0 },
-        "QCH_Afternoon": { traffic: 638.9, ideal: 2.0 },
-        "SCH_Morning": { traffic: 877.8, ideal: 3.0 },
-        "SCH_Afternoon": { traffic: 752.9, ideal: 3.0 },
-        "MCH_Morning": { traffic: 558.1, ideal: 1.2 },
-        "MCH_Afternoon": { traffic: 594.2, ideal: 2.5 },
-        "JHCH_Morning": { traffic: 312.6, ideal: 2.0 },
-        "JHCH_Afternoon": { traffic: 185.4, ideal: 2.0 },
-        "PCH_Morning": { traffic: 191.2, ideal: 2.0 },
-        "PCH_Afternoon": { traffic: 271.0, ideal: 2.0 }
+        "RCH_Morning": { traffic: 1318.3, ideal: 2.4, tier: "large" },
+        "RCH_Afternoon": { traffic: 913.7, ideal: 2.5, tier: "large" },
+        "CHW_Morning": { traffic: 947.2, ideal: 2.6, tier: "large" },
+        "CHW_Afternoon": { traffic: 894.9, ideal: 2.7, tier: "large" },
+        "QCH_Morning": { traffic: 733.1, ideal: 2.0, tier: "large" },
+        "QCH_Afternoon": { traffic: 638.9, ideal: 2.0, tier: "large" },
+        "SCH_Morning": { traffic: 877.8, ideal: 3.0, tier: "medium" },
+        "SCH_Afternoon": { traffic: 752.9, ideal: 3.0, tier: "medium" },
+        "MCH_Morning": { traffic: 558.1, ideal: 1.2, tier: "medium" },
+        "MCH_Afternoon": { traffic: 594.2, ideal: 2.5, tier: "medium" },
+        "JHCH_Morning": { traffic: 312.6, ideal: 2.0, tier: "medium" },
+        "JHCH_Afternoon": { traffic: 185.4, ideal: 2.0, tier: "medium" },
+        "PCH_Morning": { traffic: 191.2, ideal: 2.0, tier: "large" },
+        "PCH_Afternoon": { traffic: 271.0, ideal: 2.0, tier: "large" }
     };
 
     function openTab(evt, tabName) {
@@ -487,7 +485,6 @@
         document.getElementById(tabName).classList.add("active");
         evt.currentTarget.classList.add("active");
         
-        // Trigger calculate on open to ensure values display correctly
         if(tabName === 'workloadTab') {
             calculateWorkload();
         }
@@ -502,15 +499,31 @@
     }
 
     function updateBaseHours() {
-        let total = 0;
+        let totalHours = 0;
+        let weightedVolsSum = 0;
+        let count = 0;
+        
         const checkboxes = document.querySelectorAll('.hosp-cb:checked');
         const allCheckboxes = document.querySelectorAll('.hosp-cb');
         
         checkboxes.forEach(cb => {
-            total += parseFloat(cb.value);
+            totalHours += parseFloat(cb.value);
+            const tier = cb.getAttribute('data-tier');
+            // Tier-based ideal weight: Large = 3, Medium = 2, Small = 1
+            if(tier === 'large') weightedVolsSum += 3;
+            else if(tier === 'medium') weightedVolsSum += 2;
+            else if(tier === 'small') weightedVolsSum += 1;
+            count++;
         });
         
-        document.getElementById("baseHours").value = total.toFixed(2);
+        document.getElementById("baseHours").value = totalHours.toFixed(2);
+        
+        // Automatically suggest the weighted average target volunteers per shift based on selected tiers
+        if(count > 0) {
+            let avgTierVols = Math.round(weightedVolsSum / count);
+            document.getElementById("volunteers").value = Math.max(1, avgTierVols);
+        }
+        
         document.getElementById("selectAll").checked = (checkboxes.length === allCheckboxes.length && allCheckboxes.length > 0);
         calculate();
     }
@@ -528,21 +541,18 @@
         const absenceRate = 0.30; 
         const weeksInMonth = 4.33;
 
-        // Base Calculations
         const totalHours = baseHours * volunteers;
         const gapHours = Math.max(0, totalHours - placement);
         const grossWeekly = gapHours * rate;
         const netWeekly = grossWeekly * (1 - absenceRate);
         const netMonthly = netWeekly * weeksInMonth;
 
-        // Forecasting Calculations
         const projectedRemaining = netWeekly * weeksLeft;
         const forecastTotal = ytdAchieved + projectedRemaining;
         const variance = forecastTotal - annualTarget;
 
         const currencyFormatter = new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD', maximumFractionDigits: 0 });
         
-        // Update Tab 1
         document.getElementById("displayRate").innerText = currencyFormatter.format(rate) + "/hr";
         document.getElementById("totalHours").innerText = totalHours.toFixed(1) + " hrs";
         document.getElementById("placementHours").innerText = placement.toFixed(1) + " hrs";
@@ -551,7 +561,6 @@
         document.getElementById("netWeekly").innerText = currencyFormatter.format(netWeekly);
         document.getElementById("netMonthly").innerText = currencyFormatter.format(netMonthly);
         
-        // Update Tab 2
         document.getElementById("summaryNetWeekly").innerText = currencyFormatter.format(netWeekly) + " / week";
         document.getElementById("displayYtd").innerText = currencyFormatter.format(ytdAchieved);
         document.getElementById("displayRemaining").innerText = currencyFormatter.format(projectedRemaining);
@@ -573,7 +582,6 @@
         const key = hosp + "_" + shift;
         
         const reqVols = parseFloat(document.getElementById("managerRequest").value) || 1;
-        
         const data = trafficStats[key];
         
         if(data) {
@@ -582,9 +590,8 @@
             document.getElementById("displayRequested").innerText = reqVols + " vols";
             
             const ratio = (data.traffic / reqVols).toFixed(1);
-            
             const statusEl = document.getElementById("statusMessage");
-            // Define thresholds based on the Python output (average benchmark ~300)
+            
             if (ratio < 130) {
                 statusEl.innerText = "⚠️ High Risk: Volunteers will likely be bored. Reduce roster.";
                 statusEl.className = "status-badge status-warn-low";
@@ -598,7 +605,6 @@
         }
     }
 
-    // Initialize 
     calculate();
 </script>
 
