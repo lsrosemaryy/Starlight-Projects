@@ -25,6 +25,17 @@
             gap: 20px;
             margin-bottom: 20px;
         }
+        .logo-badge {
+            background-color: #52288e;
+            color: #ffdf00;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+            font-size: 0.9em;
+            line-height: 1.2;
+            border: 2px solid #2fbca4;
+        }
         h2 { 
             color: #52288e; 
             margin: 0; 
@@ -42,7 +53,7 @@
             margin-top: 15px; 
             color: #52288e; 
         }
-        select, input { 
+        select, input[type="number"] { 
             width: 100%; 
             padding: 10px; 
             margin-top: 5px; 
@@ -53,7 +64,7 @@
             color: #52288e; 
             background-color: #ffffff;
         }
-        select:focus, input:focus {
+        select:focus, input[type="number"]:focus {
             outline: none;
             border-color: #2fbca4; 
         }
@@ -62,13 +73,44 @@
             color: #b933a4; 
             margin-top: 4px; 
         }
-        .two-col {
+        
+        /* Checkbox Grid Styles */
+        .cb-container {
+            background: #ffffff;
+            border: 2px solid #ace4db;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 5px;
+        }
+        .cb-header {
+            border-bottom: 2px solid #ace4db;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+        .cb-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        .cb-grid label, .cb-header label {
+            font-weight: normal;
             display: flex;
-            gap: 15px;
+            align-items: center;
+            margin-top: 5px;
+            font-size: 0.9em;
+            cursor: pointer;
         }
-        .two-col > div {
-            flex: 1;
+        .cb-grid input[type="checkbox"], .cb-header input[type="checkbox"] {
+            margin-right: 8px;
+            accent-color: #2fbca4;
         }
+        .cb-grid strong {
+            color: #b933a4;
+            font-size: 0.95em;
+            display: block;
+            margin-bottom: 5px;
+        }
+
         .results { 
             margin-top: 20px; 
             padding: 20px; 
@@ -92,15 +134,27 @@
             color: #e4466c; 
         }
         .net-monthly {
-            font-size: 1.25em; 
+            font-size: 1.1em; 
             color: #52288e; 
             margin-top: 15px; 
+            background-color: #ffef8c; 
+            padding: 12px; 
+            border-radius: 4px; 
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+        }
+        .net-yearly {
+            font-size: 1.3em; 
+            color: #52288e; 
+            margin-top: 10px; 
             background-color: #ffdf00; 
             padding: 12px; 
             border-radius: 4px; 
             font-weight: bold;
             display: flex;
             justify-content: space-between;
+            border: 2px solid #2fbca4;
         }
     </style>
 </head>
@@ -108,11 +162,12 @@
 
 <div class="container">
     <div class="header-container">
+        <div class="logo-badge">STARLIGHT<br>EXPRESS ROOM</div>
         <h2>DG&S Capacity & Roster Simulator</h2>
     </div>
     
     <label for="program">Program / Role Type:</label>
-    <select id="program" onchange="updateRate()">
+    <select id="program" onchange="calculate()">
         <optgroup label="Hospital Programs">
             <option value="45">SER - $45.00/hr</option>
             <option value="50">Livewire In Hospital - $50.00/hr</option>
@@ -136,39 +191,53 @@
         </optgroup>
     </select>
 
-    <div class="two-col">
-        <div>
-            <label for="hospital">Hospital Preset:</label>
-            <select id="hospital" onchange="applyHospitalHours()">
-                <option value="0">-- Custom / Other Program --</option>
-                <optgroup label="Large Programs">
-                    <option value="44.0">CHW</option>
-                    <option value="45.0">PCH</option>
-                    <option value="43.5">RCH</option>
-                    <option value="42.5">QCH</option>
-                </optgroup>
-                <optgroup label="Medium Programs">
-                    <option value="46.5">MCH</option>
-                    <option value="45.0">W&CH</option>
-                    <option value="40.0">SCH</option>
-                    <option value="40.0">JHCH</option>
-                </optgroup>
-                <optgroup label="Small Programs">
-                    <option value="15.0">ASH</option>
-                    <option value="15.0">RDH</option>
-                    <option value="9.75">ACT (CHWC)</option>
-                </optgroup>
-            </select>
+    <label>
+        <svg style="width: 24px; height: 24px; margin-right: 8px;" viewBox="0 0 24 24" fill="#ace4db" stroke="#52288e" stroke-width="1.5">
+            <path d="M4 22h16V4a2 2 0 00-2-2H6a2 2 0 00-2 2v18z"/>
+            <path d="M10 22v-6h4v6M8 6h2M14 6h2M8 11h2M14 11h2M8 16h2M14 16h2" stroke-linecap="round"/>
+        </svg>
+        Select Locations (National & Custom Views):
+    </label>
+    
+    <div class="cb-container">
+        <div class="cb-header">
+            <label><input type="checkbox" id="selectAll" onchange="toggleAll(this)"> <strong>Select All (National View)</strong></label>
         </div>
-        <div>
-            <label for="baseHours">Base Weekly Hours:</label>
-            <input type="number" id="baseHours" value="44.0" step="0.5" min="0" oninput="calculate()">
+        <div class="cb-grid">
+            <div>
+                <strong>Large Programs</strong>
+                <label><input type="checkbox" class="hosp-cb" value="44.0" onchange="updateBaseHours()"> CHW</label>
+                <label><input type="checkbox" class="hosp-cb" value="45.0" onchange="updateBaseHours()"> PCH</label>
+                <label><input type="checkbox" class="hosp-cb" value="43.5" onchange="updateBaseHours()"> RCH</label>
+                <label><input type="checkbox" class="hosp-cb" value="42.5" onchange="updateBaseHours()"> QCH</label>
+            </div>
+            <div>
+                <strong>Medium Programs</strong>
+                <label><input type="checkbox" class="hosp-cb" value="46.5" onchange="updateBaseHours()"> MCH</label>
+                <label><input type="checkbox" class="hosp-cb" value="45.0" onchange="updateBaseHours()"> W&CH</label>
+                <label><input type="checkbox" class="hosp-cb" value="40.0" onchange="updateBaseHours()"> SCH</label>
+                <label><input type="checkbox" class="hosp-cb" value="40.0" onchange="updateBaseHours()"> JHCH</label>
+            </div>
+            <div>
+                <strong>Small Programs</strong>
+                <label><input type="checkbox" class="hosp-cb" value="15.0" onchange="updateBaseHours()"> ASH</label>
+                <label><input type="checkbox" class="hosp-cb" value="15.0" onchange="updateBaseHours()"> RDH</label>
+                <label><input type="checkbox" class="hosp-cb" value="9.75" onchange="updateBaseHours()"> ACT (CHWC)</label>
+            </div>
         </div>
     </div>
 
-    <label for="volunteers">Target Volunteers Per Shift (Multiplier):</label>
-    <input type="number" id="volunteers" value="2" min="1" oninput="calculate()">
-    <div class="subtext">Multiplies the base weekly hours to simulate multiple volunteers rostered at once.</div>
+    <div style="display: flex; gap: 15px;">
+        <div style="flex: 1;">
+            <label for="baseHours">Total Aggregated Base Hours:</label>
+            <input type="number" id="baseHours" value="0" step="0.5" min="0" oninput="calculate()">
+        </div>
+        <div style="flex: 1;">
+            <label for="volunteers">Target Volunteers Per Shift:</label>
+            <input type="number" id="volunteers" value="2" min="1" oninput="calculate()">
+        </div>
+    </div>
+    <div class="subtext">The aggregated base room hours are multiplied by your target volunteers.</div>
 
     <label for="placement">Placement Student Hours (Weekly Contribution):</label>
     <input type="number" id="placement" value="0" min="0" oninput="calculate()">
@@ -185,29 +254,45 @@
         <div class="result-item">Net Weekly DG&S (Minus 30% Absences): <span class="highlight" id="netWeekly">$0</span></div>
         
         <div class="net-monthly">
+            <span>Net Monthly DG&S:</span>
+            <span id="netMonthly">$0</span>
+        </div>
+        
+        <div class="net-yearly">
             <div style="display: flex; align-items: center; gap: 10px;">
                 <svg style="width: 28px; height: 28px;" viewBox="0 0 24 24" fill="#b933a4">
                     <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                 </svg>
-                Net Monthly DG&S Projection:
+                Net Yearly DG&S Projection:
             </div>
-            <span id="netMonthly">$0</span>
+            <span id="netYearly">$0</span>
         </div>
     </div>
 </div>
 
 <script>
-    function updateRate() {
-        calculate();
+    function toggleAll(source) {
+        const checkboxes = document.querySelectorAll('.hosp-cb');
+        checkboxes.forEach(cb => {
+            cb.checked = source.checked;
+        });
+        updateBaseHours();
     }
 
-    function applyHospitalHours() {
-        const hospitalSelect = document.getElementById("hospital");
-        const baseHoursInput = document.getElementById("baseHours");
+    function updateBaseHours() {
+        let total = 0;
+        const checkboxes = document.querySelectorAll('.hosp-cb:checked');
+        const allCheckboxes = document.querySelectorAll('.hosp-cb');
         
-        if(hospitalSelect.value !== "0") {
-            baseHoursInput.value = hospitalSelect.value;
-        }
+        checkboxes.forEach(cb => {
+            total += parseFloat(cb.value);
+        });
+        
+        document.getElementById("baseHours").value = total.toFixed(2);
+        
+        // Auto-update the "Select All" checkbox state
+        document.getElementById("selectAll").checked = (checkboxes.length === allCheckboxes.length && allCheckboxes.length > 0);
+        
         calculate();
     }
 
@@ -219,6 +304,7 @@
         
         const absenceRate = 0.30; 
         const weeksInMonth = 4.33;
+        const weeksInYear = 52;
 
         const totalHours = baseHours * volunteers;
         const gapHours = Math.max(0, totalHours - placement);
@@ -226,6 +312,7 @@
         const grossWeekly = gapHours * rate;
         const netWeekly = grossWeekly * (1 - absenceRate);
         const netMonthly = netWeekly * weeksInMonth;
+        const netYearly = netWeekly * weeksInYear;
 
         const currencyFormatter = new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD' });
         
@@ -237,10 +324,11 @@
         document.getElementById("grossWeekly").innerText = currencyFormatter.format(grossWeekly);
         document.getElementById("netWeekly").innerText = currencyFormatter.format(netWeekly);
         document.getElementById("netMonthly").innerText = currencyFormatter.format(netMonthly);
+        document.getElementById("netYearly").innerText = currencyFormatter.format(netYearly);
     }
 
-    // Initialize with default values
-    applyHospitalHours();
+    // Initialize display values
+    calculate();
 </script>
 
 </body>
