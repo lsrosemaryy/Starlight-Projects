@@ -44,8 +44,46 @@
             color: #b933a4; 
             border-bottom: 2px solid #ecd0ea; 
             padding-bottom: 5px; 
-            margin-top: 25px; 
+            margin-top: 20px; 
         }
+        
+        /* Tabs Styling */
+        .tabs {
+            display: flex;
+            border-bottom: 3px solid #52288e;
+            margin-bottom: 20px;
+        }
+        .tab-button {
+            background-color: #ecd0ea;
+            color: #52288e;
+            border: none;
+            padding: 12px 20px;
+            font-size: 1.05em;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 8px 8px 0 0;
+            margin-right: 5px;
+            transition: 0.2s;
+        }
+        .tab-button:hover {
+            background-color: #d6cbe4;
+        }
+        .tab-button.active {
+            background-color: #52288e;
+            color: #ffdf00;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
         label { 
             font-weight: bold; 
             display: flex; 
@@ -118,13 +156,7 @@
         .two-col > div {
             flex: 1;
         }
-        .budget-box {
-            background-color: #f8f6fb;
-            border: 2px dashed #b933a4;
-            border-radius: 4px;
-            padding: 15px;
-            margin-top: 20px;
-        }
+        
         .results { 
             margin-top: 20px; 
             padding: 20px; 
@@ -187,6 +219,16 @@
         }
         .surplus { color: #27ae60; }
         .deficit { color: #c0392b; }
+        .roster-summary {
+            background-color: #f8f6fb;
+            border: 2px dashed #b933a4;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+        }
     </style>
 </head>
 <body>
@@ -195,79 +237,105 @@
     <div class="header-container">
         <h2>DG&S Capacity & Roster Simulator</h2>
     </div>
-    
-    <label for="program">Program / Role Type:</label>
-    <select id="program" onchange="calculate()">
-        <optgroup label="Hospital Programs">
-            <option value="45">SER - $45.00/hr</option>
-            <option value="50">Livewire In Hospital - $50.00/hr</option>
-            <option value="50">Livewire Online - $50.00/hr</option>
-        </optgroup>
-        <optgroup label="Training">
-            <option value="45">Compulsory Training - SER - $45.00/hr</option>
-            <option value="50">Compulsory Training - LWIH - $50.00/hr</option>
-            <option value="50">Compulsory Training - LWO - $50.00/hr</option>
-        </optgroup>
-        <optgroup label="Office & Specialized">
-            <option value="38">Total Office - Programs - $38.00/hr</option>
-            <option value="35.50">Wishgranting - $35.50/hr</option>
-            <option value="150">R&E- Expert - $150.00/hr</option>
-            <option value="70">R&E- Professionally Skilled - $70.00/hr</option>
-        </optgroup>
-        <optgroup label="Corporate Volunteers">
-            <option value="38">Corporate Vols - TBWP - $38.00/hr</option>
-            <option value="38">Corporate Vols- Spark Acc - $38.00/hr</option>
-            <option value="38">Corporate Vols - Misc - $38.00/hr</option>
-        </optgroup>
-    </select>
 
-    <label>Select Locations (National & Custom Views):</label>
-    <div class="cb-container">
-        <div class="cb-header">
-            <label><input type="checkbox" id="selectAll" onchange="toggleAll(this)"> <strong>Select All (National View)</strong></label>
+    <div class="tabs">
+        <button class="tab-button active" onclick="openTab(event, 'rosterTab')">1. Roster Settings</button>
+        <button class="tab-button" onclick="openTab(event, 'budgetTab')">2. Mid-Year Budget</button>
+    </div>
+    
+    <!-- TAB 1: ROSTER SETTINGS -->
+    <div id="rosterTab" class="tab-content active">
+        <label for="program">Program / Role Type:</label>
+        <select id="program" onchange="calculate()">
+            <optgroup label="Hospital Programs">
+                <option value="45">SER - $45.00/hr</option>
+                <option value="50">Livewire In Hospital - $50.00/hr</option>
+                <option value="50">Livewire Online - $50.00/hr</option>
+            </optgroup>
+            <optgroup label="Training">
+                <option value="45">Compulsory Training - SER - $45.00/hr</option>
+                <option value="50">Compulsory Training - LWIH - $50.00/hr</option>
+                <option value="50">Compulsory Training - LWO - $50.00/hr</option>
+            </optgroup>
+            <optgroup label="Office & Specialized">
+                <option value="38">Total Office - Programs - $38.00/hr</option>
+                <option value="35.50">Wishgranting - $35.50/hr</option>
+                <option value="150">R&E- Expert - $150.00/hr</option>
+                <option value="70">R&E- Professionally Skilled - $70.00/hr</option>
+            </optgroup>
+            <optgroup label="Corporate Volunteers">
+                <option value="38">Corporate Vols - TBWP - $38.00/hr</option>
+                <option value="38">Corporate Vols- Spark Acc - $38.00/hr</option>
+                <option value="38">Corporate Vols - Misc - $38.00/hr</option>
+            </optgroup>
+        </select>
+
+        <label>Select Locations (National & Custom Views):</label>
+        <div class="cb-container">
+            <div class="cb-header">
+                <label><input type="checkbox" id="selectAll" onchange="toggleAll(this)"> <strong>Select All (National View)</strong></label>
+            </div>
+            <div class="cb-grid">
+                <div>
+                    <strong>Large Programs</strong>
+                    <label><input type="checkbox" class="hosp-cb" value="44.0" onchange="updateBaseHours()"> CHW</label>
+                    <label><input type="checkbox" class="hosp-cb" value="45.0" onchange="updateBaseHours()"> PCH</label>
+                    <label><input type="checkbox" class="hosp-cb" value="43.5" onchange="updateBaseHours()"> RCH</label>
+                    <label><input type="checkbox" class="hosp-cb" value="42.5" onchange="updateBaseHours()"> QCH</label>
+                </div>
+                <div>
+                    <strong>Medium Programs</strong>
+                    <label><input type="checkbox" class="hosp-cb" value="46.5" onchange="updateBaseHours()"> MCH</label>
+                    <label><input type="checkbox" class="hosp-cb" value="45.0" onchange="updateBaseHours()"> W&CH</label>
+                    <label><input type="checkbox" class="hosp-cb" value="40.0" onchange="updateBaseHours()"> SCH</label>
+                    <label><input type="checkbox" class="hosp-cb" value="40.0" onchange="updateBaseHours()"> JHCH</label>
+                </div>
+                <div>
+                    <strong>Small Programs</strong>
+                    <label><input type="checkbox" class="hosp-cb" value="15.0" onchange="updateBaseHours()"> ASH</label>
+                    <label><input type="checkbox" class="hosp-cb" value="15.0" onchange="updateBaseHours()"> RDH</label>
+                    <label><input type="checkbox" class="hosp-cb" value="9.75" onchange="updateBaseHours()"> ACT (CHWC)</label>
+                </div>
+            </div>
         </div>
-        <div class="cb-grid">
+
+        <div class="two-col" style="margin-top: 15px;">
             <div>
-                <strong>Large Programs</strong>
-                <label><input type="checkbox" class="hosp-cb" value="44.0" onchange="updateBaseHours()"> CHW</label>
-                <label><input type="checkbox" class="hosp-cb" value="45.0" onchange="updateBaseHours()"> PCH</label>
-                <label><input type="checkbox" class="hosp-cb" value="43.5" onchange="updateBaseHours()"> RCH</label>
-                <label><input type="checkbox" class="hosp-cb" value="42.5" onchange="updateBaseHours()"> QCH</label>
+                <label for="baseHours">Total Base Room Hours:</label>
+                <input type="number" id="baseHours" value="0" step="0.5" min="0" oninput="calculate()">
             </div>
             <div>
-                <strong>Medium Programs</strong>
-                <label><input type="checkbox" class="hosp-cb" value="46.5" onchange="updateBaseHours()"> MCH</label>
-                <label><input type="checkbox" class="hosp-cb" value="45.0" onchange="updateBaseHours()"> W&CH</label>
-                <label><input type="checkbox" class="hosp-cb" value="40.0" onchange="updateBaseHours()"> SCH</label>
-                <label><input type="checkbox" class="hosp-cb" value="40.0" onchange="updateBaseHours()"> JHCH</label>
+                <label for="volunteers">Target Vols Per Shift:</label>
+                <input type="number" id="volunteers" value="2" min="1" oninput="calculate()">
             </div>
-            <div>
-                <strong>Small Programs</strong>
-                <label><input type="checkbox" class="hosp-cb" value="15.0" onchange="updateBaseHours()"> ASH</label>
-                <label><input type="checkbox" class="hosp-cb" value="15.0" onchange="updateBaseHours()"> RDH</label>
-                <label><input type="checkbox" class="hosp-cb" value="9.75" onchange="updateBaseHours()"> ACT (CHWC)</label>
+        </div>
+
+        <label for="placement">Placement Student Hours (Weekly Contribution):</label>
+        <input type="number" id="placement" value="0" min="0" oninput="calculate()">
+
+        <h3>Roster Output</h3>
+        <div class="results">
+            <div class="result-item">Current Hourly Rate: <span class="highlight" id="displayRate">$45.00</span></div>
+            <div class="result-item">Total Required Hours (Weekly): <span class="highlight" id="totalHours">0</span></div>
+            <div class="result-item">Hours Covered by Placements: <span class="highlight" id="placementHours">0</span></div>
+            <div class="result-item divider">Gap for Standard Vols (Weekly): <span class="highlight" id="gapHours">0</span></div>
+            
+            <div class="result-item" style="margin-top: 15px;">Gross DG&S Value (Weekly Gap): <span class="highlight" id="grossWeekly">$0</span></div>
+            <div class="result-item">Net Weekly DG&S (Minus 30% Absences): <span class="highlight" id="netWeekly">$0</span></div>
+            
+            <div class="net-monthly">
+                <span>Net Monthly DG&S (Standard Vols):</span>
+                <span id="netMonthly">$0</span>
             </div>
         </div>
     </div>
 
-    <div class="two-col" style="margin-top: 15px;">
-        <div>
-            <label for="baseHours">Total Base Room Hours:</label>
-            <input type="number" id="baseHours" value="0" step="0.5" min="0" oninput="calculate()">
+    <!-- TAB 2: BUDGET FORECAST -->
+    <div id="budgetTab" class="tab-content">
+        <div class="roster-summary">
+            <span style="color: #b933a4;">Active Roster Generator Feeding Forecast:</span>
+            <span class="highlight" id="summaryNetWeekly">$0 / week</span>
         </div>
-        <div>
-            <label for="volunteers">Target Vols Per Shift:</label>
-            <input type="number" id="volunteers" value="2" min="1" oninput="calculate()">
-        </div>
-    </div>
-
-    <label for="placement">Placement Student Hours (Weekly Contribution):</label>
-    <input type="number" id="placement" value="0" min="0" oninput="calculate()">
-    
-    <!-- MID YEAR FORECASTING SECTION -->
-    <div class="budget-box">
-        <h3 style="margin-top: 0;">Mid-Year Budget Forecast</h3>
-        <div class="subtext" style="margin-bottom: 10px;">Input your annual targets to see if current roster settings will meet the goal.</div>
         
         <div class="two-col">
             <div>
@@ -281,50 +349,52 @@
         </div>
         <label for="weeksLeft">Remaining Weeks in Year:</label>
         <input type="number" id="weeksLeft" value="26" min="1" max="52" oninput="calculate()">
-    </div>
 
-    <h3>Projections</h3>
-    <div class="results">
-        <div class="result-item">Current Hourly Rate: <span class="highlight" id="displayRate">$45.00</span></div>
-        <div class="result-item">Total Required Hours (Weekly): <span class="highlight" id="totalHours">0</span></div>
-        <div class="result-item">Hours Covered by Placements: <span class="highlight" id="placementHours">0</span></div>
-        <div class="result-item divider">Gap for Standard Vols (Weekly): <span class="highlight" id="gapHours">0</span></div>
-        
-        <div class="result-item" style="margin-top: 15px;">Gross DG&S Value (Weekly Gap): <span class="highlight" id="grossWeekly">$0</span></div>
-        <div class="result-item">Net Weekly DG&S (Minus 30% Absences): <span class="highlight" id="netWeekly">$0</span></div>
-        
-        <div class="net-monthly">
-            <span>Net Monthly DG&S (Standard Vols):</span>
-            <span id="netMonthly">$0</span>
-        </div>
-        
-        <div class="net-yearly">
-            <div class="forecast-row">
-                <span>YTD Achieved:</span>
-                <span id="displayYtd">$0</span>
-            </div>
-            <div class="forecast-row">
-                <span>+ Projected Remaining (Based on Settings):</span>
-                <span id="displayRemaining">$0</span>
-            </div>
-            <div class="forecast-final">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <svg style="width: 28px; height: 28px;" viewBox="0 0 24 24" fill="#b933a4">
-                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                    </svg>
-                    Forecast End of Year:
+        <h3>Budget Projections</h3>
+        <div class="results">
+            <div class="net-yearly" style="margin-top: 0;">
+                <div class="forecast-row">
+                    <span>YTD Achieved:</span>
+                    <span id="displayYtd">$0</span>
                 </div>
-                <span id="forecastTotal">$0</span>
-            </div>
-            <div class="forecast-row" style="margin-top: 5px;">
-                <span>Vs. Annual Target:</span>
-                <span id="forecastVariance" style="background: white; padding: 2px 8px; border-radius: 4px;">$0</span>
+                <div class="forecast-row">
+                    <span>+ Projected Remaining (Based on Roster Tab):</span>
+                    <span id="displayRemaining">$0</span>
+                </div>
+                <div class="forecast-final">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <svg style="width: 28px; height: 28px;" viewBox="0 0 24 24" fill="#b933a4">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        Forecast End of Year:
+                    </div>
+                    <span id="forecastTotal">$0</span>
+                </div>
+                <div class="forecast-row" style="margin-top: 5px;">
+                    <span>Vs. Annual Target:</span>
+                    <span id="forecastVariance" style="background: white; padding: 2px 8px; border-radius: 4px;">$0</span>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
+    function openTab(evt, tabName) {
+        const tabContents = document.getElementsByClassName("tab-content");
+        for (let i = 0; i < tabContents.length; i++) {
+            tabContents[i].classList.remove("active");
+        }
+        
+        const tabButtons = document.getElementsByClassName("tab-button");
+        for (let i = 0; i < tabButtons.length; i++) {
+            tabButtons[i].classList.remove("active");
+        }
+        
+        document.getElementById(tabName).classList.add("active");
+        evt.currentTarget.classList.add("active");
+    }
+
     function toggleAll(source) {
         const checkboxes = document.querySelectorAll('.hosp-cb');
         checkboxes.forEach(cb => {
@@ -374,15 +444,17 @@
 
         const currencyFormatter = new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD', maximumFractionDigits: 0 });
         
+        // Update Tab 1 Outputs
         document.getElementById("displayRate").innerText = currencyFormatter.format(rate) + "/hr";
         document.getElementById("totalHours").innerText = totalHours.toFixed(1) + " hrs";
         document.getElementById("placementHours").innerText = placement.toFixed(1) + " hrs";
         document.getElementById("gapHours").innerText = gapHours.toFixed(1) + " hrs";
-        
         document.getElementById("grossWeekly").innerText = currencyFormatter.format(grossWeekly);
         document.getElementById("netWeekly").innerText = currencyFormatter.format(netWeekly);
         document.getElementById("netMonthly").innerText = currencyFormatter.format(netMonthly);
         
+        // Update Tab 2 Outputs
+        document.getElementById("summaryNetWeekly").innerText = currencyFormatter.format(netWeekly) + " / week";
         document.getElementById("displayYtd").innerText = currencyFormatter.format(ytdAchieved);
         document.getElementById("displayRemaining").innerText = currencyFormatter.format(projectedRemaining);
         document.getElementById("forecastTotal").innerText = currencyFormatter.format(forecastTotal);
@@ -397,6 +469,7 @@
         }
     }
 
+    // Initialize 
     calculate();
 </script>
 
