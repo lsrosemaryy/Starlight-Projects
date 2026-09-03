@@ -11,7 +11,7 @@
             color: #52288e; 
         }
         .container { 
-            max-width: 650px; 
+            max-width: 700px; 
             background: white; 
             padding: 25px; 
             border-radius: 8px; 
@@ -52,6 +52,7 @@
             align-items: center;
             margin-top: 15px; 
             color: #52288e; 
+            font-size: 0.95em;
         }
         select, input[type="number"] { 
             width: 100%; 
@@ -110,7 +111,20 @@
             display: block;
             margin-bottom: 5px;
         }
-
+        .two-col {
+            display: flex;
+            gap: 15px;
+        }
+        .two-col > div {
+            flex: 1;
+        }
+        .budget-box {
+            background-color: #f8f6fb;
+            border: 2px dashed #b933a4;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 20px;
+        }
         .results { 
             margin-top: 20px; 
             padding: 20px; 
@@ -145,17 +159,34 @@
             justify-content: space-between;
         }
         .net-yearly {
-            font-size: 1.3em; 
+            font-size: 1.25em; 
             color: #52288e; 
             margin-top: 10px; 
             background-color: #ffdf00; 
-            padding: 12px; 
+            padding: 15px; 
             border-radius: 4px; 
             font-weight: bold;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            gap: 10px;
             border: 2px solid #2fbca4;
         }
+        .forecast-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9em;
+        }
+        .forecast-final {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 2px solid #52288e;
+            padding-top: 10px;
+            font-size: 1.1em;
+        }
+        .surplus { color: #27ae60; }
+        .deficit { color: #c0392b; }
     </style>
 </head>
 <body>
@@ -190,14 +221,7 @@
         </optgroup>
     </select>
 
-    <label>
-        <svg style="width: 24px; height: 24px; margin-right: 8px;" viewBox="0 0 24 24" fill="#ace4db" stroke="#52288e" stroke-width="1.5">
-            <path d="M4 22h16V4a2 2 0 00-2-2H6a2 2 0 00-2 2v18z"/>
-            <path d="M10 22v-6h4v6M8 6h2M14 6h2M8 11h2M14 11h2M8 16h2M14 16h2" stroke-linecap="round"/>
-        </svg>
-        Select Locations (National & Custom Views):
-    </label>
-    
+    <label>Select Locations (National & Custom Views):</label>
     <div class="cb-container">
         <div class="cb-header">
             <label><input type="checkbox" id="selectAll" onchange="toggleAll(this)"> <strong>Select All (National View)</strong></label>
@@ -226,21 +250,38 @@
         </div>
     </div>
 
-    <div style="display: flex; gap: 15px;">
-        <div style="flex: 1;">
-            <label for="baseHours">Total Aggregated Base Hours:</label>
+    <div class="two-col" style="margin-top: 15px;">
+        <div>
+            <label for="baseHours">Total Base Room Hours:</label>
             <input type="number" id="baseHours" value="0" step="0.5" min="0" oninput="calculate()">
         </div>
-        <div style="flex: 1;">
-            <label for="volunteers">Target Volunteers Per Shift:</label>
+        <div>
+            <label for="volunteers">Target Vols Per Shift:</label>
             <input type="number" id="volunteers" value="2" min="1" oninput="calculate()">
         </div>
     </div>
-    <div class="subtext">The aggregated base room hours are multiplied by your target volunteers.</div>
 
     <label for="placement">Placement Student Hours (Weekly Contribution):</label>
     <input type="number" id="placement" value="0" min="0" oninput="calculate()">
-    <div class="subtext">Hours covered by students that do not require standard volunteer recruitment.</div>
+    
+    <!-- MID YEAR FORECASTING SECTION -->
+    <div class="budget-box">
+        <h3 style="margin-top: 0;">Mid-Year Budget Forecast</h3>
+        <div class="subtext" style="margin-bottom: 10px;">Input your annual targets to see if current roster settings will meet the goal.</div>
+        
+        <div class="two-col">
+            <div>
+                <label for="annualTarget">Annual Target ($):</label>
+                <input type="number" id="annualTarget" value="1000000" step="1000" oninput="calculate()">
+            </div>
+            <div>
+                <label for="ytdAchieved">YTD Achieved ($):</label>
+                <input type="number" id="ytdAchieved" value="500000" step="1000" oninput="calculate()">
+            </div>
+        </div>
+        <label for="weeksLeft">Remaining Weeks in Year:</label>
+        <input type="number" id="weeksLeft" value="26" min="1" max="52" oninput="calculate()">
+    </div>
 
     <h3>Projections</h3>
     <div class="results">
@@ -253,18 +294,32 @@
         <div class="result-item">Net Weekly DG&S (Minus 30% Absences): <span class="highlight" id="netWeekly">$0</span></div>
         
         <div class="net-monthly">
-            <span>Net Monthly DG&S:</span>
+            <span>Net Monthly DG&S (Standard Vols):</span>
             <span id="netMonthly">$0</span>
         </div>
         
         <div class="net-yearly">
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <svg style="width: 28px; height: 28px;" viewBox="0 0 24 24" fill="#b933a4">
-                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                </svg>
-                Net Yearly DG&S Projection:
+            <div class="forecast-row">
+                <span>YTD Achieved:</span>
+                <span id="displayYtd">$0</span>
             </div>
-            <span id="netYearly">$0</span>
+            <div class="forecast-row">
+                <span>+ Projected Remaining (Based on Settings):</span>
+                <span id="displayRemaining">$0</span>
+            </div>
+            <div class="forecast-final">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <svg style="width: 28px; height: 28px;" viewBox="0 0 24 24" fill="#b933a4">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                    Forecast End of Year:
+                </div>
+                <span id="forecastTotal">$0</span>
+            </div>
+            <div class="forecast-row" style="margin-top: 5px;">
+                <span>Vs. Annual Target:</span>
+                <span id="forecastVariance" style="background: white; padding: 2px 8px; border-radius: 4px;">$0</span>
+            </div>
         </div>
     </div>
 </div>
@@ -288,10 +343,7 @@
         });
         
         document.getElementById("baseHours").value = total.toFixed(2);
-        
-        // Auto-update the "Select All" checkbox state
         document.getElementById("selectAll").checked = (checkboxes.length === allCheckboxes.length && allCheckboxes.length > 0);
-        
         calculate();
     }
 
@@ -301,19 +353,26 @@
         const volunteers = parseFloat(document.getElementById("volunteers").value) || 0;
         const placement = parseFloat(document.getElementById("placement").value) || 0;
         
+        const annualTarget = parseFloat(document.getElementById("annualTarget").value) || 0;
+        const ytdAchieved = parseFloat(document.getElementById("ytdAchieved").value) || 0;
+        const weeksLeft = parseFloat(document.getElementById("weeksLeft").value) || 0;
+        
         const absenceRate = 0.30; 
         const weeksInMonth = 4.33;
-        const weeksInYear = 52;
 
+        // Base Calculations
         const totalHours = baseHours * volunteers;
         const gapHours = Math.max(0, totalHours - placement);
-
         const grossWeekly = gapHours * rate;
         const netWeekly = grossWeekly * (1 - absenceRate);
         const netMonthly = netWeekly * weeksInMonth;
-        const netYearly = netWeekly * weeksInYear;
 
-        const currencyFormatter = new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD' });
+        // Forecasting Calculations
+        const projectedRemaining = netWeekly * weeksLeft;
+        const forecastTotal = ytdAchieved + projectedRemaining;
+        const variance = forecastTotal - annualTarget;
+
+        const currencyFormatter = new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD', maximumFractionDigits: 0 });
         
         document.getElementById("displayRate").innerText = currencyFormatter.format(rate) + "/hr";
         document.getElementById("totalHours").innerText = totalHours.toFixed(1) + " hrs";
@@ -323,10 +382,21 @@
         document.getElementById("grossWeekly").innerText = currencyFormatter.format(grossWeekly);
         document.getElementById("netWeekly").innerText = currencyFormatter.format(netWeekly);
         document.getElementById("netMonthly").innerText = currencyFormatter.format(netMonthly);
-        document.getElementById("netYearly").innerText = currencyFormatter.format(netYearly);
+        
+        document.getElementById("displayYtd").innerText = currencyFormatter.format(ytdAchieved);
+        document.getElementById("displayRemaining").innerText = currencyFormatter.format(projectedRemaining);
+        document.getElementById("forecastTotal").innerText = currencyFormatter.format(forecastTotal);
+        
+        const varianceEl = document.getElementById("forecastVariance");
+        if(variance >= 0) {
+            varianceEl.innerText = "+" + currencyFormatter.format(variance) + " (Surplus)";
+            varianceEl.className = "surplus";
+        } else {
+            varianceEl.innerText = currencyFormatter.format(variance) + " (Shortfall)";
+            varianceEl.className = "deficit";
+        }
     }
 
-    // Initialize display values
     calculate();
 </script>
 
