@@ -449,21 +449,21 @@
                 </div>
                 <div class="cb-grid">
                     <div>
-                        <strong>Large Programs</strong>
+                        <strong>Large Programs (Weekday)</strong>
                         <label><input type="checkbox" class="hosp-cb" value="40.0" data-shifts="26" data-tier="large" onchange="updateBaseHours()"> CHW</label>
                         <label><input type="checkbox" class="hosp-cb" value="40.0" data-shifts="24" data-tier="large" onchange="updateBaseHours()"> RCH</label>
                         <label><input type="checkbox" class="hosp-cb" value="38.5" data-shifts="20" data-tier="large" onchange="updateBaseHours()"> QCH</label>
                         <label><input type="checkbox" class="hosp-cb" value="45.0" data-shifts="20" data-tier="large" onchange="updateBaseHours()"> PCH</label>
                     </div>
                     <div>
-                        <strong>Medium Programs</strong>
+                        <strong>Medium Programs (Weekday)</strong>
                         <label><input type="checkbox" class="hosp-cb" value="43.0" data-shifts="18" data-tier="medium" onchange="updateBaseHours()"> MCH</label>
                         <label><input type="checkbox" class="hosp-cb" value="45.0" data-shifts="16" data-tier="medium" onchange="updateBaseHours()"> W&CH</label>
                         <label><input type="checkbox" class="hosp-cb" value="40.0" data-shifts="30" data-tier="medium" onchange="updateBaseHours()"> SCH</label>
                         <label><input type="checkbox" class="hosp-cb" value="40.0" data-shifts="20" data-tier="medium" onchange="updateBaseHours()"> JHCH</label>
                     </div>
                     <div>
-                        <strong>Small Programs</strong>
+                        <strong>Small Programs (Weekday)</strong>
                         <label><input type="checkbox" class="hosp-cb" value="15.0" data-shifts="8" data-tier="small" onchange="updateBaseHours()"> RDH</label>
                         <label><input type="checkbox" class="hosp-cb" value="9.75" data-shifts="2" data-tier="small" onchange="updateBaseHours()"> ACT (CHWC)</label>
                         <label><input type="checkbox" class="hosp-cb" value="15.0" data-shifts="4" data-tier="small" onchange="updateBaseHours()"> ASH</label>
@@ -478,14 +478,14 @@
                 </div>
                 <div class="cb-grid-2">
                     <div>
-                        <strong>Large Programs</strong>
-                        <label><input type="checkbox" class="hosp-cb" value="4.0" data-shifts="4" data-tier="large" data-sat-vols="4" onchange="updateBaseHours()"> CHW</label>
-                        <label><input type="checkbox" class="hosp-cb" value="3.5" data-shifts="3" data-tier="large" data-sat-vols="3" onchange="updateBaseHours()"> RCH</label>
-                        <label><input type="checkbox" class="hosp-cb" value="4.0" data-shifts="3" data-tier="large" data-sat-vols="3" onchange="updateBaseHours()"> QCH</label>
+                        <strong>Large Programs (Saturday)</strong>
+                        <label><input type="checkbox" class="hosp-cb" value="4.0" data-shifts="4" data-tier="large" data-sat-vols="4" onchange="updateBaseHours()"> CHW (Sat Open 4 vols)</label>
+                        <label><input type="checkbox" class="hosp-cb" value="3.5" data-shifts="3" data-tier="large" data-sat-vols="3" onchange="updateBaseHours()"> RCH (Sat PM 1:30)</label>
+                        <label><input type="checkbox" class="hosp-cb" value="4.0" data-shifts="3" data-tier="large" data-sat-vols="3" onchange="updateBaseHours()"> QCH (Sat PM 1:00)</label>
                     </div>
                     <div>
-                        <strong>Medium Programs</strong>
-                        <label><input type="checkbox" class="hosp-cb" value="3.5" data-shifts="3" data-tier="medium" data-sat-vols="3" onchange="updateBaseHours()"> MCH</label>
+                        <strong>Medium Programs (Saturday)</strong>
+                        <label><input type="checkbox" class="hosp-cb" value="3.5" data-shifts="3" data-tier="medium" data-sat-vols="3" onchange="updateBaseHours()"> MCH (Sat PM 1:30)</label>
                     </div>
                 </div>
             </div>
@@ -763,7 +763,7 @@
     function updateBaseHours() {
         let totalBase = 0;
         let totalReq = 0;
-        let totalShifts = 0; // New variable to track physical shifts needed
+        let totalShifts = 0; 
         let count = 0;
         
         const checkboxes = document.querySelectorAll('.hosp-cb:checked');
@@ -782,7 +782,6 @@
                 else if(tier === 'small') vols = 1;
             }
             
-            // Track total shifts specifically for the Recruitment Tab link
             if (cb.hasAttribute('data-shifts')) {
                 totalShifts += parseInt(cb.getAttribute('data-shifts'));
             }
@@ -793,8 +792,6 @@
         });
         
         document.getElementById("baseHours").value = totalBase.toFixed(2);
-        
-        // Sync the total calculated shifts over to Tab 4 immediately
         document.getElementById("weeklyShifts").value = totalShifts;
         
         if(totalBase > 0) {
@@ -806,7 +803,7 @@
         
         document.getElementById("selectAll").checked = (checkboxes.length === allCheckboxes.length && allCheckboxes.length > 0);
         calculate();
-        calculateRecruitment(); // Keep recruitment numbers up to date in the background
+        calculateRecruitment(); 
     }
 
     function calculate() {
@@ -914,30 +911,36 @@
         const avgTenureInput = document.getElementById("avgTenure").value;
         const avgTenure = avgTenureInput ? parseFloat(avgTenureInput) : 0;
 
-        // Calculate Ideal Headcount: (Weekly shifts * 4.33 weeks) / Shifts per month per volunteer
+        // Calculate Ideal Headcount
         const monthlyShiftsNeeded = weeklyShifts * 4.33;
-        
-        // Prevent division by zero or Infinity
         let idealHeadcount = 0;
         if(shiftsPerVol > 0) {
             idealHeadcount = Math.ceil(monthlyShiftsNeeded / shiftsPerVol);
         }
 
-        // Current Headcount Gap
-        const headcountGap = Math.max(0, idealHeadcount - currentVols);
-
-        // Expected Terminations: Based on average tenure
+        // Expected Terminations: Now accurately based ONLY on the people you actually currently have
         let expectedTerminations = 0;
         if(avgTenure > 0) {
             const annualTurnoverRate = 12 / avgTenure;
-            expectedTerminations = Math.ceil(idealHeadcount * annualTurnoverRate);
+            expectedTerminations = Math.ceil(currentVols * annualTurnoverRate);
         }
 
-        // Total Recruitment Target
-        const recruitmentTarget = headcountGap + expectedTerminations;
+        // Calculate the Target smartly (prevents recruiting if you are naturally downsizing an overstaffed team)
+        const projectedEndYearVols = Math.max(0, currentVols - expectedTerminations);
+        const recruitmentTarget = Math.max(0, idealHeadcount - projectedEndYearVols);
+        
+        // Display Current Headcount Gap (Visual aid only)
+        let gapText = "";
+        if (idealHeadcount > currentVols) {
+            gapText = (idealHeadcount - currentVols) + " vols";
+        } else if (idealHeadcount < currentVols && currentVols > 0) {
+            gapText = "0 vols (Overstaffed by " + (currentVols - idealHeadcount) + ")";
+        } else {
+            gapText = "0 vols";
+        }
 
         document.getElementById("idealHeadcount").innerText = idealHeadcount + " vols";
-        document.getElementById("headcountGap").innerText = headcountGap + " vols";
+        document.getElementById("headcountGap").innerText = gapText;
         document.getElementById("expectedTerminations").innerText = expectedTerminations + " vols";
         document.getElementById("recruitmentTarget").innerText = recruitmentTarget + " Volunteers";
     }
