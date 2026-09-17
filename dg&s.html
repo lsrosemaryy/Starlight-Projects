@@ -646,20 +646,20 @@
                 </div>
                 <div>
                     <label for="shiftsPerVol">Avg Shifts per Vol (Monthly):</label>
-                    <input type="number" id="shiftsPerVol" value="2" step="0.5" min="0.5" oninput="calculateRecruitment()">
-                    <div class="subtext">How often a standard volunteer completes a shift (e.g., 2 = fortnightly).</div>
+                    <input type="number" id="shiftsPerVol" value="" placeholder="e.g. 2" step="0.5" min="0.5" oninput="calculateRecruitment()">
+                    <div class="subtext">How often a volunteer completes a shift (e.g., standard is 2 / fortnightly).</div>
                 </div>
             </div>
 
             <div class="two-col" style="margin-top: 15px;">
                 <div>
                     <label for="currentVols">Current Active Volunteers:</label>
-                    <input type="number" id="currentVols" value="45" min="0" oninput="calculateRecruitment()">
+                    <input type="number" id="currentVols" value="" placeholder="e.g. 45" min="0" oninput="calculateRecruitment()">
                 </div>
                 <div>
                     <label for="avgTenure">Average Tenure (Months):</label>
-                    <input type="number" id="avgTenure" value="18" min="1" oninput="calculateRecruitment()">
-                    <div class="subtext">Average time a volunteer stays before terminating (determines expected turnover).</div>
+                    <input type="number" id="avgTenure" value="" placeholder="e.g. 18" min="1" oninput="calculateRecruitment()">
+                    <div class="subtext">Average time a volunteer stays before terminating (e.g., standard is 18 months).</div>
                 </div>
             </div>
 
@@ -904,9 +904,15 @@
 
     function calculateRecruitment() {
         const weeklyShifts = parseFloat(document.getElementById("weeklyShifts").value) || 0;
-        const shiftsPerVol = parseFloat(document.getElementById("shiftsPerVol").value) || 1;
-        const currentVols = parseFloat(document.getElementById("currentVols").value) || 0;
-        const avgTenure = parseFloat(document.getElementById("avgTenure").value) || 1;
+        
+        const shiftsPerVolInput = document.getElementById("shiftsPerVol").value;
+        const shiftsPerVol = shiftsPerVolInput ? parseFloat(shiftsPerVolInput) : 0;
+        
+        const currentVolsInput = document.getElementById("currentVols").value;
+        const currentVols = currentVolsInput ? parseFloat(currentVolsInput) : 0;
+        
+        const avgTenureInput = document.getElementById("avgTenure").value;
+        const avgTenure = avgTenureInput ? parseFloat(avgTenureInput) : 0;
 
         // Calculate Ideal Headcount: (Weekly shifts * 4.33 weeks) / Shifts per month per volunteer
         const monthlyShiftsNeeded = weeklyShifts * 4.33;
