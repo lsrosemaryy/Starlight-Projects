@@ -378,6 +378,15 @@
         .footer-support a:hover {
             text-decoration: underline;
         }
+        
+        /* Auto-synced field highlight */
+        .synced-field {
+            background-color: #e0f6f2 !important;
+            border-color: #2fbca4 !important;
+            color: #52288e;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
     </style>
 </head>
 <body>
@@ -440,24 +449,24 @@
                 </div>
                 <div class="cb-grid">
                     <div>
-                        <strong>Large Programs</strong>
-                        <label><input type="checkbox" class="hosp-cb" value="40.0" data-tier="large" onchange="updateBaseHours()"> CHW</label>
-                        <label><input type="checkbox" class="hosp-cb" value="40.0" data-tier="large" onchange="updateBaseHours()"> RCH</label>
-                        <label><input type="checkbox" class="hosp-cb" value="38.5" data-tier="large" onchange="updateBaseHours()"> QCH</label>
-                        <label><input type="checkbox" class="hosp-cb" value="45.0" data-tier="large" onchange="updateBaseHours()"> PCH</label>
+                        <strong>Large Programs (Weekday)</strong>
+                        <label><input type="checkbox" class="hosp-cb" value="40.0" data-shifts="26" data-tier="large" onchange="updateBaseHours()"> CHW</label>
+                        <label><input type="checkbox" class="hosp-cb" value="40.0" data-shifts="24" data-tier="large" onchange="updateBaseHours()"> RCH</label>
+                        <label><input type="checkbox" class="hosp-cb" value="38.5" data-shifts="20" data-tier="large" onchange="updateBaseHours()"> QCH</label>
+                        <label><input type="checkbox" class="hosp-cb" value="45.0" data-shifts="20" data-tier="large" onchange="updateBaseHours()"> PCH</label>
                     </div>
                     <div>
-                        <strong>Medium Programs</strong>
-                        <label><input type="checkbox" class="hosp-cb" value="43.0" data-tier="medium" onchange="updateBaseHours()"> MCH</label>
-                        <label><input type="checkbox" class="hosp-cb" value="45.0" data-tier="medium" onchange="updateBaseHours()"> W&CH</label>
-                        <label><input type="checkbox" class="hosp-cb" value="40.0" data-tier="medium" onchange="updateBaseHours()"> SCH</label>
-                        <label><input type="checkbox" class="hosp-cb" value="40.0" data-tier="medium" onchange="updateBaseHours()"> JHCH</label>
+                        <strong>Medium Programs (Weekday)</strong>
+                        <label><input type="checkbox" class="hosp-cb" value="43.0" data-shifts="18" data-tier="medium" onchange="updateBaseHours()"> MCH</label>
+                        <label><input type="checkbox" class="hosp-cb" value="45.0" data-shifts="16" data-tier="medium" onchange="updateBaseHours()"> W&CH</label>
+                        <label><input type="checkbox" class="hosp-cb" value="40.0" data-shifts="30" data-tier="medium" onchange="updateBaseHours()"> SCH</label>
+                        <label><input type="checkbox" class="hosp-cb" value="40.0" data-shifts="20" data-tier="medium" onchange="updateBaseHours()"> JHCH</label>
                     </div>
                     <div>
-                        <strong>Small Programs</strong>
-                        <label><input type="checkbox" class="hosp-cb" value="15.0" data-tier="small" onchange="updateBaseHours()"> RDH</label>
-                        <label><input type="checkbox" class="hosp-cb" value="9.75" data-tier="small" onchange="updateBaseHours()"> CHWC</label>
-                        <label><input type="checkbox" class="hosp-cb" value="15.0" data-tier="small" onchange="updateBaseHours()"> ASH</label>
+                        <strong>Small Programs (Weekday)</strong>
+                        <label><input type="checkbox" class="hosp-cb" value="15.0" data-shifts="8" data-tier="small" onchange="updateBaseHours()"> RDH</label>
+                        <label><input type="checkbox" class="hosp-cb" value="9.75" data-shifts="2" data-tier="small" onchange="updateBaseHours()"> ACT (CHWC)</label>
+                        <label><input type="checkbox" class="hosp-cb" value="15.0" data-shifts="4" data-tier="small" onchange="updateBaseHours()"> ASH</label>
                     </div>
                 </div>
             </div>
@@ -469,14 +478,14 @@
                 </div>
                 <div class="cb-grid-2">
                     <div>
-                        <strong>Large Programs</strong>
-                        <label><input type="checkbox" class="hosp-cb" value="4.0" data-tier="large" data-sat-vols="4" onchange="updateBaseHours()"> CHW</label>
-                        <label><input type="checkbox" class="hosp-cb" value="3.5" data-tier="large" data-sat-vols="3" onchange="updateBaseHours()"> RCH</label>
-                        <label><input type="checkbox" class="hosp-cb" value="4.0" data-tier="large" data-sat-vols="3" onchange="updateBaseHours()"> QCH</label>
+                        <strong>Large Programs (Saturday)</strong>
+                        <label><input type="checkbox" class="hosp-cb" value="4.0" data-shifts="4" data-tier="large" data-sat-vols="4" onchange="updateBaseHours()"> CHW (Sat Open 4 vols)</label>
+                        <label><input type="checkbox" class="hosp-cb" value="3.5" data-shifts="3" data-tier="large" data-sat-vols="3" onchange="updateBaseHours()"> RCH (Sat PM 1:30)</label>
+                        <label><input type="checkbox" class="hosp-cb" value="4.0" data-shifts="3" data-tier="large" data-sat-vols="3" onchange="updateBaseHours()"> QCH (Sat PM 1:00)</label>
                     </div>
                     <div>
-                        <strong>Medium Programs</strong>
-                        <label><input type="checkbox" class="hosp-cb" value="3.5" data-tier="medium" data-sat-vols="3" onchange="updateBaseHours()"> MCH</label>
+                        <strong>Medium Programs (Saturday)</strong>
+                        <label><input type="checkbox" class="hosp-cb" value="3.5" data-shifts="3" data-tier="medium" data-sat-vols="3" onchange="updateBaseHours()"> MCH (Sat PM 1:30)</label>
                     </div>
                 </div>
             </div>
@@ -491,7 +500,7 @@
                     <input type="number" id="volunteers" value="3" min="1" step="0.01" oninput="calculate()">
                 </div>
             </div>
-            <div class="subtext">★ Check Mon-Fri and Sat boxes for a location to calculate its full weekly total. The calculation engine will inherently compute accurate weekday vs weekend staffing targets behind the scenes.</div>
+            <div class="subtext">★ Check Mon-Fri and Sat boxes for a location to calculate its full weekly total. Total shifts are automatically synced to the Recruitment Tab!</div>
 
             <label for="placement">Placement Student Hours (Weekly Contribution):</label>
             <input type="number" id="placement" value="0" min="0" oninput="calculate()">
@@ -631,9 +640,9 @@
             
             <div class="two-col">
                 <div>
-                    <label for="weeklyShifts">Weekly Shifts Required:</label>
-                    <input type="number" id="weeklyShifts" value="30" min="1" oninput="calculateRecruitment()">
-                    <div class="subtext">Total number of volunteer shifts needed per week across your locations.</div>
+                    <label for="weeklyShifts" style="color: #2fbca4;">Weekly Shifts Required:</label>
+                    <input type="number" id="weeklyShifts" value="0" min="0" oninput="calculateRecruitment()" class="synced-field">
+                    <div class="subtext">Automatically synced from the locations checked in Tab 1!</div>
                 </div>
                 <div>
                     <label for="shiftsPerVol">Avg Shifts per Vol (Monthly):</label>
@@ -678,7 +687,7 @@
 
     <!-- Footer Support Section -->
     <div class="footer-support">
-        please contact Rosemary via Teams or email (<a href="mailto:rosemary.lu@starlight.com">rosemary.lu@starlight.com</a>) if any issues.
+        Built by Rosemary for Volunteers Team, please contact Rosemary via Teams or email (<a href="mailto:rosemary.lu@starlight.com">rosemary.lu@starlight.com</a>) if any issues.
     </div>
 </div>
 
@@ -733,6 +742,13 @@
             calculateWorkload();
         } else if (tabName === 'recruitTab') {
             calculateRecruitment();
+            
+            // Add a brief animation to highlight the synced field
+            const syncedField = document.getElementById("weeklyShifts");
+            syncedField.style.transform = "scale(1.05)";
+            setTimeout(() => {
+                syncedField.style.transform = "scale(1)";
+            }, 300);
         }
     }
 
@@ -747,6 +763,7 @@
     function updateBaseHours() {
         let totalBase = 0;
         let totalReq = 0;
+        let totalShifts = 0; // New variable to track physical shifts needed
         let count = 0;
         
         const checkboxes = document.querySelectorAll('.hosp-cb:checked');
@@ -765,12 +782,20 @@
                 else if(tier === 'small') vols = 1;
             }
             
+            // Track total shifts specifically for the Recruitment Tab link
+            if (cb.hasAttribute('data-shifts')) {
+                totalShifts += parseInt(cb.getAttribute('data-shifts'));
+            }
+            
             totalBase += baseVal;
             totalReq += (baseVal * vols);
             count++;
         });
         
         document.getElementById("baseHours").value = totalBase.toFixed(2);
+        
+        // Sync the total calculated shifts over to Tab 4 immediately
+        document.getElementById("weeklyShifts").value = totalShifts;
         
         if(totalBase > 0) {
             let avgVols = totalReq / totalBase;
@@ -781,6 +806,7 @@
         
         document.getElementById("selectAll").checked = (checkboxes.length === allCheckboxes.length && allCheckboxes.length > 0);
         calculate();
+        calculateRecruitment(); // Keep recruitment numbers up to date in the background
     }
 
     function calculate() {
@@ -884,14 +910,22 @@
 
         // Calculate Ideal Headcount: (Weekly shifts * 4.33 weeks) / Shifts per month per volunteer
         const monthlyShiftsNeeded = weeklyShifts * 4.33;
-        const idealHeadcount = Math.ceil(monthlyShiftsNeeded / shiftsPerVol);
+        
+        // Prevent division by zero or Infinity
+        let idealHeadcount = 0;
+        if(shiftsPerVol > 0) {
+            idealHeadcount = Math.ceil(monthlyShiftsNeeded / shiftsPerVol);
+        }
 
         // Current Headcount Gap
         const headcountGap = Math.max(0, idealHeadcount - currentVols);
 
         // Expected Terminations: Based on average tenure
-        const annualTurnoverRate = 12 / avgTenure;
-        const expectedTerminations = Math.ceil(idealHeadcount * annualTurnoverRate);
+        let expectedTerminations = 0;
+        if(avgTenure > 0) {
+            const annualTurnoverRate = 12 / avgTenure;
+            expectedTerminations = Math.ceil(idealHeadcount * annualTurnoverRate);
+        }
 
         // Total Recruitment Target
         const recruitmentTarget = headcountGap + expectedTerminations;
