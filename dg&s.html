@@ -155,6 +155,15 @@
         }
         
         /* Checkbox Box Styles */
+        .global-toggle-box {
+            background: #fdfcff;
+            border: 2px solid #2fbca4;
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(47, 188, 164, 0.15);
+        }
         .cb-container {
             background: #fdfcff;
             border: 2px solid #ace4db;
@@ -167,6 +176,8 @@
             border-bottom: 2px solid #ace4db;
             padding-bottom: 10px;
             margin-bottom: 15px;
+            color: #52288e;
+            font-size: 1.05em;
         }
         .cb-grid {
             display: grid;
@@ -178,7 +189,7 @@
             grid-template-columns: repeat(2, 1fr);
             gap: 20px;
         }
-        .cb-grid label, .cb-grid-2 label, .cb-header label {
+        .cb-grid label, .cb-grid-2 label, .global-toggle-box label {
             font-weight: normal;
             display: flex;
             align-items: center;
@@ -189,10 +200,10 @@
             border-radius: 4px;
             transition: background 0.1s;
         }
-        .cb-grid label:hover, .cb-grid-2 label:hover {
+        .cb-grid label:hover, .cb-grid-2 label:hover, .global-toggle-box label:hover {
             background-color: #f3eff8;
         }
-        .cb-grid input[type="checkbox"], .cb-grid-2 input[type="checkbox"], .cb-header input[type="checkbox"] {
+        .cb-grid input[type="checkbox"], .cb-grid-2 input[type="checkbox"], .global-toggle-box input[type="checkbox"] {
             margin-right: 10px;
             accent-color: #2fbca4;
             transform: scale(1.2);
@@ -377,29 +388,37 @@
             </select>
 
             <label>Select Locations:</label>
+
+            <!-- GLOBAL TOGGLE -->
+            <div class="global-toggle-box">
+                <label style="margin: 0;">
+                    <input type="checkbox" id="selectAll" onchange="toggleAll(this)"> 
+                    <strong style="color: #52288e; font-size: 1.05em;">⭐ Select All (National View)</strong>
+                </label>
+            </div>
             
             <!-- BOX 1: Usual Operation Time (Mon-Fri) -->
             <div class="cb-container" style="margin-bottom: 15px;">
                 <div class="cb-header">
-                    <label><input type="checkbox" id="selectAll" onchange="toggleAll(this)"> <strong>⭐ Select All (National View)</strong></label>
+                    <strong>📅 Usual Operating Hours (Mon–Fri)</strong>
                 </div>
                 <div class="cb-grid">
                     <div>
-                        <strong>Large Programs</strong>
+                        <strong>Large Programs (Weekday)</strong>
                         <label><input type="checkbox" class="hosp-cb" value="40.0" data-tier="large" onchange="updateBaseHours()"> CHW</label>
                         <label><input type="checkbox" class="hosp-cb" value="40.0" data-tier="large" onchange="updateBaseHours()"> RCH</label>
                         <label><input type="checkbox" class="hosp-cb" value="38.5" data-tier="large" onchange="updateBaseHours()"> QCH</label>
                         <label><input type="checkbox" class="hosp-cb" value="45.0" data-tier="large" onchange="updateBaseHours()"> PCH</label>
                     </div>
                     <div>
-                        <strong>Medium Programs</strong>
+                        <strong>Medium Programs (Weekday)</strong>
                         <label><input type="checkbox" class="hosp-cb" value="43.0" data-tier="medium" onchange="updateBaseHours()"> MCH</label>
                         <label><input type="checkbox" class="hosp-cb" value="45.0" data-tier="medium" onchange="updateBaseHours()"> W&CH</label>
                         <label><input type="checkbox" class="hosp-cb" value="40.0" data-tier="medium" onchange="updateBaseHours()"> SCH</label>
                         <label><input type="checkbox" class="hosp-cb" value="40.0" data-tier="medium" onchange="updateBaseHours()"> JHCH</label>
                     </div>
                     <div>
-                        <strong>Small Programs</strong>
+                        <strong>Small Programs (Weekday)</strong>
                         <label><input type="checkbox" class="hosp-cb" value="15.0" data-tier="small" onchange="updateBaseHours()"> RDH</label>
                         <label><input type="checkbox" class="hosp-cb" value="9.75" data-tier="small" onchange="updateBaseHours()"> ACT (CHWC)</label>
                         <label><input type="checkbox" class="hosp-cb" value="15.0" data-tier="small" onchange="updateBaseHours()"> ASH</label>
@@ -410,7 +429,7 @@
             <!-- BOX 2: Saturday Operating Programs -->
             <div class="cb-container">
                 <div class="cb-header">
-                    <label><strong>⭐ Programs Operating on Saturdays (Weekend Add-On)</strong></label>
+                    <strong>⭐ Programs Operating on Saturdays (Weekend Add-On)</strong>
                 </div>
                 <div class="cb-grid-2">
                     <div>
