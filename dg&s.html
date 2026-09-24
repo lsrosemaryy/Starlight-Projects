@@ -403,7 +403,7 @@
         .status-warn-low { background-color: #ffcdc2; color: #c0392b; border: 2px solid #e4466c; }
         .status-warn-high { background-color: #ecd0ea; color: #b933a4; border: 2px solid #b933a4; }
 
-        /* Footer support styling with smaller font */
+        /* Footer support styling */
         .footer-support {
             margin-top: 40px;
             border-top: 2px solid #ecd0ea;
@@ -496,21 +496,21 @@
                         </div>
                         <div class="cb-grid">
                             <div>
-                                <strong>Large Programs</strong>
+                                <strong>Large Programs (Weekday)</strong>
                                 <label><input type="checkbox" class="hosp-cb" value="40.0" data-shifts="26" data-tier="large" onchange="updateBaseHours()"> CHW</label>
                                 <label><input type="checkbox" class="hosp-cb" value="40.0" data-shifts="24" data-tier="large" onchange="updateBaseHours()"> RCH</label>
                                 <label><input type="checkbox" class="hosp-cb" value="38.5" data-shifts="20" data-tier="large" onchange="updateBaseHours()"> QCH</label>
                                 <label><input type="checkbox" class="hosp-cb" value="45.0" data-shifts="20" data-tier="large" onchange="updateBaseHours()"> PCH</label>
                             </div>
                             <div>
-                                <strong>Medium Programs</strong>
+                                <strong>Medium Programs (Weekday)</strong>
                                 <label><input type="checkbox" class="hosp-cb" value="43.0" data-shifts="18" data-tier="medium" onchange="updateBaseHours()"> MCH</label>
                                 <label><input type="checkbox" class="hosp-cb" value="45.0" data-shifts="16" data-tier="medium" onchange="updateBaseHours()"> W&CH</label>
                                 <label><input type="checkbox" class="hosp-cb" value="40.0" data-shifts="30" data-tier="medium" onchange="updateBaseHours()"> SCH</label>
                                 <label><input type="checkbox" class="hosp-cb" value="40.0" data-shifts="20" data-tier="medium" onchange="updateBaseHours()"> JHCH</label>
                             </div>
                             <div>
-                                <strong>Small Programs</strong>
+                                <strong>Small Programs (Weekday)</strong>
                                 <label><input type="checkbox" class="hosp-cb" value="15.0" data-shifts="8" data-tier="small" onchange="updateBaseHours()"> RDH</label>
                                 <label><input type="checkbox" class="hosp-cb" value="9.75" data-shifts="2" data-tier="small" onchange="updateBaseHours()"> ACT (CHWC)</label>
                                 <label><input type="checkbox" class="hosp-cb" value="15.0" data-shifts="4" data-tier="small" onchange="updateBaseHours()"> ASH</label>
@@ -527,12 +527,12 @@
                             <div>
                                 <strong>Large Programs (Saturday)</strong>
                                 <label><input type="checkbox" class="hosp-cb" value="4.0" data-shifts="4" data-tier="large" data-sat-vols="true" data-hosp="CHW_Sat" onchange="updateBaseHours()"> CHW</label>
-                                <label><input type="checkbox" class="hosp-cb" value="3.5" data-shifts="3" data-tier="large" data-sat-vols="true" onchange="updateBaseHours()"> RCH (Sat PM 1:30)</label>
-                                <label><input type="checkbox" class="hosp-cb" value="4.0" data-shifts="3" data-tier="large" data-sat-vols="true" onchange="updateBaseHours()"> QCH (Sat PM 1:00)</label>
+                                <label><input type="checkbox" class="hosp-cb" value="3.5" data-shifts="3" data-tier="large" data-sat-vols="true" onchange="updateBaseHours()"> RCH</label>
+                                <label><input type="checkbox" class="hosp-cb" value="4.0" data-shifts="3" data-tier="large" data-sat-vols="true" onchange="updateBaseHours()"> QCH</label>
                             </div>
                             <div>
                                 <strong>Medium Programs (Saturday)</strong>
-                                <label><input type="checkbox" class="hosp-cb" value="3.5" data-shifts="3" data-tier="medium" data-sat-vols="true" onchange="updateBaseHours()"> MCH (Sat PM 1:30)</label>
+                                <label><input type="checkbox" class="hosp-cb" value="3.5" data-shifts="3" data-tier="medium" data-sat-vols="true" onchange="updateBaseHours()"> MCH</label>
                             </div>
                         </div>
                     </div>
@@ -555,8 +555,11 @@
                         
                         <hr style="border: 0; border-top: 2px dashed #ecd0ea; margin: 20px 0;">
                         
-                        <label style="color: #b933a4;">Standard Saturday <span class="scale-val" id="valSat">3</span></label>
-                        <input type="range" id="scaleSat" min="1" max="6" value="3" oninput="updateScales()" style="accent-color: #b933a4;">
+                        <label style="color: #b933a4;">Large Saturday <span class="scale-val" id="valLargeSat">3</span></label>
+                        <input type="range" id="scaleLargeSat" min="1" max="6" value="3" oninput="updateScales()" style="accent-color: #b933a4;">
+                        
+                        <label style="color: #b933a4;">Medium Saturday <span class="scale-val" id="valMedSat">2</span></label>
+                        <input type="range" id="scaleMedSat" min="1" max="6" value="2" oninput="updateScales()" style="accent-color: #b933a4;">
                         
                         <label style="color: #b933a4;">CHW Saturday Override <span class="scale-val" id="valChwSat">4</span></label>
                         <input type="range" id="scaleChwSat" min="1" max="6" value="4" oninput="updateScales()" style="accent-color: #b933a4;">
@@ -827,19 +830,22 @@
         updateBaseHours();
     }
 
-    // New helper to fetch exactly how many target vols are required for a checkbox based on live UI Scale sliders
+    // Fetch exactly how many target vols are required based on Live Interface Scale sliders
     function getVolTargetForCb(cb) {
         const largeVols = parseInt(document.getElementById("scaleLarge").value) || 3;
         const mediumVols = parseInt(document.getElementById("scaleMedium").value) || 2;
         const smallVols = parseInt(document.getElementById("scaleSmall").value) || 1;
-        const satVols = parseInt(document.getElementById("scaleSat").value) || 3;
+        const largeSatVols = parseInt(document.getElementById("scaleLargeSat").value) || 3;
+        const medSatVols = parseInt(document.getElementById("scaleMedSat").value) || 2;
         const chwSatVols = parseInt(document.getElementById("scaleChwSat").value) || 4;
 
         if (cb.hasAttribute('data-sat-vols')) {
             if (cb.getAttribute('data-hosp') === 'CHW_Sat') {
                 return chwSatVols;
             } else {
-                return satVols;
+                const tier = cb.getAttribute('data-tier');
+                if (tier === 'large') return largeSatVols;
+                if (tier === 'medium') return medSatVols;
             }
         } else {
             const tier = cb.getAttribute('data-tier');
@@ -855,10 +861,11 @@
         document.getElementById("valLarge").innerText = document.getElementById("scaleLarge").value;
         document.getElementById("valMedium").innerText = document.getElementById("scaleMedium").value;
         document.getElementById("valSmall").innerText = document.getElementById("scaleSmall").value;
-        document.getElementById("valSat").innerText = document.getElementById("scaleSat").value;
+        document.getElementById("valLargeSat").innerText = document.getElementById("scaleLargeSat").value;
+        document.getElementById("valMedSat").innerText = document.getElementById("scaleMedSat").value;
         document.getElementById("valChwSat").innerText = document.getElementById("scaleChwSat").value;
         
-        updateBaseHours(); // Triggers global recalculation
+        updateBaseHours(); 
     }
 
     function updateBaseHours() {
@@ -871,7 +878,7 @@
         
         checkboxes.forEach(cb => {
             let baseVal = parseFloat(cb.value);
-            let vols = getVolTargetForCb(cb); // Read dynamically from scales
+            let vols = getVolTargetForCb(cb); 
             
             if (cb.hasAttribute('data-shifts')) {
                 totalShifts += parseInt(cb.getAttribute('data-shifts'));
