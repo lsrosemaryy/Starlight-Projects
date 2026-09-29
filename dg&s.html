@@ -352,7 +352,6 @@
             gap: 12px;
             border: 2px solid #2fbca4;
         }
-        
         .forecast-row {
             display: flex;
             justify-content: space-between;
@@ -473,7 +472,7 @@
 
         <div class="tabs">
             <button class="tab-button active" onclick="openTab(event, 'rosterTab')"><span>★</span> 1. Roster Settings</button>
-            <button class="tab-button" onclick="openTab(event, 'budgetTab')"><span>★</span> 2. Phased Budget Forecast</button>
+            <button class="tab-button" onclick="openTab(event, 'budgetTab')"><span>★</span> 2. Budget Forecast</button>
             <button class="tab-button" onclick="openTab(event, 'workloadTab')"><span>★</span> 3. Volunteer Counts</button>
             <button class="tab-button" onclick="openTab(event, 'recruitTab')"><span>★</span> 4. Recruitment Target</button>
         </div>
@@ -621,17 +620,57 @@
         <!-- TAB 2: BUDGET FORECAST -->
         <div id="budgetTab" class="tab-content">
             <div class="instruction-box">
-                <strong>🌟 Phased Forecasting Engine:</strong> This table replaces the flat-rate model. It uses your historical percentage trends to calculate accurate monthly targets, and dynamically applies higher absence rates during winter/flu season to calculate your <em>true</em> rostered capacity month-by-month.
+                <strong>🌟 How it works:</strong> This tab provides two views. The <strong>Standard Forecast</strong> uses a flat 30% absence rate to quickly project your remaining weeks. The <strong>Phased Forecast</strong> uses historical trends and dynamic seasonal absence rates (e.g., higher in winter) to break down your annual target month-by-month.
             </div>
 
+            <div class="roster-summary">
+                <span style="color: #b933a4;">Gross Weekly Value feeding this forecast (from Tab 1):</span>
+                <span class="highlight" id="summaryGrossWeekly">$0 / week</span>
+            </div>
+            
             <div class="two-col">
                 <div>
                     <label for="annualTarget">Annual Financial Target ($):</label>
-                    <input type="number" id="annualTarget" value="1000000" step="1000" oninput="calculatePhasedBudget()">
-                    <div class="subtext">Enter your total target to see how it phases across the year.</div>
+                    <input type="number" id="annualTarget" value="1000000" step="1000" oninput="calculateAllBudgets()">
+                </div>
+                <div>
+                    <label for="ytdAchieved">YTD Achieved ($):</label>
+                    <input type="number" id="ytdAchieved" value="500000" step="1000" oninput="calculateAllBudgets()">
                 </div>
             </div>
-            
+            <label for="weeksLeft">Remaining Weeks in Year:</label>
+            <input type="number" id="weeksLeft" value="26" min="1" max="52" oninput="calculateAllBudgets()">
+
+            <!-- SUB-SECTION 1: FLAT RATE -->
+            <h3><span>★</span> Standard Projections (Flat Rate 30% Absence)</h3>
+            <div class="results">
+                <div class="net-yearly" style="margin-top: 0;">
+                    <div class="forecast-row">
+                        <span>YTD Achieved:</span>
+                        <span id="displayYtd">$0</span>
+                    </div>
+                    <div class="forecast-row">
+                        <span>+ Projected Remaining (Based on Flat Net Weekly):</span>
+                        <span id="displayRemaining">$0</span>
+                    </div>
+                    <div class="forecast-final">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <svg style="width: 28px; height: 28px;" viewBox="0 0 24 24" fill="#b933a4">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            Forecast End of Year:
+                        </div>
+                        <span id="forecastTotal">$0</span>
+                    </div>
+                    <div class="forecast-row" style="margin-top: 5px;">
+                        <span>Vs. Annual Target:</span>
+                        <span id="forecastVarianceFlat" style="padding: 3px 10px; border-radius: 4px;">$0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUB-SECTION 2: PHASED MODEL -->
+            <h3 style="margin-top: 40px;"><span>★</span> Phased Projections (Seasonal Breakdown)</h3>
             <table class="phased-table" id="phasedTable">
                 <thead>
                     <tr>
@@ -648,15 +687,15 @@
             </table>
             
             <div class="results" style="margin-top: 20px;">
-                <div class="net-yearly" style="margin-top: 0;">
+                <div class="net-yearly" style="margin-top: 0; border-color: #b933a4; background-color: #fcf4fb;">
                     <div class="forecast-final" style="border: none; padding: 0;">
                         <div style="display: flex; align-items: center; gap: 10px;">
-                            <svg style="width: 28px; height: 28px;" viewBox="0 0 24 24" fill="#b933a4">
+                            <svg style="width: 28px; height: 28px;" viewBox="0 0 24 24" fill="#52288e">
                                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                             </svg>
-                            Forecast End of Year Variance:
+                            Phased Forecast End of Year Variance:
                         </div>
-                        <span id="forecastVariance" style="padding: 3px 10px; border-radius: 4px;">$0</span>
+                        <span id="forecastVariancePhased" style="padding: 3px 10px; border-radius: 4px;">$0</span>
                     </div>
                 </div>
             </div>
@@ -867,7 +906,7 @@
         } else if (tabName === 'recruitTab') {
             calculateRecruitment();
         } else if (tabName === 'budgetTab') {
-            calculatePhasedBudget();
+            calculateAllBudgets();
         }
     }
 
@@ -982,37 +1021,56 @@
         document.getElementById("gapHours").innerText = gapHours.toFixed(1) + " hrs";
         document.getElementById("grossWeekly").innerText = currencyFormatter.format(globalGrossWeekly);
         
-        // Trigger Budget recalculation so it stays in sync
-        calculatePhasedBudget();
+        // Update Gross Weekly in Tab 2 header so it's transparent
+        document.getElementById("summaryGrossWeekly").innerText = currencyFormatter.format(globalGrossWeekly) + " / week";
+        
+        // Trigger Budget recalculation
+        calculateAllBudgets();
     }
     
-    function calculatePhasedBudget() {
+    // Calculates both the Flat Rate and the Phased tables in Tab 2
+    function calculateAllBudgets() {
         const annualTarget = parseFloat(document.getElementById("annualTarget").value) || 0;
-        const tbody = document.querySelector("#phasedTable tbody");
-        tbody.innerHTML = ""; // Clear table
-        
-        let totalVariance = 0;
+        const ytdAchieved = parseFloat(document.getElementById("ytdAchieved").value) || 0;
+        const weeksLeft = parseFloat(document.getElementById("weeksLeft").value) || 0;
         const currencyFormatter = new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD', maximumFractionDigits: 0 });
+
+        // --- 1. Standard Flat Rate Forecast (30% Absence) ---
+        const flatAbsenceRate = 0.30;
+        const netWeeklyFlat = globalGrossWeekly * (1 - flatAbsenceRate);
+        const projectedRemainingFlat = netWeeklyFlat * weeksLeft;
+        const forecastTotalFlat = ytdAchieved + projectedRemainingFlat;
+        const varianceFlat = forecastTotalFlat - annualTarget;
+
+        document.getElementById("displayYtd").innerText = currencyFormatter.format(ytdAchieved);
+        document.getElementById("displayRemaining").innerText = currencyFormatter.format(projectedRemainingFlat);
+        document.getElementById("forecastTotal").innerText = currencyFormatter.format(forecastTotalFlat);
         
-        // Month calculations (Gross Weekly * 4.33 weeks per month)
+        const varFlatEl = document.getElementById("forecastVarianceFlat");
+        if(varianceFlat >= 0) {
+            varFlatEl.innerText = "+" + currencyFormatter.format(varianceFlat) + " (Surplus)";
+            varFlatEl.className = "surplus";
+        } else {
+            varFlatEl.innerText = currencyFormatter.format(varianceFlat) + " (Shortfall)";
+            varFlatEl.className = "deficit";
+        }
+
+        // --- 2. Advanced Phased Forecast ---
+        const tbody = document.querySelector("#phasedTable tbody");
+        tbody.innerHTML = ""; 
+        
+        let totalVariancePhased = 0;
         const grossMonthlyCapacity = globalGrossWeekly * 4.33;
 
         for (let i = 0; i < 12; i++) {
-            // 1. Phased Target for this specific month
             const monthTarget = annualTarget * seasonalityWeights[i];
-            
-            // 2. Apply Dynamic Absence Rate to Gross Capacity to get TRUE Net Capacity
             const monthAbsenceRate = dynamicAbsenceRates[i];
             const monthExpectedCapacity = grossMonthlyCapacity * (1 - monthAbsenceRate);
             
-            // 3. Calculate Variance
             const variance = monthExpectedCapacity - monthTarget;
-            totalVariance += variance;
+            totalVariancePhased += variance;
             
-            // Build Table Row
             const tr = document.createElement("tr");
-            
-            // Variance Styling
             let varColor = variance >= 0 ? "surplus" : "deficit";
             let varSign = variance >= 0 ? "+" : "";
             
@@ -1026,14 +1084,13 @@
             tbody.appendChild(tr);
         }
         
-        // Update Final Year-End Variance Output
-        const varianceEl = document.getElementById("forecastVariance");
-        if(totalVariance >= 0) {
-            varianceEl.innerText = "+" + currencyFormatter.format(totalVariance) + " (Surplus)";
-            varianceEl.className = "surplus";
+        const varPhasedEl = document.getElementById("forecastVariancePhased");
+        if(totalVariancePhased >= 0) {
+            varPhasedEl.innerText = "+" + currencyFormatter.format(totalVariancePhased) + " (Surplus)";
+            varPhasedEl.className = "surplus";
         } else {
-            varianceEl.innerText = currencyFormatter.format(totalVariance) + " (Shortfall)";
-            varianceEl.className = "deficit";
+            varPhasedEl.innerText = currencyFormatter.format(totalVariancePhased) + " (Shortfall)";
+            varPhasedEl.className = "deficit";
         }
     }
 
