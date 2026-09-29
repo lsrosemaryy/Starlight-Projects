@@ -398,6 +398,23 @@
         .phased-table tr:hover {
             background-color: #fcf4fb;
         }
+
+        /* Settings Button */
+        .settings-btn {
+            background: white;
+            border: 2px solid #b933a4;
+            color: #b933a4;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9em;
+            transition: all 0.2s;
+        }
+        .settings-btn:hover {
+            background: #b933a4;
+            color: white;
+        }
         
         .roster-summary {
             background-color: #f8f6fb;
@@ -522,21 +539,21 @@
                         </div>
                         <div class="cb-grid">
                             <div>
-                                <strong>Large Programs </strong>
+                                <strong>Large Programs</strong>
                                 <label><input type="checkbox" class="hosp-cb" value="40.0" data-shifts="26" data-tier="large" onchange="updateBaseHours()"> CHW</label>
                                 <label><input type="checkbox" class="hosp-cb" value="40.0" data-shifts="24" data-tier="large" onchange="updateBaseHours()"> RCH</label>
                                 <label><input type="checkbox" class="hosp-cb" value="38.5" data-shifts="20" data-tier="large" onchange="updateBaseHours()"> QCH</label>
                                 <label><input type="checkbox" class="hosp-cb" value="45.0" data-shifts="20" data-tier="large" onchange="updateBaseHours()"> PCH</label>
                             </div>
                             <div>
-                                <strong>Medium Programs </strong>
+                                <strong>Medium Programs</strong>
                                 <label><input type="checkbox" class="hosp-cb" value="43.0" data-shifts="18" data-tier="medium" onchange="updateBaseHours()"> MCH</label>
                                 <label><input type="checkbox" class="hosp-cb" value="45.0" data-shifts="16" data-tier="medium" onchange="updateBaseHours()"> W&CH</label>
                                 <label><input type="checkbox" class="hosp-cb" value="40.0" data-shifts="30" data-tier="medium" onchange="updateBaseHours()"> SCH</label>
                                 <label><input type="checkbox" class="hosp-cb" value="40.0" data-shifts="20" data-tier="medium" onchange="updateBaseHours()"> JHCH</label>
                             </div>
                             <div>
-                                <strong>Small Programs </strong>
+                                <strong>Small Programs</strong>
                                 <label><input type="checkbox" class="hosp-cb" value="15.0" data-shifts="8" data-tier="small" onchange="updateBaseHours()"> RDH</label>
                                 <label><input type="checkbox" class="hosp-cb" value="9.75" data-shifts="2" data-tier="small" onchange="updateBaseHours()"> CHWC</label>
                                 <label><input type="checkbox" class="hosp-cb" value="15.0" data-shifts="4" data-tier="small" onchange="updateBaseHours()"> ASH</label>
@@ -550,14 +567,14 @@
                         </div>
                         <div class="cb-grid-2">
                             <div>
-                                <strong>Large Programs </strong>
+                                <strong>Large Programs</strong>
                                 <label><input type="checkbox" class="hosp-cb" value="4.0" data-shifts="4" data-tier="large" data-sat-vols="true" data-hosp="CHW_Sat" onchange="updateBaseHours()"> CHW</label>
-                                <label><input type="checkbox" class="hosp-cb" value="3.5" data-shifts="3" data-tier="large" data-sat-vols="true" onchange="updateBaseHours()"> RCH </label>
-                                <label><input type="checkbox" class="hosp-cb" value="4.0" data-shifts="3" data-tier="large" data-sat-vols="true" onchange="updateBaseHours()"> QCH </label>
+                                <label><input type="checkbox" class="hosp-cb" value="3.5" data-shifts="3" data-tier="large" data-sat-vols="true" onchange="updateBaseHours()"> RCH</label>
+                                <label><input type="checkbox" class="hosp-cb" value="4.0" data-shifts="3" data-tier="large" data-sat-vols="true" onchange="updateBaseHours()"> QCH</label>
                             </div>
                             <div>
-                                <strong>Medium Programs </strong>
-                                <label><input type="checkbox" class="hosp-cb" value="3.5" data-shifts="3" data-tier="medium" data-sat-vols="true" onchange="updateBaseHours()"> MCH </label>
+                                <strong>Medium Programs</strong>
+                                <label><input type="checkbox" class="hosp-cb" value="3.5" data-shifts="3" data-tier="medium" data-sat-vols="true" onchange="updateBaseHours()"> MCH</label>
                             </div>
                         </div>
                     </div>
@@ -670,7 +687,23 @@
             </div>
 
             <!-- SUB-SECTION 2: PHASED MODEL -->
-            <h3 style="margin-top: 40px;"><span>★</span> Phased Projections (Seasonal Breakdown)</h3>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px; margin-bottom: 10px;">
+                <h3 style="margin-top: 0; border: none; padding: 0;"><span>★</span> Phased Projections (Seasonal Breakdown)</h3>
+                <button class="settings-btn" onclick="toggleSeasonalSettings()">⚙️ Edit Seasonal Trends</button>
+            </div>
+
+            <!-- Live Editable Seasonal Dashboard (Hidden by default) -->
+            <div id="seasonalSettingsPanel" class="cb-container weekend-box" style="display: none; margin-bottom: 20px;">
+                <div class="cb-header"><strong>⚙️ Adjust Backend Phasing Trends</strong></div>
+                <div class="subtext" style="margin-bottom: 15px;">Manually transfer your trends from Excel here. Values are in percentages. The Target total should ideally equal 100%. Changes apply instantly!</div>
+                <div id="seasonalGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px;">
+                    <!-- Javascript generates the 12 month boxes here -->
+                </div>
+                <div style="margin-top: 20px; font-weight: bold; color: #52288e; text-align: right; border-top: 1px solid #ecd0ea; padding-top: 10px;">
+                    Total Phased Target: <span id="seasonalTotal">100.0%</span>
+                </div>
+            </div>
+
             <table class="phased-table" id="phasedTable">
                 <thead>
                     <tr>
@@ -821,9 +854,9 @@
     // --- Global Variables for Phased Modeling ---
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     
-    // Derived directly from the Phased DG&S Approach CSV (SER Target values)
-    const seasonalityWeights = [
-        0.0534, // Jan (Quiet)
+    // Default Backend Values (Can be changed in code here, or manipulated in the Live UI Dashboard)
+    let seasonalityWeights = [
+        0.0534, // Jan 
         0.0621, // Feb
         0.0650, // Mar
         0.0684, // Apr
@@ -832,31 +865,29 @@
         0.0840, // Jul
         0.1011, // Aug
         0.1136, // Sep
-        0.1195, // Oct (Peak)
+        0.1195, // Oct 
         0.0943, // Nov
         0.0868  // Dec
     ];
 
-    // Dynamic Absence Rates based on Flu Season & Holidays
-    const dynamicAbsenceRates = [
-        0.25, // Jan (Low, holidays)
+    let dynamicAbsenceRates = [
+        0.25, // Jan 
         0.28, // Feb
         0.28, // Mar
         0.28, // Apr
-        0.33, // May (Flu Season starts)
+        0.33, // May 
         0.33, // Jun
-        0.38, // Jul (Peak Flu)
-        0.38, // Aug (Peak Flu)
-        0.38, // Sep (Peak Flu)
+        0.38, // Jul 
+        0.38, // Aug 
+        0.38, // Sep 
         0.28, // Oct
         0.28, // Nov
         0.25  // Dec
     ];
 
-    let globalGrossWeekly = 0; // Store this globally to pass into Tab 2
+    let globalGrossWeekly = 0; 
 
     const trafficStats = {
-        // Large
         "RCH_Morning": { traffic: 1318.3, ideal: 3.0 },
         "RCH_Afternoon": { traffic: 913.7, ideal: 3.0 },
         "CHW_Morning": { traffic: 947.2, ideal: 3.0 },
@@ -865,8 +896,6 @@
         "QCH_Afternoon": { traffic: 638.9, ideal: 3.0 },
         "PCH_Morning": { traffic: 191.2, ideal: 3.0 },
         "PCH_Afternoon": { traffic: 271.0, ideal: 3.0 },
-        
-        // Medium
         "SCH_Morning": { traffic: 877.8, ideal: 2.0 },
         "SCH_Afternoon": { traffic: 752.9, ideal: 2.0 },
         "MCH_Morning": { traffic: 558.1, ideal: 2.0 },
@@ -875,8 +904,6 @@
         "JHCH_Afternoon": { traffic: 185.4, ideal: 2.0 },
         "WCH_Morning": { traffic: 450.0, ideal: 2.0 },
         "WCH_Afternoon": { traffic: 400.0, ideal: 2.0 },
-
-        // Small
         "ASH_Morning": { traffic: 21.3, ideal: 1.0 },
         "ASH_Afternoon": { traffic: 14.3, ideal: 1.0 },
         "RDH_Morning": { traffic: 50.0, ideal: 1.0 },
@@ -892,29 +919,21 @@
         for (let i = 0; i < tabContents.length; i++) {
             tabContents[i].classList.remove("active");
         }
-        
         const tabButtons = document.getElementsByClassName("tab-button");
         for (let i = 0; i < tabButtons.length; i++) {
             tabButtons[i].classList.remove("active");
         }
-        
         document.getElementById(tabName).classList.add("active");
         evt.currentTarget.classList.add("active");
         
-        if(tabName === 'workloadTab') {
-            calculateWorkload();
-        } else if (tabName === 'recruitTab') {
-            calculateRecruitment();
-        } else if (tabName === 'budgetTab') {
-            calculateAllBudgets();
-        }
+        if(tabName === 'workloadTab') calculateWorkload();
+        else if (tabName === 'recruitTab') calculateRecruitment();
+        else if (tabName === 'budgetTab') calculateAllBudgets();
     }
 
     function toggleAll(source) {
         const checkboxes = document.querySelectorAll('.hosp-cb');
-        checkboxes.forEach(cb => {
-            cb.checked = source.checked;
-        });
+        checkboxes.forEach(cb => { cb.checked = source.checked; });
         updateBaseHours();
     }
 
@@ -927,9 +946,8 @@
         const chwSatVols = parseInt(document.getElementById("scaleChwSat").value) || 4;
 
         if (cb.hasAttribute('data-sat-vols')) {
-            if (cb.getAttribute('data-hosp') === 'CHW_Sat') {
-                return chwSatVols;
-            } else {
+            if (cb.getAttribute('data-hosp') === 'CHW_Sat') return chwSatVols;
+            else {
                 const tier = cb.getAttribute('data-tier');
                 if (tier === 'large') return largeSatVols;
                 if (tier === 'medium') return medSatVols;
@@ -950,7 +968,6 @@
         document.getElementById("valLargeSat").innerText = document.getElementById("scaleLargeSat").value;
         document.getElementById("valMedSat").innerText = document.getElementById("scaleMedSat").value;
         document.getElementById("valChwSat").innerText = document.getElementById("scaleChwSat").value;
-        
         updateBaseHours(); 
     }
 
@@ -965,11 +982,9 @@
         checkboxes.forEach(cb => {
             let baseVal = parseFloat(cb.value);
             let vols = getVolTargetForCb(cb); 
-            
             if (cb.hasAttribute('data-shifts')) {
                 totalShifts += parseInt(cb.getAttribute('data-shifts'));
             }
-            
             totalBase += baseVal;
             totalReq += (baseVal * vols);
         });
@@ -1005,7 +1020,6 @@
         const placement = parseFloat(document.getElementById("placement").value) || 0;
         
         let totalHours = baseHours * volunteers;
-        
         if (Math.abs(baseHours - totalBaseFromCb) < 0.01 && Math.abs(volunteers - (totalBaseFromCb ? totalReqFromCb/totalBaseFromCb : 0)) < 0.05) {
             totalHours = totalReqFromCb;
         }
@@ -1020,22 +1034,61 @@
         document.getElementById("placementHours").innerText = placement.toFixed(1) + " hrs";
         document.getElementById("gapHours").innerText = gapHours.toFixed(1) + " hrs";
         document.getElementById("grossWeekly").innerText = currencyFormatter.format(globalGrossWeekly);
-        
-        // Update Gross Weekly in Tab 2 header so it's transparent
         document.getElementById("summaryGrossWeekly").innerText = currencyFormatter.format(globalGrossWeekly) + " / week";
         
-        // Trigger Budget recalculation
         calculateAllBudgets();
     }
     
-    // Calculates both the Flat Rate and the Phased tables in Tab 2
+    // --- LIVE TREND DASHBOARD FUNCTIONS ---
+    function initSeasonalGrid() {
+        const container = document.getElementById("seasonalGrid");
+        container.innerHTML = "";
+        for(let i = 0; i < 12; i++) {
+            container.innerHTML += `
+                <div style="background: white; padding: 10px; border-radius: 6px; border: 1px solid #ecd0ea;">
+                    <div style="font-weight: bold; color: #52288e; margin-bottom: 8px; font-size: 0.9em; text-align: center; border-bottom: 1px solid #ecd0ea; padding-bottom: 4px;">${months[i].substring(0,3)}</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                        <span style="font-size: 0.75em; color: #b933a4;">Target%</span>
+                        <input type="number" id="target_${i}" value="${(seasonalityWeights[i]*100).toFixed(2)}" step="0.1" oninput="updateSeasonalArrays()" style="width: 55px; padding: 4px; font-size: 0.85em; margin: 0; text-align: right;">
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 0.75em; color: #e4466c;">Abs%</span>
+                        <input type="number" id="abs_${i}" value="${(dynamicAbsenceRates[i]*100).toFixed(0)}" step="1" oninput="updateSeasonalArrays()" style="width: 55px; padding: 4px; font-size: 0.85em; margin: 0; text-align: right;">
+                    </div>
+                </div>
+            `;
+        }
+    }
+
+    function toggleSeasonalSettings() {
+        const panel = document.getElementById('seasonalSettingsPanel');
+        panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function updateSeasonalArrays() {
+        let totalTarget = 0;
+        for(let i = 0; i < 12; i++) {
+            let tVal = parseFloat(document.getElementById(`target_${i}`).value) || 0;
+            let aVal = parseFloat(document.getElementById(`abs_${i}`).value) || 0;
+            seasonalityWeights[i] = tVal / 100;
+            dynamicAbsenceRates[i] = aVal / 100;
+            totalTarget += seasonalityWeights[i];
+        }
+        
+        const totalSpan = document.getElementById('seasonalTotal');
+        totalSpan.innerText = (totalTarget * 100).toFixed(1) + '%';
+        totalSpan.style.color = Math.abs(totalTarget - 1.0) > 0.01 ? '#c0392b' : '#27ae60';
+        
+        calculateAllBudgets();
+    }
+
     function calculateAllBudgets() {
         const annualTarget = parseFloat(document.getElementById("annualTarget").value) || 0;
         const ytdAchieved = parseFloat(document.getElementById("ytdAchieved").value) || 0;
         const weeksLeft = parseFloat(document.getElementById("weeksLeft").value) || 0;
         const currencyFormatter = new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD', maximumFractionDigits: 0 });
 
-        // --- 1. Standard Flat Rate Forecast (30% Absence) ---
+        // Standard Flat Rate
         const flatAbsenceRate = 0.30;
         const netWeeklyFlat = globalGrossWeekly * (1 - flatAbsenceRate);
         const projectedRemainingFlat = netWeeklyFlat * weeksLeft;
@@ -1055,10 +1108,9 @@
             varFlatEl.className = "deficit";
         }
 
-        // --- 2. Advanced Phased Forecast ---
+        // Advanced Phased Forecast
         const tbody = document.querySelector("#phasedTable tbody");
         tbody.innerHTML = ""; 
-        
         let totalVariancePhased = 0;
         const grossMonthlyCapacity = globalGrossWeekly * 4.33;
 
@@ -1134,13 +1186,10 @@
 
     function calculateRecruitment() {
         const weeklyShifts = parseFloat(document.getElementById("weeklyShifts").value) || 0;
-        
         const shiftsPerVolInput = document.getElementById("shiftsPerVol").value;
         const shiftsPerVol = shiftsPerVolInput ? parseFloat(shiftsPerVolInput) : 0;
-        
         const currentVolsInput = document.getElementById("currentVols").value;
         const currentVols = currentVolsInput ? parseFloat(currentVolsInput) : 0;
-        
         const avgTenureInput = document.getElementById("avgTenure").value;
         const avgTenure = avgTenureInput ? parseFloat(avgTenureInput) : 0;
 
@@ -1174,7 +1223,8 @@
         document.getElementById("recruitmentTarget").innerText = recruitmentTarget + " Volunteers";
     }
 
-    // Initialize all tabs
+    // Initialize all tabs and UI components
+    initSeasonalGrid();
     calculate();
     calculateWorkload();
     calculateRecruitment();
