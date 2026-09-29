@@ -83,6 +83,8 @@
             margin-bottom: 25px;
             position: relative;
             z-index: 1;
+            flex-wrap: wrap;
+            gap: 5px 0;
         }
         .tab-button {
             background-color: #ecd0ea;
@@ -450,6 +452,20 @@
         .status-warn-low { background-color: #ffcdc2; color: #c0392b; border: 2px solid #e4466c; }
         .status-warn-high { background-color: #ecd0ea; color: #b933a4; border: 2px solid #b933a4; }
 
+        /* Guide Layout Styles */
+        .guide-text {
+            line-height: 1.6;
+            color: #333;
+            font-size: 1.05em;
+        }
+        .guide-text ul {
+            margin-top: 5px;
+            padding-left: 20px;
+        }
+        .guide-text li {
+            margin-bottom: 10px;
+        }
+
         /* Footer support styling */
         .footer-support {
             margin-top: 40px;
@@ -492,6 +508,7 @@
             <button class="tab-button" onclick="openTab(event, 'budgetTab')"><span>★</span> 2. Budget Forecast</button>
             <button class="tab-button" onclick="openTab(event, 'workloadTab')"><span>★</span> 3. Volunteer Counts</button>
             <button class="tab-button" onclick="openTab(event, 'recruitTab')"><span>★</span> 4. Recruitment Target</button>
+            <button class="tab-button" onclick="openTab(event, 'guideTab')" style="background-color: #2fbca4; color: white;"><span>★</span> 5. User Guide</button>
         </div>
         
         <!-- TAB 1: ROSTER SETTINGS -->
@@ -539,21 +556,21 @@
                         </div>
                         <div class="cb-grid">
                             <div>
-                                <strong>Large Programs</strong>
+                                <strong>Large Programs </strong>
                                 <label><input type="checkbox" class="hosp-cb" value="40.0" data-shifts="26" data-tier="large" onchange="updateBaseHours()"> CHW</label>
                                 <label><input type="checkbox" class="hosp-cb" value="40.0" data-shifts="24" data-tier="large" onchange="updateBaseHours()"> RCH</label>
                                 <label><input type="checkbox" class="hosp-cb" value="38.5" data-shifts="20" data-tier="large" onchange="updateBaseHours()"> QCH</label>
                                 <label><input type="checkbox" class="hosp-cb" value="45.0" data-shifts="20" data-tier="large" onchange="updateBaseHours()"> PCH</label>
                             </div>
                             <div>
-                                <strong>Medium Programs</strong>
+                                <strong>Medium Programs </strong>
                                 <label><input type="checkbox" class="hosp-cb" value="43.0" data-shifts="18" data-tier="medium" onchange="updateBaseHours()"> MCH</label>
                                 <label><input type="checkbox" class="hosp-cb" value="45.0" data-shifts="16" data-tier="medium" onchange="updateBaseHours()"> W&CH</label>
                                 <label><input type="checkbox" class="hosp-cb" value="40.0" data-shifts="30" data-tier="medium" onchange="updateBaseHours()"> SCH</label>
                                 <label><input type="checkbox" class="hosp-cb" value="40.0" data-shifts="20" data-tier="medium" onchange="updateBaseHours()"> JHCH</label>
                             </div>
                             <div>
-                                <strong>Small Programs</strong>
+                                <strong>Small Programs </strong>
                                 <label><input type="checkbox" class="hosp-cb" value="15.0" data-shifts="8" data-tier="small" onchange="updateBaseHours()"> RDH</label>
                                 <label><input type="checkbox" class="hosp-cb" value="9.75" data-shifts="2" data-tier="small" onchange="updateBaseHours()"> CHWC</label>
                                 <label><input type="checkbox" class="hosp-cb" value="15.0" data-shifts="4" data-tier="small" onchange="updateBaseHours()"> ASH</label>
@@ -567,14 +584,14 @@
                         </div>
                         <div class="cb-grid-2">
                             <div>
-                                <strong>Large Programs</strong>
+                                <strong>Large Programs </strong>
                                 <label><input type="checkbox" class="hosp-cb" value="4.0" data-shifts="4" data-tier="large" data-sat-vols="true" data-hosp="CHW_Sat" onchange="updateBaseHours()"> CHW</label>
-                                <label><input type="checkbox" class="hosp-cb" value="3.5" data-shifts="3" data-tier="large" data-sat-vols="true" onchange="updateBaseHours()"> RCH</label>
-                                <label><input type="checkbox" class="hosp-cb" value="4.0" data-shifts="3" data-tier="large" data-sat-vols="true" onchange="updateBaseHours()"> QCH</label>
+                                <label><input type="checkbox" class="hosp-cb" value="3.5" data-shifts="3" data-tier="large" data-sat-vols="true" onchange="updateBaseHours()"> RCH </label>
+                                <label><input type="checkbox" class="hosp-cb" value="4.0" data-shifts="3" data-tier="large" data-sat-vols="true" onchange="updateBaseHours()"> QCH </label>
                             </div>
                             <div>
-                                <strong>Medium Programs</strong>
-                                <label><input type="checkbox" class="hosp-cb" value="3.5" data-shifts="3" data-tier="medium" data-sat-vols="true" onchange="updateBaseHours()"> MCH</label>
+                                <strong>Medium Programs </strong>
+                                <label><input type="checkbox" class="hosp-cb" value="3.5" data-shifts="3" data-tier="medium" data-sat-vols="true" onchange="updateBaseHours()"> MCH </label>
                             </div>
                         </div>
                     </div>
@@ -840,6 +857,52 @@
                         <span id="recruitmentTarget" style="font-size: 1.2em;">0</span>
                     </div>
                 </div>
+            </div>
+        </div>
+        
+        <!-- TAB 5: USER GUIDE -->
+        <div id="guideTab" class="tab-content">
+            <div class="instruction-box">
+                <strong>🌟 Welcome to the DG&S Capacity Simulator!</strong> This dynamic dashboard helps the Starlight Children's Foundation forecast roster capacity, track budget variances, justify workload requests, and determine precise recruitment targets.
+            </div>
+
+            <div class="guide-text">
+                <h3><span>★</span> 1. Roster Settings</h3>
+                <p>This tab is the foundational engine of the simulator. The selections made here calculate the baseline financial and operational metrics that feed into the other tabs.</p>
+                <ul>
+                    <li><strong>Program / Role Type:</strong> Select the specific program (e.g., SER, Livewire In Hospital) or training rate to apply the correct hourly financial value to the roster.</li>
+                    <li><strong>Location Selection (Weekday vs. Weekend):</strong> Check the boxes for the locations operating on standard weekdays. For programs operating on Saturdays (e.g., CHW, RCH, QCH, MCH), select the corresponding checkboxes in the "Weekend Add-On" box. Selecting both will automatically combine the hours for a full-week view.</li>
+                    <li><strong>⚙️ Preset Vollie Scales (Sidebar):</strong> Use these interactive sliders to adjust the backend constraints. Moving a slider (e.g., changing the Large Program target from 3 to 4) will instantly recalculate the required shifts and hours globally without needing to edit code.</li>
+                    <li><strong>Placement Student Hours:</strong> Enter any weekly hours covered by placement students. The simulator automatically deducts these from your gap, saving budget.</li>
+                    <li><strong>Auto-Sync Note:</strong> The total shifts calculated in this tab automatically sync to Tab 4 (Recruitment Target) to ensure data consistency.</li>
+                </ul>
+
+                <h3><span>★</span> 2. Phased Budget Forecast</h3>
+                <p>This tab translates your roster capacity into year-end financial projections, offering both a quick flat-rate view and an advanced seasonal breakdown.</p>
+                <ul>
+                    <li><strong>Inputs:</strong> Enter your <em>Annual Financial Target</em>, <em>YTD Achieved</em>, and <em>Remaining Weeks in Year</em>. The simulator pulls the Net Weekly DG&S value directly from Tab 1.</li>
+                    <li><strong>Standard Projections:</strong> Provides a rapid year-end forecast using a flat 30% absence rate.</li>
+                    <li><strong>Phased Projections:</strong> Breaks the annual target down month-by-month using historical seasonality curves. It automatically applies harsher dynamic absence rates during peak winter/flu season (e.g., 38% in July/August) and lower rates during holiday lulls (e.g., 25% in December).</li>
+                    <li><strong>⚙️ Edit Seasonal Trends:</strong> Click this button to open the live backend dashboard. If historical trends change next year, you can manually type new target percentages and absence rates directly from your Excel reports into this grid. The table will recalculate instantly.</li>
+                </ul>
+
+                <h3><span>★</span> 3. Volunteer Counts (Workload Justification)</h3>
+                <p>This tab allows managers to validate their requested roster sizes against historical foot traffic data to prevent volunteer burnout or boredom.</p>
+                <ul>
+                    <li><strong>Hospital & Shift Selection:</strong> Choose the location and the specific shift (Morning or Afternoon). The simulator will fetch the historical average visitor traffic for that specific block.</li>
+                    <li><strong>Manager's Request:</strong> Input the number of volunteers a manager is requesting.</li>
+                    <li><strong>Workload Analysis:</strong> The tool calculates the ratio of visitors to volunteers. It will flag a warning if the ratio is too low (boredom risk) or too high (burnout risk), ensuring healthy workload distribution. <em>Note: The "Ideal Program Constraint" automatically updates if you move the sliders in Tab 1.</em></li>
+                </ul>
+
+                <h3><span>★</span> 4. Recruitment Target</h3>
+                <p>This tab generates a hard recruitment goal by factoring in natural turnover and ideal headcount logic.</p>
+                <ul>
+                    <li><strong>Weekly Shifts Required:</strong> This field is locked and automatically synced from the exact locations and tiers checked in Tab 1.</li>
+                    <li><strong>Avg Shifts per Vol (Monthly):</strong> Enter the expected commitment level of a standard volunteer (e.g., <em>2</em> for fortnightly shifts). This converts total shifts into the <em>Ideal Headcount Required</em>.</li>
+                    <li><strong>Current Active Volunteers:</strong> Input the current size of the active team to determine the immediate headcount gap.</li>
+                    <li><strong>Average Tenure (Months):</strong> Input the historical average time a volunteer stays with Starlight (e.g., <em>18</em>). The simulator uses this to calculate an annualized turnover rate and predicts exactly how many volunteers will naturally leave over the next 12 months.</li>
+                    <li><strong>Total New Recruits Needed:</strong> The final target combines the immediate gap with the expected terminations, smartly adjusting to prevent over-recruiting if a team is already overstaffed and naturally downsizing.</li>
+                </ul>
             </div>
         </div>
     </div>
