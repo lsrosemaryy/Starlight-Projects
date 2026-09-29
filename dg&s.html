@@ -60,6 +60,28 @@
             gap: 10px;
         }
         
+        /* Guide Button Styling */
+        .guide-btn {
+            background-color: #2fbca4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1.05em;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(47, 188, 164, 0.25);
+        }
+        .guide-btn:hover {
+            background-color: #269b87;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(47, 188, 164, 0.35);
+        }
+
         /* Star decorative element */
         .star-icon {
             color: #ffdf00;
@@ -452,7 +474,44 @@
         .status-warn-low { background-color: #ffcdc2; color: #c0392b; border: 2px solid #e4466c; }
         .status-warn-high { background-color: #ecd0ea; color: #b933a4; border: 2px solid #b933a4; }
 
-        /* Guide Layout Styles */
+        /* User Guide Overlay Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(82, 40, 142, 0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(4px);
+        }
+        .modal-content {
+            background: white;
+            width: 85%;
+            max-width: 900px;
+            max-height: 85vh;
+            border-radius: 12px;
+            padding: 40px;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            border-top: 12px solid #ffdf00;
+        }
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #b933a4;
+            cursor: pointer;
+            background: none;
+            border: none;
+            transition: color 0.2s;
+        }
+        .close-btn:hover {
+            color: #e4466c;
+        }
         .guide-text {
             line-height: 1.6;
             color: #333;
@@ -500,7 +559,10 @@
     <div>
         <div class="header-container">
             <h2><span class="star-icon">★</span> DG&S Capacity & Roster Simulator</h2>
-            <div style="font-size: 28px;" title="Starlight Children's Foundation">🌟</div>
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <button onclick="openGuide()" class="guide-btn">📖 User Guide</button>
+                <div style="font-size: 28px;" title="Starlight Children's Foundation">🌟</div>
+            </div>
         </div>
 
         <div class="tabs">
@@ -508,7 +570,6 @@
             <button class="tab-button" onclick="openTab(event, 'budgetTab')"><span>★</span> 2. Budget Forecast</button>
             <button class="tab-button" onclick="openTab(event, 'workloadTab')"><span>★</span> 3. Volunteer Counts</button>
             <button class="tab-button" onclick="openTab(event, 'recruitTab')"><span>★</span> 4. Recruitment Target</button>
-            <button class="tab-button" onclick="openTab(event, 'guideTab')" style="background-color: #2fbca4; color: white;"><span>★</span> 5. User Guide</button>
         </div>
         
         <!-- TAB 1: ROSTER SETTINGS -->
@@ -859,10 +920,14 @@
                 </div>
             </div>
         </div>
-        
-        <!-- TAB 5: USER GUIDE -->
-        <div id="guideTab" class="tab-content">
-            <div class="instruction-box">
+    </div>
+
+    <!-- USER GUIDE OVERLAY MODAL -->
+    <div id="guideModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeGuide()">&times;</button>
+            <h2 style="margin-top: 0; border-bottom: 2px solid #ecd0ea; padding-bottom: 10px;">📖 User Guide</h2>
+            <div class="instruction-box" style="margin-top: 15px;">
                 <strong>🌟 Welcome to the DG&S Capacity Simulator!</strong> This dynamic dashboard helps the Starlight Children's Foundation forecast roster capacity, track budget variances, justify workload requests, and determine precise recruitment targets.
             </div>
 
@@ -977,6 +1042,24 @@
         "LWO_Afternoon": { traffic: 25.0, ideal: 1.0 }
     };
 
+    // --- Modal Functions ---
+    function openGuide() {
+        document.getElementById('guideModal').style.display = 'flex';
+    }
+
+    function closeGuide() {
+        document.getElementById('guideModal').style.display = 'none';
+    }
+
+    // Close modal if user clicks outside the box
+    window.onclick = function(event) {
+        const modal = document.getElementById('guideModal');
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    // --- Core Tab Functionality ---
     function openTab(evt, tabName) {
         const tabContents = document.getElementsByClassName("tab-content");
         for (let i = 0; i < tabContents.length; i++) {
